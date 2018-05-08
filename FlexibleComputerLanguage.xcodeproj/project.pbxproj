@@ -9,6 +9,19 @@
 /* Begin PBXBuildFile section */
 		3AB047A220A1D37600AE312D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AB047A120A1D37600AE312D /* main.cpp */; };
 		3AB047A420A1D37600AE312D /* FlexibleComputerLanguage.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3AB047A320A1D37600AE312D /* FlexibleComputerLanguage.1 */; };
+		3AB047D020A1D3F700AE312D /* Bool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AB047AC20A1D3F700AE312D /* Bool.cpp */; };
+		3AB047D120A1D3F700AE312D /* Command.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AB047AE20A1D3F700AE312D /* Command.cpp */; };
+		3AB047D220A1D3F700AE312D /* CPlusPlusEntry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AB047B120A1D3F700AE312D /* CPlusPlusEntry.cpp */; };
+		3AB047D320A1D3F700AE312D /* DefFileReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AB047B320A1D3F700AE312D /* DefFileReader.cpp */; };
+		3AB047D420A1D3F700AE312D /* EntityList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AB047B720A1D3F700AE312D /* EntityList.cpp */; };
+		3AB047D520A1D3F700AE312D /* ExecutionTemplate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AB047BA20A1D3F700AE312D /* ExecutionTemplate.cpp */; };
+		3AB047D620A1D3F700AE312D /* ExecutionTemplateList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AB047BC20A1D3F700AE312D /* ExecutionTemplateList.cpp */; };
+		3AB047D720A1D3F700AE312D /* MemMan.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AB047BF20A1D3F700AE312D /* MemMan.cpp */; };
+		3AB047D820A1D3F700AE312D /* Node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AB047C220A1D3F700AE312D /* Node.cpp */; };
+		3AB047D920A1D3F700AE312D /* ScriptReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AB047C620A1D3F700AE312D /* ScriptReader.cpp */; };
+		3AB047DA20A1D3F700AE312D /* StringOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AB047C820A1D3F700AE312D /* StringOperations.cpp */; };
+		3AB047DB20A1D3F700AE312D /* Tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AB047CA20A1D3F700AE312D /* Tests.cpp */; };
+		3AB047DC20A1D3F700AE312D /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AB047CD20A1D3F700AE312D /* Utils.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +41,43 @@
 		3AB0479E20A1D37600AE312D /* FlexibleComputerLanguage */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = FlexibleComputerLanguage; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AB047A120A1D37600AE312D /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		3AB047A320A1D37600AE312D /* FlexibleComputerLanguage.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = FlexibleComputerLanguage.1; sourceTree = "<group>"; };
+		3AB047AB20A1D3F700AE312D /* AdditionalFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdditionalFunctions.h; sourceTree = "<group>"; };
+		3AB047AC20A1D3F700AE312D /* Bool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Bool.cpp; sourceTree = "<group>"; };
+		3AB047AD20A1D3F700AE312D /* Bool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bool.h; sourceTree = "<group>"; };
+		3AB047AE20A1D3F700AE312D /* Command.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Command.cpp; sourceTree = "<group>"; };
+		3AB047AF20A1D3F700AE312D /* Command.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Command.h; sourceTree = "<group>"; };
+		3AB047B020A1D3F700AE312D /* CommonIncludes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonIncludes.h; sourceTree = "<group>"; };
+		3AB047B120A1D3F700AE312D /* CPlusPlusEntry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CPlusPlusEntry.cpp; sourceTree = "<group>"; };
+		3AB047B220A1D3F700AE312D /* CPlusPlusEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPlusPlusEntry.h; sourceTree = "<group>"; };
+		3AB047B320A1D3F700AE312D /* DefFileReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DefFileReader.cpp; sourceTree = "<group>"; };
+		3AB047B420A1D3F700AE312D /* DefFileReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DefFileReader.h; sourceTree = "<group>"; };
+		3AB047B520A1D3F700AE312D /* Defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Defs.h; sourceTree = "<group>"; };
+		3AB047B620A1D3F700AE312D /* Entity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Entity.h; sourceTree = "<group>"; };
+		3AB047B720A1D3F700AE312D /* EntityList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EntityList.cpp; sourceTree = "<group>"; };
+		3AB047B820A1D3F700AE312D /* EntityList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EntityList.h; sourceTree = "<group>"; };
+		3AB047B920A1D3F700AE312D /* ExecutionContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExecutionContext.h; sourceTree = "<group>"; };
+		3AB047BA20A1D3F700AE312D /* ExecutionTemplate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ExecutionTemplate.cpp; sourceTree = "<group>"; };
+		3AB047BB20A1D3F700AE312D /* ExecutionTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExecutionTemplate.h; sourceTree = "<group>"; };
+		3AB047BC20A1D3F700AE312D /* ExecutionTemplateList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ExecutionTemplateList.cpp; sourceTree = "<group>"; };
+		3AB047BD20A1D3F700AE312D /* ExecutionTemplateList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExecutionTemplateList.h; sourceTree = "<group>"; };
+		3AB047BE20A1D3F700AE312D /* Int.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Int.h; sourceTree = "<group>"; };
+		3AB047BF20A1D3F700AE312D /* MemMan.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MemMan.cpp; sourceTree = "<group>"; };
+		3AB047C020A1D3F700AE312D /* MemMan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MemMan.h; sourceTree = "<group>"; };
+		3AB047C120A1D3F700AE312D /* MetaData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetaData.h; sourceTree = "<group>"; };
+		3AB047C220A1D3F700AE312D /* Node.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Node.cpp; sourceTree = "<group>"; };
+		3AB047C320A1D3F700AE312D /* Node.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Node.h; sourceTree = "<group>"; };
+		3AB047C420A1D3F700AE312D /* Null.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Null.h; sourceTree = "<group>"; };
+		3AB047C520A1D3F700AE312D /* ProcessLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProcessLog.h; sourceTree = "<group>"; };
+		3AB047C620A1D3F700AE312D /* ScriptReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ScriptReader.cpp; sourceTree = "<group>"; };
+		3AB047C720A1D3F700AE312D /* ScriptReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScriptReader.h; sourceTree = "<group>"; };
+		3AB047C820A1D3F700AE312D /* StringOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StringOperations.cpp; sourceTree = "<group>"; };
+		3AB047C920A1D3F700AE312D /* StringOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringOperations.h; sourceTree = "<group>"; };
+		3AB047CA20A1D3F700AE312D /* Tests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Tests.cpp; sourceTree = "<group>"; };
+		3AB047CB20A1D3F700AE312D /* Tests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tests.h; sourceTree = "<group>"; };
+		3AB047CC20A1D3F700AE312D /* TypeDefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypeDefs.h; sourceTree = "<group>"; };
+		3AB047CD20A1D3F700AE312D /* Utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Utils.cpp; sourceTree = "<group>"; };
+		3AB047CE20A1D3F700AE312D /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
+		3AB047CF20A1D3F700AE312D /* Value.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Value.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +94,7 @@
 		3AB0479520A1D37600AE312D = {
 			isa = PBXGroup;
 			children = (
+				3AB047AA20A1D3F700AE312D /* Core */,
 				3AB047A020A1D37600AE312D /* FlexibleComputerLanguage */,
 				3AB0479F20A1D37600AE312D /* Products */,
 			);
@@ -64,6 +115,50 @@
 				3AB047A320A1D37600AE312D /* FlexibleComputerLanguage.1 */,
 			);
 			path = FlexibleComputerLanguage;
+			sourceTree = "<group>";
+		};
+		3AB047AA20A1D3F700AE312D /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				3AB047AB20A1D3F700AE312D /* AdditionalFunctions.h */,
+				3AB047AC20A1D3F700AE312D /* Bool.cpp */,
+				3AB047AD20A1D3F700AE312D /* Bool.h */,
+				3AB047AE20A1D3F700AE312D /* Command.cpp */,
+				3AB047AF20A1D3F700AE312D /* Command.h */,
+				3AB047B020A1D3F700AE312D /* CommonIncludes.h */,
+				3AB047B120A1D3F700AE312D /* CPlusPlusEntry.cpp */,
+				3AB047B220A1D3F700AE312D /* CPlusPlusEntry.h */,
+				3AB047B320A1D3F700AE312D /* DefFileReader.cpp */,
+				3AB047B420A1D3F700AE312D /* DefFileReader.h */,
+				3AB047B520A1D3F700AE312D /* Defs.h */,
+				3AB047B620A1D3F700AE312D /* Entity.h */,
+				3AB047B720A1D3F700AE312D /* EntityList.cpp */,
+				3AB047B820A1D3F700AE312D /* EntityList.h */,
+				3AB047B920A1D3F700AE312D /* ExecutionContext.h */,
+				3AB047BA20A1D3F700AE312D /* ExecutionTemplate.cpp */,
+				3AB047BB20A1D3F700AE312D /* ExecutionTemplate.h */,
+				3AB047BC20A1D3F700AE312D /* ExecutionTemplateList.cpp */,
+				3AB047BD20A1D3F700AE312D /* ExecutionTemplateList.h */,
+				3AB047BE20A1D3F700AE312D /* Int.h */,
+				3AB047BF20A1D3F700AE312D /* MemMan.cpp */,
+				3AB047C020A1D3F700AE312D /* MemMan.h */,
+				3AB047C120A1D3F700AE312D /* MetaData.h */,
+				3AB047C220A1D3F700AE312D /* Node.cpp */,
+				3AB047C320A1D3F700AE312D /* Node.h */,
+				3AB047C420A1D3F700AE312D /* Null.h */,
+				3AB047C520A1D3F700AE312D /* ProcessLog.h */,
+				3AB047C620A1D3F700AE312D /* ScriptReader.cpp */,
+				3AB047C720A1D3F700AE312D /* ScriptReader.h */,
+				3AB047C820A1D3F700AE312D /* StringOperations.cpp */,
+				3AB047C920A1D3F700AE312D /* StringOperations.h */,
+				3AB047CA20A1D3F700AE312D /* Tests.cpp */,
+				3AB047CB20A1D3F700AE312D /* Tests.h */,
+				3AB047CC20A1D3F700AE312D /* TypeDefs.h */,
+				3AB047CD20A1D3F700AE312D /* Utils.cpp */,
+				3AB047CE20A1D3F700AE312D /* Utils.h */,
+				3AB047CF20A1D3F700AE312D /* Value.h */,
+			);
+			path = Core;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -117,7 +212,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3AB047D720A1D3F700AE312D /* MemMan.cpp in Sources */,
+				3AB047D220A1D3F700AE312D /* CPlusPlusEntry.cpp in Sources */,
+				3AB047D520A1D3F700AE312D /* ExecutionTemplate.cpp in Sources */,
 				3AB047A220A1D37600AE312D /* main.cpp in Sources */,
+				3AB047D420A1D3F700AE312D /* EntityList.cpp in Sources */,
+				3AB047D120A1D3F700AE312D /* Command.cpp in Sources */,
+				3AB047D320A1D3F700AE312D /* DefFileReader.cpp in Sources */,
+				3AB047DB20A1D3F700AE312D /* Tests.cpp in Sources */,
+				3AB047D920A1D3F700AE312D /* ScriptReader.cpp in Sources */,
+				3AB047DC20A1D3F700AE312D /* Utils.cpp in Sources */,
+				3AB047DA20A1D3F700AE312D /* StringOperations.cpp in Sources */,
+				3AB047D620A1D3F700AE312D /* ExecutionTemplateList.cpp in Sources */,
+				3AB047D020A1D3F700AE312D /* Bool.cpp in Sources */,
+				3AB047D820A1D3F700AE312D /* Node.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
