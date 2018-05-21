@@ -121,7 +121,7 @@ void ScriptReader::ReadStringToLines(MSTRING code, MSTRING sLineContinuation, MS
     MSTRING sCurr = EMPTY_STRING;
     MINT iLineNo = 0;
     std::istringstream iss(code);
-    for (std::string sLine; std::getline(iss, sLine); ) {
+    for (MSTRING sLine; std::getline(iss, sLine); ) {
         ++iLineNo;
         Utils::TrimLeft(sLine, _MSTR(\t));
         Utils::TrimRight(sLine, _MSTR(\t));
