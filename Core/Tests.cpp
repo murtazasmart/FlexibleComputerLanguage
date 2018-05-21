@@ -11,7 +11,7 @@
 void Tests::RunTest1()
 {
 	DefFileReader dfr;
-	MetaData* pMD = dfr.Read("/Users/dileepa/Dileepa/WorkDir/LogAnalyzer/tests/test1/Defs.txt");
+	MetaData* pMD = dfr.Read("D:\\99X\\Backend\\FlexibleComputerLanguage\\tests\\test1\\Defs.txt");
 	ScriptReader sr;
 	ScriptReaderOutput op;
 	bool bSucc = sr.ProcessScript(pMD->s_RuleFileName, pMD, op);
@@ -81,6 +81,27 @@ void Tests::RunTest3()
 	pY->DestroyWithSubTree();
 	pZ->DestroyWithSubTree();
 //	op.p_ETL->Destroy();
+}
+
+void Tests::RunTest4()
+{
+	DefFileReader dfr;
+	MetaData* pMD = dfr.Read("D:\\99X\\Backend\\FlexibleComputerLanguage\\tests\\test5\\Defs.txt");
+	ScriptReader sr;
+	ScriptReaderOutput op;
+	bool bSucc = sr.ProcessScript(pMD, op, "$X.GetAggregatedValue.WriteToFile(D:\\99X\\Backend\\FlexibleComputerLanguage\\FlexibleComputerLanguage/report_Unix)");
+	if(!bSucc)
+	{
+		std::wcout<<"\nFailed to read script\n";
+	}
+	ExecutionContext ec;
+	ec.p_mapFunctions = &op.map_Functions;
+	ec.p_MD = pMD;
+	Node* pX = MemoryManager::Inst.CreateNode(1);
+	Node* pY = MemoryManager::Inst.CreateNode(2);
+	ec.map_Var["X"] = pX;
+	ec.map_Var["Y"] = pY;
+	op.p_ETL->Execute(&ec);
 }
 
 
