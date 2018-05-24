@@ -10,5 +10,10 @@
 #define __FlexibleComputerLanguage__TestLoadFromCodeLibrary__
 
 #include <iostream>
+#include "TestCaseBase.h"
+
+class TestLoadFromCodeLibrary : public TestCaseBase {
+    virtual TestCaseExecutionResult Execute(TestCaseArgument* arg);
+};
 
 #endif /* defined(__FlexibleComputerLanguage__TestLoadFromCodeLibrary__) */

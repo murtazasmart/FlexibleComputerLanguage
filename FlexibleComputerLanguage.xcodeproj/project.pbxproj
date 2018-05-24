@@ -7,6 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3A33964020B6725F0019F245 /* NodeCustomValueShorthand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A33963C20B6725F0019F245 /* NodeCustomValueShorthand.cpp */; };
+		3A33964120B6725F0019F245 /* SpecialCommandExecuter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A33963E20B6725F0019F245 /* SpecialCommandExecuter.cpp */; };
+		3A33966320B679840019F245 /* TestCaseBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A33965020B679840019F245 /* TestCaseBase.cpp */; };
+		3A33966420B679840019F245 /* TestCaseExecuter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A33965220B679840019F245 /* TestCaseExecuter.cpp */; };
+		3A33966520B679840019F245 /* TestCustomStrFilterShorthand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A33965520B679840019F245 /* TestCustomStrFilterShorthand.cpp */; };
+		3A33966620B679840019F245 /* TestFilterSubtree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A33965720B679840019F245 /* TestFilterSubtree.cpp */; };
+		3A33966720B679840019F245 /* TestListFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A33965920B679840019F245 /* TestListFilter.cpp */; };
+		3A33966820B679840019F245 /* TestListGroupBy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A33965B20B679840019F245 /* TestListGroupBy.cpp */; };
+		3A33966920B679840019F245 /* TestListInnerCount.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A33965D20B679840019F245 /* TestListInnerCount.cpp */; };
+		3A33966A20B679840019F245 /* TestListInnerCountWithScript.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A33965F20B679840019F245 /* TestListInnerCountWithScript.cpp */; };
+		3A33966B20B679840019F245 /* TestTestCase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A33966120B679840019F245 /* TestTestCase.cpp */; };
+		3A33966E20B6A77A0019F245 /* TestLoadFromCodeLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A33966C20B6A77A0019F245 /* TestLoadFromCodeLibrary.cpp */; };
 		3AB047A220A1D37600AE312D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AB047A120A1D37600AE312D /* main.cpp */; };
 		3AB047A420A1D37600AE312D /* FlexibleComputerLanguage.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3AB047A320A1D37600AE312D /* FlexibleComputerLanguage.1 */; };
 		3AB047D020A1D3F700AE312D /* Bool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AB047AC20A1D3F700AE312D /* Bool.cpp */; };
@@ -38,6 +50,43 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3A33963C20B6725F0019F245 /* NodeCustomValueShorthand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NodeCustomValueShorthand.cpp; sourceTree = "<group>"; };
+		3A33963D20B6725F0019F245 /* NodeCustomValueShorthand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NodeCustomValueShorthand.h; sourceTree = "<group>"; };
+		3A33963E20B6725F0019F245 /* SpecialCommandExecuter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpecialCommandExecuter.cpp; sourceTree = "<group>"; };
+		3A33963F20B6725F0019F245 /* SpecialCommandExecuter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpecialCommandExecuter.h; sourceTree = "<group>"; };
+		3A33964220B675C10019F245 /* ISpecialCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ISpecialCommand.h; sourceTree = "<group>"; };
+		3A33964320B676950019F245 /* String.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = String.h; sourceTree = "<group>"; };
+		3A33964620B679840019F245 /* TestCustomStrFilterShorthandScript.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestCustomStrFilterShorthandScript.txt; sourceTree = "<group>"; };
+		3A33964720B679840019F245 /* TestCustomStrFilterShorthandScriptDefs.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestCustomStrFilterShorthandScriptDefs.txt; sourceTree = "<group>"; };
+		3A33964820B679840019F245 /* TestFilterSubtreeScript.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestFilterSubtreeScript.txt; sourceTree = "<group>"; };
+		3A33964920B679840019F245 /* TestFilterSubtreeScriptDefs.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestFilterSubtreeScriptDefs.txt; sourceTree = "<group>"; };
+		3A33964A20B679840019F245 /* TestInnerCountScript.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestInnerCountScript.txt; sourceTree = "<group>"; };
+		3A33964B20B679840019F245 /* TestInnerCountScriptDefs.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestInnerCountScriptDefs.txt; sourceTree = "<group>"; };
+		3A33964C20B679840019F245 /* TestListFilterScript.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestListFilterScript.txt; sourceTree = "<group>"; };
+		3A33964D20B679840019F245 /* TestListFilterScriptDefs.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestListFilterScriptDefs.txt; sourceTree = "<group>"; };
+		3A33964E20B679840019F245 /* TestListGroupByScript.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestListGroupByScript.txt; sourceTree = "<group>"; };
+		3A33964F20B679840019F245 /* TestListGroupByScriptDefs.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestListGroupByScriptDefs.txt; sourceTree = "<group>"; };
+		3A33965020B679840019F245 /* TestCaseBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestCaseBase.cpp; sourceTree = "<group>"; };
+		3A33965120B679840019F245 /* TestCaseBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestCaseBase.h; sourceTree = "<group>"; };
+		3A33965220B679840019F245 /* TestCaseExecuter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestCaseExecuter.cpp; sourceTree = "<group>"; };
+		3A33965320B679840019F245 /* TestCaseExecuter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestCaseExecuter.h; sourceTree = "<group>"; };
+		3A33965420B679840019F245 /* TestCaseIncludes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestCaseIncludes.h; sourceTree = "<group>"; };
+		3A33965520B679840019F245 /* TestCustomStrFilterShorthand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestCustomStrFilterShorthand.cpp; sourceTree = "<group>"; };
+		3A33965620B679840019F245 /* TestCustomStrFilterShorthand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestCustomStrFilterShorthand.h; sourceTree = "<group>"; };
+		3A33965720B679840019F245 /* TestFilterSubtree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestFilterSubtree.cpp; sourceTree = "<group>"; };
+		3A33965820B679840019F245 /* TestFilterSubtree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFilterSubtree.h; sourceTree = "<group>"; };
+		3A33965920B679840019F245 /* TestListFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestListFilter.cpp; sourceTree = "<group>"; };
+		3A33965A20B679840019F245 /* TestListFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestListFilter.h; sourceTree = "<group>"; };
+		3A33965B20B679840019F245 /* TestListGroupBy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestListGroupBy.cpp; sourceTree = "<group>"; };
+		3A33965C20B679840019F245 /* TestListGroupBy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestListGroupBy.h; sourceTree = "<group>"; };
+		3A33965D20B679840019F245 /* TestListInnerCount.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestListInnerCount.cpp; sourceTree = "<group>"; };
+		3A33965E20B679840019F245 /* TestListInnerCount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestListInnerCount.h; sourceTree = "<group>"; };
+		3A33965F20B679840019F245 /* TestListInnerCountWithScript.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestListInnerCountWithScript.cpp; sourceTree = "<group>"; };
+		3A33966020B679840019F245 /* TestListInnerCountWithScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestListInnerCountWithScript.h; sourceTree = "<group>"; };
+		3A33966120B679840019F245 /* TestTestCase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestTestCase.cpp; sourceTree = "<group>"; };
+		3A33966220B679840019F245 /* TestTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestTestCase.h; sourceTree = "<group>"; };
+		3A33966C20B6A77A0019F245 /* TestLoadFromCodeLibrary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestLoadFromCodeLibrary.cpp; sourceTree = "<group>"; };
+		3A33966D20B6A77A0019F245 /* TestLoadFromCodeLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestLoadFromCodeLibrary.h; sourceTree = "<group>"; };
 		3AB0479E20A1D37600AE312D /* FlexibleComputerLanguage */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = FlexibleComputerLanguage; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AB047A120A1D37600AE312D /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		3AB047A320A1D37600AE312D /* FlexibleComputerLanguage.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = FlexibleComputerLanguage.1; sourceTree = "<group>"; };
@@ -91,6 +140,52 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3A33964420B679840019F245 /* TestCases */ = {
+			isa = PBXGroup;
+			children = (
+				3A33964520B679840019F245 /* files */,
+				3A33965020B679840019F245 /* TestCaseBase.cpp */,
+				3A33965120B679840019F245 /* TestCaseBase.h */,
+				3A33965220B679840019F245 /* TestCaseExecuter.cpp */,
+				3A33965320B679840019F245 /* TestCaseExecuter.h */,
+				3A33965420B679840019F245 /* TestCaseIncludes.h */,
+				3A33965520B679840019F245 /* TestCustomStrFilterShorthand.cpp */,
+				3A33965620B679840019F245 /* TestCustomStrFilterShorthand.h */,
+				3A33965720B679840019F245 /* TestFilterSubtree.cpp */,
+				3A33965820B679840019F245 /* TestFilterSubtree.h */,
+				3A33965920B679840019F245 /* TestListFilter.cpp */,
+				3A33965A20B679840019F245 /* TestListFilter.h */,
+				3A33965B20B679840019F245 /* TestListGroupBy.cpp */,
+				3A33965C20B679840019F245 /* TestListGroupBy.h */,
+				3A33965D20B679840019F245 /* TestListInnerCount.cpp */,
+				3A33965E20B679840019F245 /* TestListInnerCount.h */,
+				3A33965F20B679840019F245 /* TestListInnerCountWithScript.cpp */,
+				3A33966020B679840019F245 /* TestListInnerCountWithScript.h */,
+				3A33966120B679840019F245 /* TestTestCase.cpp */,
+				3A33966220B679840019F245 /* TestTestCase.h */,
+				3A33966C20B6A77A0019F245 /* TestLoadFromCodeLibrary.cpp */,
+				3A33966D20B6A77A0019F245 /* TestLoadFromCodeLibrary.h */,
+			);
+			path = TestCases;
+			sourceTree = "<group>";
+		};
+		3A33964520B679840019F245 /* files */ = {
+			isa = PBXGroup;
+			children = (
+				3A33964620B679840019F245 /* TestCustomStrFilterShorthandScript.txt */,
+				3A33964720B679840019F245 /* TestCustomStrFilterShorthandScriptDefs.txt */,
+				3A33964820B679840019F245 /* TestFilterSubtreeScript.txt */,
+				3A33964920B679840019F245 /* TestFilterSubtreeScriptDefs.txt */,
+				3A33964A20B679840019F245 /* TestInnerCountScript.txt */,
+				3A33964B20B679840019F245 /* TestInnerCountScriptDefs.txt */,
+				3A33964C20B679840019F245 /* TestListFilterScript.txt */,
+				3A33964D20B679840019F245 /* TestListFilterScriptDefs.txt */,
+				3A33964E20B679840019F245 /* TestListGroupByScript.txt */,
+				3A33964F20B679840019F245 /* TestListGroupByScriptDefs.txt */,
+			);
+			path = files;
+			sourceTree = "<group>";
+		};
 		3AB0479520A1D37600AE312D = {
 			isa = PBXGroup;
 			children = (
@@ -120,6 +215,13 @@
 		3AB047AA20A1D3F700AE312D /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				3A33964420B679840019F245 /* TestCases */,
+				3A33964320B676950019F245 /* String.h */,
+				3A33964220B675C10019F245 /* ISpecialCommand.h */,
+				3A33963C20B6725F0019F245 /* NodeCustomValueShorthand.cpp */,
+				3A33963D20B6725F0019F245 /* NodeCustomValueShorthand.h */,
+				3A33963E20B6725F0019F245 /* SpecialCommandExecuter.cpp */,
+				3A33963F20B6725F0019F245 /* SpecialCommandExecuter.h */,
 				3AB047AB20A1D3F700AE312D /* AdditionalFunctions.h */,
 				3AB047AC20A1D3F700AE312D /* Bool.cpp */,
 				3AB047AD20A1D3F700AE312D /* Bool.h */,
@@ -212,19 +314,31 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3A33966820B679840019F245 /* TestListGroupBy.cpp in Sources */,
+				3A33964120B6725F0019F245 /* SpecialCommandExecuter.cpp in Sources */,
 				3AB047D720A1D3F700AE312D /* MemMan.cpp in Sources */,
+				3A33966320B679840019F245 /* TestCaseBase.cpp in Sources */,
 				3AB047D220A1D3F700AE312D /* CPlusPlusEntry.cpp in Sources */,
 				3AB047D520A1D3F700AE312D /* ExecutionTemplate.cpp in Sources */,
 				3AB047A220A1D37600AE312D /* main.cpp in Sources */,
+				3A33966620B679840019F245 /* TestFilterSubtree.cpp in Sources */,
+				3A33966E20B6A77A0019F245 /* TestLoadFromCodeLibrary.cpp in Sources */,
+				3A33966420B679840019F245 /* TestCaseExecuter.cpp in Sources */,
 				3AB047D420A1D3F700AE312D /* EntityList.cpp in Sources */,
+				3A33964020B6725F0019F245 /* NodeCustomValueShorthand.cpp in Sources */,
 				3AB047D120A1D3F700AE312D /* Command.cpp in Sources */,
 				3AB047D320A1D3F700AE312D /* DefFileReader.cpp in Sources */,
 				3AB047DB20A1D3F700AE312D /* Tests.cpp in Sources */,
+				3A33966720B679840019F245 /* TestListFilter.cpp in Sources */,
 				3AB047D920A1D3F700AE312D /* ScriptReader.cpp in Sources */,
 				3AB047DC20A1D3F700AE312D /* Utils.cpp in Sources */,
 				3AB047DA20A1D3F700AE312D /* StringOperations.cpp in Sources */,
 				3AB047D620A1D3F700AE312D /* ExecutionTemplateList.cpp in Sources */,
+				3A33966520B679840019F245 /* TestCustomStrFilterShorthand.cpp in Sources */,
 				3AB047D020A1D3F700AE312D /* Bool.cpp in Sources */,
+				3A33966B20B679840019F245 /* TestTestCase.cpp in Sources */,
+				3A33966920B679840019F245 /* TestListInnerCount.cpp in Sources */,
+				3A33966A20B679840019F245 /* TestListInnerCountWithScript.cpp in Sources */,
 				3AB047D820A1D3F700AE312D /* Node.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -335,6 +449,7 @@
 				3AB047A920A1D37600AE312D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

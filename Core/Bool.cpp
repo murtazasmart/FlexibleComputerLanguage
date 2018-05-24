@@ -4,12 +4,12 @@
 Bool::Bool()
 : Value<bool, ENTITY_TYPE_BOOL>()
 {
-
+    
 }
 
 Bool::~Bool()
 {
-
+    
 }
 
 PBool Bool::And(PBool pArg)

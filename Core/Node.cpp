@@ -1,4 +1,5 @@
 #include "Node.h"
+#include "EntityList.h"
 #include "MemMan.h"
 #include "StringOperations.h"
 #include "Utils.h"
@@ -13,7 +14,7 @@ Node::Node(MULONG ulID)
 
 Node::~Node()
 {
-
+    
 }
 
 void Node::Destroy()
@@ -37,6 +38,18 @@ void Node::DestroyWithSubTree()
 		pChildCpy->DestroyWithSubTree();
 	}
 	this->DestroyNodeAlone();
+}
+
+MSTRING Node::ToString() {
+#ifdef ISWIDECHAR
+    wchar_t buff[100];
+    wsprintf(buff, L"%x", this);
+    return MSTRING(buff);
+#else
+    char buff[100];
+    sprintf(buff, "%p", this);
+    return MSTRING(buff);
+#endif
 }
 
 PNODE Node::GetLeftSibling()
@@ -114,9 +127,9 @@ PVOID Node::GetCustomObj() {
 }
 
 /*!
-* Creates and outputs a string that is constructed by concatenating all the string values of the nodes
-* in the subtree
-*/
+ * Creates and outputs a string that is constructed by concatenating all the string values of the nodes
+ * in the subtree
+ */
 MSTRING Node::GetAggregatedValue()
 {
 	MSTRING sAggVal = EMPTY_STRING;
@@ -137,14 +150,14 @@ void Node::AddAggregatedValue(MSTRING& sStr)
 		{
 			sStr += pChild->GetLVal();
 		}
-
+        
 		pChild->AddAggregatedValue(sStr);
-
+        
 		if(pChild->GetRVal() != 0)
 		{
 			sStr += pChild->GetRVal();
 		}
-
+        
 		pChild = pChild->GetRightSibling();
 	}
 }
@@ -243,14 +256,22 @@ void Node::SetParent(PNODE pParent)
 	p_Parent = pParent;
 }
 
+void Node::SetFirstChild(PNODE pFirstChild) {
+	p_FirstChild = pFirstChild;
+}
+
+void Node::SetLastChild(PNODE pLastChild) {
+	p_LastChild = pLastChild;
+}
+
 void Node::SetMinimumChildWeight(MULONG ulMinChildWeight)
 {
 	ul_MinChildWeight = ulMinChildWeight;
 }
 
-void Node::SetMaximumChildWeight(MULONG ulMinChildWeight)
+void Node::SetMaximumChildWeight(MULONG ulMaxChildWeight)
 {
-	ul_MaxChildWeight = ul_MaxChildWeight;
+	ul_MaxChildWeight = ulMaxChildWeight;
 }
 
 void Node::SetCustomObj(PVOID obj) {
@@ -293,7 +314,7 @@ void Node::Expand(LST_STR& lstTokens)
 PNODE Node::AddNode()
 {
 	++ul_ChildCount;
-	PNODE pNewChild = MemoryManager::Inst.CreateNode(ul_ChildCount + NODE_ID_OFFSET);	
+	PNODE pNewChild = MemoryManager::Inst.CreateNode(ul_ChildCount + NODE_ID_OFFSET);
 	if(0 == p_FirstChild)
 	{
 		p_FirstChild = pNewChild;
@@ -306,7 +327,7 @@ PNODE Node::AddNode()
 		p_LastChild = pNewChild;
 	}
 	pNewChild->SetParent(this);
-
+    
 	return pNewChild;
 }
 
@@ -370,14 +391,14 @@ PNODE Node::AddNode(PNODE pNode, bool bMakeCopy)
 				pChild = pChild->GetLeftSibling();
 			}
 		}
-
+        
 		if(0 == pMatchingNode)
 		{
 			// We should never arrive here
 			pNodeToAdd->DestroyWithSubTree();
 			return 0;
 		}
-
+        
 		// The node being added will lose all its properties
 		// The new node's children will be added to the existing node
 		PNODE pChild = pNodeToAdd->GetFirstChild();
@@ -387,10 +408,10 @@ PNODE Node::AddNode(PNODE pNode, bool bMakeCopy)
 			pChild = pChild->GetRightSibling();
 			pMatchingNode->AddNode(pChildCpy, false);
 		}
-
+        
 		// Now we can destroy NodeToAdd because it is redundant
 		pNodeToAdd->DestroyNodeAlone();
-
+        
 		return pMatchingNode;
 	}
 	else
@@ -424,12 +445,12 @@ PNODE Node::AddNodeWithWeight(MULONG ulWeight)
 	{
 		return 0;
 	}
-
+    
 	if((ulWeight < ul_MinChildWeight) || (ulWeight > ul_MaxChildWeight))
 	{
 		return 0;
 	}
-
+    
 	PNODE pChild = p_FirstChild;
 	PNODE pNodeInsertAfter = 0;
 	while(0 != pChild)
@@ -441,7 +462,7 @@ PNODE Node::AddNodeWithWeight(MULONG ulWeight)
 		pNodeInsertAfter = pChild;
 		pChild = pChild->GetRightSibling();
 	}
-
+    
 	++ul_ChildCount;
 	PNODE pNewNode = MemoryManager::Inst.CreateNode(ul_ChildCount + NODE_ID_OFFSET);
 	pNewNode->SetParent(this);
@@ -451,7 +472,7 @@ PNODE Node::AddNodeWithWeight(MULONG ulWeight)
 		if(0 != p_FirstChild)
 		{
 			p_FirstChild->SetLeftSibling(pNewNode);
-		}		
+		}
 		pNewNode->SetRightSibling(p_FirstChild);
 		p_FirstChild = pNewNode;
 	}
@@ -471,7 +492,7 @@ PNODE Node::AddNodeWithWeight(MULONG ulWeight)
 		pNodeInsertAfter->SetRightSibling(pNewNode);
 		pNewNode->SetLeftSibling(pNodeInsertAfter);
 	}
-
+    
 	return pNewNode;
 }
 
@@ -507,4 +528,19 @@ void Node::ReadValueFromFile(CPMCHAR zFilename)
 	file.read((char*)byBuff, ulLen);
 	file.close();
 	z_Value = (PMCHAR)byBuff;
+}
+PNODE Node::IsHavingCustomString(MSTRING customString)
+{
+	PNODE result = 0;
+	if (z_CustomStr == customString)
+	{
+		result = this;
+	}
+	return result;
+}
+
+PNODE Node::GetChildNodeByCustomString(MSTRING customString)
+{
+	PNODE node = 0;
+	return node;
 }

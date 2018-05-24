@@ -20,6 +20,7 @@ public:
 	void SeekToBegin();
 	void SeekToEnd();
 	void Seek(MULONG ulOffset, bool bIsNegative);
+    EntityList* GetInnerCount();
 };
 
 #endif

@@ -12,14 +12,14 @@ public:
 	{
 		ul_Type = ENTITY_TYPE_NULL;
 	}
-
+    
 	Entity* GetCopy()
 	{
 		Null* pNew = 0;
 		MemoryManager::Inst.CreateObject(&pNew);
 		return pNew;
 	}
-
+    
 	bool IsNull()
 	{
 		return true;

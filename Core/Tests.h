@@ -9,7 +9,7 @@ public:
 	void RunTest1();
 	void RunTest2();
 	void RunTest3();
-
+    void RunTest5();
 };
 
 

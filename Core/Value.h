@@ -9,33 +9,33 @@ class Value : public Entity
 {
 protected:
 	T val;
-
+    
 public:
 	Value()
 	{
 		ul_Type = Type;
 	}
 	Value(T v)
-		:val(v)
+    :val(v)
 	{
 		ul_Type = Type;
 	}
-
+    
 	virtual ~Value()
 	{
-
+        
 	}
-
+    
 	void SetValue(T v)
 	{
 		val = v;
 	}
-
+    
 	T GetValue()
 	{
 		return val;
 	}
-
+    
 	Entity* GetCopy()
 	{
 		Value<T, Type>* pNew = 0;

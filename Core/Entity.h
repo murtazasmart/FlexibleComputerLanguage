@@ -8,9 +8,10 @@ class Entity
 {
 public:
 	MULONG ul_Type;
-
+    
 	virtual ~Entity()	{}
 	virtual Entity* GetCopy() = 0;
+    virtual MSTRING ToString() {return EMPTY_STRING;}
 	virtual bool IsNull()
 	{
 		return false;

@@ -23,23 +23,24 @@ protected:
 	PNODE p_FirstChild;
 	PNODE p_LastChild;
     PVOID p_CustomObj;
-
+    
 	MULONG ul_ChildCount;
-
+    
 public:
 	Node(MULONG ulID);
 	virtual ~Node();
-
+    
 	virtual void Destroy();
 	void DestroyNodeAlone();
 	void DestroyWithSubTree();
-
+    
 	// Get functions
 	PNODE GetLeftSibling();
 	PNODE GetRightSibling();
 	PNODE GetParent();
 	PNODE GetFirstChild();
 	PNODE GetLastChild();
+    PNODE GetChildNodeByCustomString(MSTRING customString);
 	MULONG GetChildCount();
 	PMCHAR GetValue();
 	PMCHAR GetLVal();
@@ -48,14 +49,14 @@ public:
 	MULONG GetID();
 	MUSHORT GetType();
 	MULONG GetWeight();
-	MBYTE GetNature();	
+	MBYTE GetNature();
 	MSTRING GetAggregatedValue();
 	PNODE GetCopy();
 	PNODE GetCopyWithSubTree();
 	MULONG GetMinimumChildWeight();
 	MULONG GetMaximumChildWeight();
     PVOID GetCustomObj();
-
+    
 	// Set functions
 	void SetValue(PMCHAR pVal);
 	void SetLValue(PMCHAR pLVal);
@@ -68,9 +69,14 @@ public:
 	void SetRightSibling(PNODE pNext);
 	void SetLeftSibling(PNODE pPrev);
 	void SetParent(PNODE pParent);
+	void SetFirstChild(PNODE pFirstChild);
+	void SetLastChild(PNODE pLastChild);
 	void SetMinimumChildWeight(MULONG ulMinChildWeight);
 	void SetMaximumChildWeight(MULONG ulMinChildWeight);
     void SetCustomObj(PVOID obj);
+    
+    // Overridden from Entity
+    virtual MSTRING ToString();
 	
 	// Other functions
 	void Expand(LST_STR& lstTokens);
@@ -79,7 +85,8 @@ public:
 	PNODE AddNode(PNODE pNode, bool bMakeCopy);
 	PNODE AddNodeWithWeight(MULONG ulWeight);
 	void ReadValueFromFile(CPMCHAR zFilename);
-
+	virtual PNODE IsHavingCustomString(MSTRING customString);
+    
 private:
 	void AddAggregatedValue(MSTRING& sStr);
 };

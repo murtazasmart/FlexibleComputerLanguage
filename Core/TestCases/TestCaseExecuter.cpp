@@ -14,6 +14,7 @@
 #include "TestListGroupBy.h"
 #include "TestFilterSubtree.h"
 #include "TestCustomStrFilterShorthand.h"
+#include "TestLoadFromCodeLibrary.h"
 
 TestCaseExecuter::TestCaseExecuter() {
     RegisterAllTestCases();
@@ -31,6 +32,7 @@ void TestCaseExecuter::RegisterAllTestCases() {
     RegisterTestCase(_MSTR(TestListGroupBy), new TestListGroupBy);
     RegisterTestCase(_MSTR(TestFilterSubtree), new TestFilterSubtree);
     RegisterTestCase(_MSTR(TestCustomStrFilterShorthand), new TestCustomStrFilterShorthand);
+    RegisterTestCase(_MSTR(TestLoadFromCodeLibrary), new TestLoadFromCodeLibrary);
 }
 
 void TestCaseExecuter::ExecuteAllTestCases(TestCaseArgument *arg) {

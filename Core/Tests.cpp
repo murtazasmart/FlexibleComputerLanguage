@@ -83,5 +83,34 @@ void Tests::RunTest3()
 //	op.p_ETL->Destroy();
 }
 
+void Tests::RunTest5()
+{
+	DefFileReader dfr;
+	MetaData* pMD = dfr.Read("/Users/dileepaj/Dileepa/WorkDir/LogAnalyzer/tests/test5/Defs.txt");
+	ScriptReader sr;
+	ScriptReaderOutput op;
+	bool bSucc = sr.ProcessScript(pMD->s_RuleFileName, pMD, op);
+	if(!bSucc)
+	{
+		std::wcout<<"\nFailed to read script\n";
+	}
+	ExecutionContext ec;
+	ec.p_mapFunctions = &op.map_Functions;
+	ec.p_MD = pMD;
+	Node* pX = MemoryManager::Inst.CreateNode(1);
+	Node* pY = MemoryManager::Inst.CreateNode(2);
+	Node* pZ = MemoryManager::Inst.CreateNode(3);
+	ec.map_Var["X"] = pX;
+	ec.map_Var["Y"] = pY;
+	ec.map_Var["Z"] = pZ;
+	op.p_ETL->Execute(&ec);
+    std::cout << pX->GetValue();
+	pX->DestroyWithSubTree();
+	pY->DestroyWithSubTree();
+	pZ->DestroyWithSubTree();
+    
+    //	op.p_ETL->Destroy();
+}
+
 
 
