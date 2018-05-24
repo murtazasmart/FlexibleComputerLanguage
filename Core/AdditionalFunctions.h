@@ -1,6 +1,7 @@
 #include "CommonIncludes.h"
 #include "MemMan.h"
 #include <time.h>
+#include "String.h"
 
 PENTITY TimeStrToInt(PENTITY pStr)
 {

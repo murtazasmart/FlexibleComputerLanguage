@@ -2,6 +2,7 @@
 #include "ExecutionTemplate.h"
 #include "ExecutionContext.h"
 #include "Utils.h"
+#include "Int.h"
 
 EntityList::EntityList()
 : st_CurrElemPos(0)
@@ -11,14 +12,14 @@ EntityList::EntityList()
 
 EntityList::~EntityList()
 {
-
+    
 }
 
 void EntityList::Destroy()
 {
 	// First destroy the children in the list
 	DestroyCollection(*this);
-
+    
 	MemoryManager::Inst.DeleteObject(this);
 }
 
@@ -97,5 +98,22 @@ void EntityList::Seek(MULONG ulOffset, bool bIsNegative)
 	else
 	{
 		st_CurrElemPos += ulOffset;
-	}		
+	}
+}
+
+EntityList* EntityList::GetInnerCount() {
+    EntityList *pListRes = 0;
+    MemoryManager::Inst.CreateObject(&pListRes);
+    SeekToBegin();
+    PENTITY ent = GetCurrElem();
+    while (ent) {
+        PInt count = 0;
+        MemoryManager::Inst.CreateObject(&count);
+        count->SetValue(((PENTITYLIST)ent)->size());
+        pListRes->push_back(count);
+        
+        Seek(1, false);
+        ent = GetCurrElem();
+    }
+    return pListRes;
 }
