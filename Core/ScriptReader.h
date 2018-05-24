@@ -79,9 +79,10 @@ class ScriptReader
 	
 public:
 	bool ProcessScript(MSTRING sFile, MetaData* pMD, ScriptReaderOutput& op);
-    
+	bool ProcessScript(MetaData* pMD, ScriptReaderOutput& op, MSTRING code);
 private:
 	void ReadFileToLines(MSTRING sFile, MSTRING sLineContinuation, MSTRING sCommentStart, LST_STR& lstLines, LST_INT& lstLineNumbers);
+	void ReadStringToLines(MSTRING sFile, MSTRING sLineContinuation, MSTRING sCommentStart, LST_STR& lstLines, LST_INT& lstLineNumbers);
 	ProcessLineRetVal ProcessLine(MSTRING sLine, MetaData* pMD);
 	void GetCommandElements(MSTRING sCommand, VEC_CE& vecCE, MetaData* pMD);
 	ExecutionTemplate* GetEntity(VEC_CE& vecCE, VEC_CE::size_type stStart, VEC_CE::size_type stEnd);
