@@ -4,6 +4,7 @@
 #include "ExecutionContext.h"
 #include "Utils.h"
 #include "EntityList.h"
+#include "SpecialCommandExecuter.h"
 
 ExecutionTemplate::ExecutionTemplate()
 :s_StartVarName(EMPTY_STRING), p_Entity(0), ul_SpecialCommand(0), s_CodeLine(EMPTY_STRING)
@@ -13,7 +14,7 @@ ExecutionTemplate::ExecutionTemplate()
 
 ExecutionTemplate::~ExecutionTemplate()
 {
-
+    
 }
 
 void ExecutionTemplate::Destroy()
@@ -23,7 +24,7 @@ void ExecutionTemplate::Destroy()
 		p_Entity->Destroy();
 	}
 	DestroyCollection(lst_Commands);
-
+    
 	MemoryManager::Inst.DeleteObject(this);
 }
 
@@ -38,7 +39,7 @@ ExecutionTemplate* ExecutionTemplate::GetCopy()
 	else
 	{
 		pCopy->SetEntity(p_Entity);
-	}	
+	}
 	pCopy->SetStartVarName(s_StartVarName);
 	LST_COMMANDPTR::iterator ite1 = lst_Commands.begin();
 	LST_COMMANDPTR::iterator iteEnd1 = lst_Commands.end();
@@ -110,7 +111,7 @@ PENTITY ExecutionTemplate::Execute(ExecutionContext *pContext)
 		{
 			pVar = (*iteFind).second;
 		}
-
+        
 		if(lst_Commands.size() == 0)
 		{
 			PENTITY pRes = pVar;
@@ -120,14 +121,14 @@ PENTITY ExecutionTemplate::Execute(ExecutionContext *pContext)
 			}
 			return pRes;
 		}
-
+        
 		LST_COMMANDPTR::const_iterator ite1 = lst_Commands.begin();
 		LST_COMMANDPTR::const_iterator iteEnd1 = lst_Commands.end();
-		PENTITY pCurr = (*ite1)->Execute(pVar, pContext);
+		PENTITY pCurr = ExecuteCommand(pVar, pContext, *ite1);
 		++ite1;
-		while(ite1 != iteEnd1)
+		while(pCurr && (ite1 != iteEnd1))
 		{
-			PENTITY pNew = (*ite1)->Execute(pCurr, pContext);
+			PENTITY pNew = ExecuteCommand(pCurr, pContext, *ite1);
 			pCurr->Destroy();
 			pCurr = pNew;
 			++ite1;
@@ -155,19 +156,28 @@ PENTITY ExecutionTemplate::Execute(ExecutionContext *pContext)
 		}
 		LST_COMMANDPTR::const_iterator ite1 = lst_Commands.begin();
 		LST_COMMANDPTR::const_iterator iteEnd1 = lst_Commands.end();
-		PENTITY pCurr = (*ite1)->Execute(p_Entity, pContext);
+		PENTITY pCurr = ExecuteCommand(p_Entity, pContext, *ite1);
 		++ite1;
 		while(ite1 != iteEnd1)
 		{
-			PENTITY pNew = (*ite1)->Execute(pCurr, pContext);
+			PENTITY pNew = ExecuteCommand(pCurr, pContext, *ite1);
 			pCurr->Destroy();
 			pCurr = pNew;
 			++ite1;
 		}
 		return pCurr;
 	}
-
+    
 	return 0;
+}
+
+PENTITY ExecutionTemplate::ExecuteCommand(PENTITY entity, ExecutionContext* context, Command* cmd) {
+    PENTITY res = cmd->Execute(entity, context);
+    if (res) {
+        return res;
+    }
+    
+    return SpecialCommandExecuter::inst.ExecuteSpecialCommand(entity, context, cmd);
 }
 
 bool ExecutionTemplate::IsEmpty()

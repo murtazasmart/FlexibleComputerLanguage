@@ -1,0 +1,1 @@
+$RootNode.FilterSubtree($Item.GetValue.IsHavingSubstring(abc)):=Result

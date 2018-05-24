@@ -11,15 +11,15 @@ protected:
 	PENTITY p_Entity;
 	MULONG ul_SpecialCommand;
 	MSTRING s_CodeLine;
-
+    
 public:
 	ExecutionTemplate();
 	~ExecutionTemplate();
-
+    
 	void Destroy();
-
+    
 	ExecutionTemplate* GetCopy();	// override
-
+    
 	void SetStartVarName(MSTRING sName);
 	void AddCommand(Command* pCommand);
 	void SetEntity(PENTITY pEntity);
@@ -31,7 +31,7 @@ public:
 	MSTRING GetCodeLine();
 	PENTITY Execute(ExecutionContext* pContext);
 	bool IsEmpty();
-
+    
 	friend std::ostream& operator << (ExecutionTemplate& et, std::ostream& x)
 	{
 		x << _MSTR(===ExecutionTemplate==\n);
@@ -40,4 +40,7 @@ public:
 		x << _MSTR(\nEntity: ) << et.p_Entity;
         return x;
 	}
+    
+private:
+    PENTITY ExecuteCommand(PENTITY entity, ExecutionContext* context, Command* cmd);
 };

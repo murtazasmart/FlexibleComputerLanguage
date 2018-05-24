@@ -7,12 +7,21 @@
 //
 
 #include <iostream>
+#include "Tests.h"
+#include "TestCaseExecuter.h"
 
 int main(int argc, const char * argv[])
 {
 
     // insert code here...
-    std::cout << "Hello, World!\n";
+    //Tests tt;
+    //tt.RunTest5();
+    
+    TestCaseExecuter tce;
+    TestCaseArgument tca;
+    tca.scriptsFolder = "/Users/dileepaj/Dileepa/WorkDir/FlexibleComputerLanguage/Core/TestCases/files/";
+    tce.ExecuteAllTestCases(&tca);
+    
     return 0;
 }
 

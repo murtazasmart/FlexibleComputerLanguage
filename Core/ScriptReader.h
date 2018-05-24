@@ -44,48 +44,49 @@ class ScriptReader
 		CET_Break,
 		CET_Continue
 	};
-
+    
 	enum SpecialLineType
 	{
 		SLT_Normal,
 		SLT_FuncStart,
 		SLT_FuncEnd
 	};
-
+    
 	class CommandElement
 	{
 	public:
 		CommandElementType e_Type;
 		MSTRING s_Str;
 	};
-
+    
 	typedef std::vector<CommandElement>	VEC_CE;
-
+    
 	class ProcessLineRetVal
 	{
 	public:
 		ExecutionTemplate* p_ET;
 		SpecialLineType slt;
 		MSTRING s_Str;
-
+        
 		ProcessLineRetVal()
-			: p_ET(0), slt(SLT_Normal), s_Str(EMPTY_STRING)
+        : p_ET(0), slt(SLT_Normal), s_Str(EMPTY_STRING)
 		{
-
+            
 		}
 	};
-
+    
 	MetaData* p_MetaData;
 	
 public:
 	bool ProcessScript(MSTRING sFile, MetaData* pMD, ScriptReaderOutput& op);
-
+	bool ProcessScript(MetaData* pMD, ScriptReaderOutput& op, MSTRING code);
 private:
 	void ReadFileToLines(MSTRING sFile, MSTRING sLineContinuation, MSTRING sCommentStart, LST_STR& lstLines, LST_INT& lstLineNumbers);
+	void ReadStringToLines(MSTRING sFile, MSTRING sLineContinuation, MSTRING sCommentStart, LST_STR& lstLines, LST_INT& lstLineNumbers);
 	ProcessLineRetVal ProcessLine(MSTRING sLine, MetaData* pMD);
 	void GetCommandElements(MSTRING sCommand, VEC_CE& vecCE, MetaData* pMD);
 	ExecutionTemplate* GetEntity(VEC_CE& vecCE, VEC_CE::size_type stStart, VEC_CE::size_type stEnd);
-	EntityList* GetList(VEC_CE& vecCE, VEC_CE::size_type stStart, VEC_CE::size_type stEnd);
+    EntityList* GetList(VEC_CE& vecCE, VEC_CE::size_type stStart, VEC_CE::size_type stEnd);
 	Command* GetFunction(VEC_CE& vecCE, VEC_CE::size_type stStart, VEC_CE::size_type stEnd);
 	void GetNextFirstLevelCommandElementPos(VEC_CE& vecCE, VEC_CE::size_type stStart, VEC_CE::size_type stEnd, CommandElementType cet, std::map<CommandElementType, CommandElementType>& mapContextChangeElements, VEC_CE::size_type& stElemPos);
 };

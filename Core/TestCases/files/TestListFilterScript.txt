@@ -1,0 +1,1 @@
+$BigList.Filter($Item.IsHavingSubstring(abc)):=Result

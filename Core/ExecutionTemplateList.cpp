@@ -10,7 +10,7 @@
 void ExecutionTemplateList::Destroy()
 {
 	DestroyCollection(*this);
-
+    
 	MemoryManager::Inst.DeleteObject(this);
 }
 
@@ -25,15 +25,15 @@ void ExecutionTemplateList::Execute(ExecutionContext* pContext)
 	{
 		switch((*ite1)->GetSpecialCommand())
 		{
-		case COMMAND_TYPE_IF:
-		case COMMAND_TYPE_IFNOT:
-		case COMMAND_TYPE_WHILE:
+            case COMMAND_TYPE_IF:
+            case COMMAND_TYPE_IFNOT:
+            case COMMAND_TYPE_WHILE:
 			{
 				stkLoopStart.push(ite1);
 				break;
 			}
-		case COMMAND_TYPE_ENDIF:
-		case COMMAND_TYPE_DO:
+            case COMMAND_TYPE_ENDIF:
+            case COMMAND_TYPE_DO:
 			{
 				ExecutionTemplateList::const_iterator iteStart = stkLoopStart.top();
 				mapLoopStartEnd[iteStart] = ite1;
@@ -43,7 +43,7 @@ void ExecutionTemplateList::Execute(ExecutionContext* pContext)
 			}
 		}
 	}
-
+    
 	STK_FRAMES stkFrames;
 	ite1 = begin();
 	iteEnd1 = end();
@@ -55,7 +55,7 @@ void ExecutionTemplateList::Execute(ExecutionContext* pContext)
 #endif
 		switch((*ite1)->GetSpecialCommand())
 		{
-		case COMMAND_TYPE_IF:
+            case COMMAND_TYPE_IF:
 			{
 				PENTITY pRes = (*ite1)->Execute(pContext);
 				if((0 != (PBool)pRes) && (((PBool)pRes)->GetValue()))
@@ -70,7 +70,7 @@ void ExecutionTemplateList::Execute(ExecutionContext* pContext)
 				}
 				break;
 			}
-		case COMMAND_TYPE_IFNOT:
+            case COMMAND_TYPE_IFNOT:
 			{
 				PENTITY pRes = (*ite1)->Execute(pContext);
 				if((0 != (PBool)pRes) && (((PBool)pRes)->GetValue()))
@@ -85,12 +85,12 @@ void ExecutionTemplateList::Execute(ExecutionContext* pContext)
 				}
 				break;
 			}
-		case COMMAND_TYPE_ENDIF:
+            case COMMAND_TYPE_ENDIF:
 			{
 				++ite1;
 				break;
 			}
-		case COMMAND_TYPE_WHILE:
+            case COMMAND_TYPE_WHILE:
 			{
 				bool bGoInsideWhileLoop = false;
 				if((*ite1)->IsEmpty())
@@ -126,20 +126,20 @@ void ExecutionTemplateList::Execute(ExecutionContext* pContext)
 					{
 						// Frame stack contains a frame for this While loop
 						// Remove the frame and go out of the While loop
-						stkFrames.pop();						
+						stkFrames.pop();
 					}
 					ite1 = (mapLoopStartEnd.find(ite1)->second) + 1;
 				}
 				
 				break;
 			}
-		case COMMAND_TYPE_DO:
+            case COMMAND_TYPE_DO:
 			{
 				// Find the corresponding While statement and move to it
 				ite1 = mapLoopEndStart.find(ite1)->second;
 				break;
 			}
-		case COMMAND_TYPE_BREAK:
+            case COMMAND_TYPE_BREAK:
 			{
 				// Pop the stack
 				// Find the Do element from that frame and move to the statement that just follows it
@@ -147,13 +147,13 @@ void ExecutionTemplateList::Execute(ExecutionContext* pContext)
 				stkFrames.pop();
 				break;
 			}
-		case COMMAND_TYPE_CONTINUE:
+            case COMMAND_TYPE_CONTINUE:
 			{
 				// Read the top frame and move to the corresponding While statement
 				ite1 = stkFrames.top().ite_LoopStart;
 				break;
 			}
-		default:
+            default:
 			{
 				(*ite1)->Execute(pContext);
 				++ite1;

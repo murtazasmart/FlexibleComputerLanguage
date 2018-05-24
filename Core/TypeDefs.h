@@ -26,6 +26,9 @@ class ELBlockElement;
 class ELNodeWrapper;
 class ELLineAnnotationElement;
 class ELLineAnnotation;
+class ELCachedEvaluationResult;
+class ELBlockDetectiveResultElement;
+class String;
 
 #ifndef WIDECHAR
 typedef char				MCHAR;
@@ -33,6 +36,8 @@ typedef std::string			MSTRING;
 typedef std::fstream		MFSTREAM;
 typedef std::ifstream		MIFSTREAM;
 typedef std::ofstream		MOFSTREAM;
+typedef std::ostream        MOSTREAM;
+typedef std::istream        MISTREAM;
 typedef std::stringstream	MSTRINGSTREAM;
 #else
 typedef wchar_t				MCHAR;
@@ -40,6 +45,8 @@ typedef std::wstring		MSTRING;
 typedef std::wfstream		MFSTREAM;
 typedef std::wifstream		MIFSTREAM;
 typedef std::wofstream		MOFSTREAM;
+typedef std::wostream       MOSTREAM;
+typedef std::wistream       MISTREAM;
 typedef std::wstringstream	MSTRINGSTREAM;
 #endif
 
@@ -75,13 +82,15 @@ typedef std::list<MSTRING>	LST_STR;
 typedef std::vector<MSTRING> VEC_STR;
 typedef std::set<MSTRING> SET_STR;
 typedef std::list<int>		LST_INT;
+typedef std::set<int> SET_INT;
+typedef std::set<WIDECHAR> SET_WIDECHAR;
 typedef std::map<int, MSTRING>	MAP_INT_STR;
+typedef std::map<int, int> MAP_INT_INT;
 typedef std::map<MSTRING, MULONG>	MAP_STR_MULONG;
 typedef std::map<MULONG, MSTRING>	MAP_MULONG_STR;
 typedef std::map<MSTRING, PENTITY>		MAP_STR_ENTITYPTR;
 typedef std::list<PENTITY>	LST_ENTITYPTR;
 typedef std::list<PCOMMAND> LST_COMMANDPTR;
-typedef Value<MSTRING, ENTITY_TYPE_STRING> String;
 typedef std::map<MSTRING, ExecutionTemplateList*>	MAP_STR_EXECTMPLIST;
 typedef Int* PInt;
 typedef Bool* PBool;
@@ -92,6 +101,9 @@ typedef std::set<MCHAR>     SET_CHAR;
 typedef std::map<MSTRING, MSTRING>  MAP_STR_STR;
 typedef std::map<MSTRING, ELVariable*>  MAP_STR_ELVAR;
 typedef std::map<MSTRING, WIDECHAR> MAP_STR_WIDECHAR;
+typedef std::vector<int> VEC_INT;
+typedef std::map<WIDESTRING, int> MAP_WIDESTRING_INT;
+typedef std::map<int, std::map<WIDESTRING, int> > MAP_INT_MAP_WIDESTRING_INT;
 
 typedef std::vector<ELVariable*>        VEC_ELVARIABLE;
 typedef std::vector<ELLineTemplate*>    VEC_ELLINETEMPLATE;
@@ -103,6 +115,9 @@ typedef std::map<PNODE, ELNodeWrapper*> MAP_NODE_WRAPPER;
 typedef std::map<WIDECHAR, ELBlockTemplate*> MAP_WIDECHAR_ELBLOCKTEMPLATE;;
 typedef std::vector<ELLineAnnotationElement*> VEC_ELLINEANNOTATIONELEMENT;
 typedef std::vector<ELLineAnnotation*> VEC_ELLINEANNOTATION;
+typedef std::map<WIDECHAR, unsigned long> MAP_CHAR_ULONG;
+typedef std::map<unsigned long, ELCachedEvaluationResult*> MAP_ULONG_CACHED_EVALUATION_RESULT;
+typedef std::vector<ELBlockDetectiveResultElement*> VEC_ELBLOCKDETECTIVE_RESULT_ELEMENT;
 
 #endif
 

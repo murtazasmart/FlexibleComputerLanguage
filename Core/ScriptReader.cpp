@@ -9,18 +9,29 @@
 #include "Value.h"
 #include "Int.h"
 #include "EntityList.h"
+#include "String.h"
 
 bool ScriptReader::ProcessScript(MSTRING sFile, MetaData* pMD, ScriptReaderOutput& op)
 {
 	p_MetaData = pMD;
 	LST_STR lstLines;
 	LST_INT lstLineNumbers;
+    
+    // if there's a code library, load all lines from code library first
+    // these lines should be prepended to the lines read from the script file
+    MSTRING sLoadFromCodeLibrary = pMD->s_LoadFromCodeLibrary;
+    Utils::MakeUpper(sLoadFromCodeLibrary);
+    if ((sLoadFromCodeLibrary == "TRUE") || (sLoadFromCodeLibrary == "YES")) {
+        LST_INT lstLineNumbersDummy;    // line numbers in code library are disregarded
+        ReadFileToLines(pMD->s_CodeLibraryFile, pMD->s_LineContinuation, pMD->s_CommentStart, lstLines, lstLineNumbersDummy);
+    }
+    
 	ReadFileToLines(sFile, pMD->s_LineContinuation, pMD->s_CommentStart, lstLines, lstLineNumbers);
 	if(lstLines.empty())
 	{
 		return false;
 	}
-	
+
 	MemoryManager::Inst.CreateObject(&op.p_ETL);
 	ExecutionTemplateList* pCurrFunction = 0;
 	bool bInsideFunction = false;
@@ -56,11 +67,90 @@ bool ScriptReader::ProcessScript(MSTRING sFile, MetaData* pMD, ScriptReaderOutpu
 			else
 			{
 				op.p_ETL->push_back(ret.p_ET);
-			}			
-		}		
+			}
+		}
 	}
 
 	return true;
+}
+
+bool ScriptReader::ProcessScript(MetaData* pMD, ScriptReaderOutput& op, MSTRING code)
+{
+	p_MetaData = pMD;
+	LST_STR lstLines;
+	LST_INT lstLineNumbers;
+	ReadStringToLines(code, pMD->s_LineContinuation, pMD->s_CommentStart, lstLines, lstLineNumbers);
+	if(lstLines.empty())
+	{
+		return false;
+	}
+
+	MemoryManager::Inst.CreateObject(&op.p_ETL);
+	ExecutionTemplateList* pCurrFunction = 0;
+	bool bInsideFunction = false;
+	LST_STR::const_iterator ite1 = lstLines.begin();
+	LST_STR::const_iterator iteEnd1 = lstLines.end();
+	LST_INT::const_iterator ite2 = lstLineNumbers.begin();
+	for( ; ite1 != iteEnd1; ++ite1, ++ite2)
+	{
+		ScriptReader::ProcessLineRetVal ret = ProcessLine(*ite1, pMD);
+		if(0 != ret.p_ET)
+		{
+			MSTRINGSTREAM sCodeLine;
+			sCodeLine<<*ite2<<_MSTR(:)<<SPACE<<*ite1;
+			ret.p_ET->SetCodeLine(sCodeLine.str());
+		}
+		if(SLT_FuncStart == ret.slt)
+		{
+			MemoryManager::Inst.CreateObject(&pCurrFunction);
+			bInsideFunction = true;
+			op.map_Functions[ret.s_Str] = pCurrFunction;
+		}
+		else if(SLT_FuncEnd == ret.slt)
+		{
+			pCurrFunction = 0;
+			bInsideFunction = false;
+		}
+		else
+		{
+			if(bInsideFunction)
+			{
+				pCurrFunction->push_back(ret.p_ET);
+			}
+			else
+			{
+				op.p_ETL->push_back(ret.p_ET);
+			}
+		}
+	}
+    
+	return true;
+}
+
+void ScriptReader::ReadStringToLines(MSTRING code, MSTRING sLineContinuation, MSTRING sCommentStart, LST_STR& lstLines, LST_INT& lstLineNumbers)
+{
+    MSTRING sCurr = EMPTY_STRING;
+    MINT iLineNo = 0;
+    std::istringstream iss(code);
+    for (MSTRING sLine; std::getline(iss, sLine); ) {
+        ++iLineNo;
+        Utils::TrimLeft(sLine, _MSTR(\t));
+        Utils::TrimRight(sLine, _MSTR(\t));
+        if ((sLine.empty()) || (sCommentStart == sLine.substr(0, sCommentStart.length()))) {
+            continue;
+        }
+        sCurr += sLine;
+        if ((sCurr.length() >= sLineContinuation.length()) && (sLineContinuation ==
+                                                               sCurr.substr(sCurr.length() - sLineContinuation.length(),
+                                                                            sLineContinuation.length()))) {
+            sCurr = sCurr.substr(0, sCurr.length() - sLineContinuation.length());
+        } else {
+            lstLines.push_back(sCurr);
+            lstLineNumbers.push_back(iLineNo);
+            sCurr = EMPTY_STRING;
+        }
+    }
+
 }
 
 void ScriptReader::ReadFileToLines(MSTRING sFile, MSTRING sLineContinuation, MSTRING sCommentStart, LST_STR& lstLines, LST_INT& lstLineNumbers)
@@ -103,7 +193,7 @@ ScriptReader::ProcessLineRetVal ScriptReader::ProcessLine(MSTRING sLine, MetaDat
 	// {, }, (, ), ,, =, .
 	VEC_CE vecCE;
 	GetCommandElements(sLine, vecCE, pMD);
-
+    
 	// Now this command element list needs to be unified with one of the following
 	// 1. Entity
 	// 2. Entity=String
@@ -117,9 +207,9 @@ ScriptReader::ProcessLineRetVal ScriptReader::ProcessLine(MSTRING sLine, MetaDat
 	// 10. Continue
 	// 11. Function=FuncName
 	// 12. EndFunction
-
+    
 	ScriptReader::ProcessLineRetVal ret;
-
+    
 	// case 12
 	if((vecCE.size() == 1) && (vecCE.at(0).e_Type == CET_FunctionEnd))
 	{
@@ -131,11 +221,11 @@ ScriptReader::ProcessLineRetVal ScriptReader::ProcessLine(MSTRING sLine, MetaDat
 		CommandElementType cet = vecCE.front().e_Type;
 		switch(cet)
 		{
-		case CET_EndIf:
-		case CET_While:
-		case CET_Do:
-		case CET_Break:
-		case CET_Continue:
+            case CET_EndIf:
+            case CET_While:
+            case CET_Do:
+            case CET_Break:
+            case CET_Continue:
 			{
 				ExecutionTemplate* pET = 0;
 				MemoryManager::Inst.CreateObject(&pET);
@@ -161,8 +251,6 @@ ScriptReader::ProcessLineRetVal ScriptReader::ProcessLine(MSTRING sLine, MetaDat
 				}
 				ret.p_ET = pET;
 			}
-			break;
-        default:
                 break;
 		}
 	}
@@ -171,7 +259,7 @@ ScriptReader::ProcessLineRetVal ScriptReader::ProcessLine(MSTRING sLine, MetaDat
 	{
 		ret.slt = SLT_FuncStart;
 		ret.s_Str = vecCE.at(2).s_Str;
-	}	
+	}
 	// case 3
 	else if((vecCE.size() >= 4) && (vecCE.at(0).e_Type == CET_If) && (vecCE.at(1).e_Type == CET_ArgStart) && (vecCE.at(vecCE.size() - 1).e_Type == CET_ArgEnd))
 	{
@@ -225,8 +313,8 @@ ScriptReader::ProcessLineRetVal ScriptReader::ProcessLine(MSTRING sLine, MetaDat
 		ExecutionTemplate* pET = GetEntity(vecCE, 0, vecCE.size() - 1);
 		ret.p_ET = pET;
 	}
-
-
+    
+    
 	return ret;
 }
 
@@ -554,7 +642,7 @@ void ScriptReader::GetNextFirstLevelCommandElementPos(VEC_CE& vecCE, VEC_CE::siz
 		mapContextChangeElementsRev[(*ite1).second] = (*ite1).first;
 		mapContextChanges[(*ite1).first] = 0;
 	}
-
+    
 	int iContextChangeCount = 0;
 	VEC_CE::size_type stPos = stStart;
 	while(stPos <= stEnd)
@@ -579,6 +667,6 @@ void ScriptReader::GetNextFirstLevelCommandElementPos(VEC_CE& vecCE, VEC_CE::siz
 		}
 		stPos++;
 	}
-
+    
 	stElemPos = stEnd + 1;
 }

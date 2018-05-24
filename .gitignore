@@ -1,0 +1,7 @@
+# Removes test files
+tests/
+cmake-build-debug/
+.idea
+
+# CMake removed
+CMakeLists.txt

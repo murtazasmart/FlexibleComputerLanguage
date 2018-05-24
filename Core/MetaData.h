@@ -31,23 +31,37 @@ public:
 	MSTRING s_Do;
 	MSTRING s_Break;
 	MSTRING s_Continue;
+    MSTRING s_ListItemVar;
+    
 	MAP_MULONG_STR	map_FuncNames;
 	MAP_STR_MULONG	map_FuncNamesReverse;
     
     // Added for LDEL
     MSTRING s_ScriptFile;
     MSTRING s_LogFile;
+    MSTRING s_ResultFile;
+    MSTRING s_CodeLibraryFile;
+    MSTRING s_LoadFromCodeLibrary;
     MSTRING s_ELAssignment;
     MSTRING s_ELVarPrefix;
     MSTRING s_ELLineTemplatePrefix;
     MSTRING s_ELBlockTemplatePrefix;
     MSTRING s_ELNumber;
+    MSTRING S_ELFormattedNumber;
     MSTRING s_ELString;
     MSTRING s_ELText;
+    MSTRING s_ELTrimmedText;
+    MSTRING s_ELFilePath;
     MSTRING s_ELSpacesString;
     MSTRING s_ELFloat;
+    MSTRING s_ELFormattedFloat;
+    MSTRING s_ELTimestamp;
     MSTRING s_ELVarSequenceStart;
     MSTRING s_ELVarSequenceEnd;
+    MSTRING s_ELVarSuperFlexiSequenceStart;
+    MSTRING s_ELVarSuperFlexiSequenceEnd;
+    MSTRING s_ELVarFlexiSequenceStart;
+    MSTRING s_ELVarFlexiSequenceEnd;
     MSTRING s_ELVarSequenceSeperator;
     MSTRING s_ELStringLiteralStart;
     MSTRING s_ELStringLiteralEnd;
@@ -57,6 +71,18 @@ public:
     MSTRING s_ELSetSeperator;
     MSTRING s_ELSequenceVarStartIndicator;
     MSTRING s_ELSequenceVarSuffix;
+    MSTRING s_ELImportLineStart;
+    MSTRING s_ELImportFileStart;
+    MSTRING s_ELImportFileEnd;
+    MSTRING s_ELIgnoreEmptyLines;
+    MSTRING s_ELIsNumberFormatEuropean;
+    MSTRING s_ELIgnoreText;
+    MSTRING s_ELAnyText;
+    MSTRING s_ELDescriptiveVarEncloserStart;
+    MSTRING s_ELDescriptiveVarEncloderEnd;
+    MSTRING s_ELDescriptiveVarPropertySeparator;
+    MSTRING s_ELDescriptiveVarPropertyAssignment;
+    MSTRING s_ELDescriptiveVarPropertyFormat;
 };
 
 #endif
