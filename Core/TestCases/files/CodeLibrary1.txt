@@ -1,0 +1,95 @@
+Function:=FillDetails
+	$ARG.SeekToBegin
+	$ARG.GetCurrentElement:=ERRORS
+	$ARG.Seek(#1)
+	$ARG.GetCurrentElement:=ERRORNODE
+
+	$ERRORS.Parent.GetChildOfType(#51):=LAYERNAMES
+	$LAYERNAMES.SeekToBegin
+	$LAYERNAMES.GetCurrentElement:=ELEM
+	While($ELEM.IsNotNull)
+		$ERRORNODE.Children:=ENC
+		$ENC.SeekToBegin
+		$ENC.GetCurrentElement:=ELEM2
+		// Create a boolean variable with a initial vaule of TRUE. Following is a hack
+		$ERRORNODE.IsNotNull:=NEWLAYER
+		While($ELEM2.IsNotNull)
+			If($ELEM2.GetCustomString.IsStringEqualTo($ELEM.GetValue))
+				$ELEM2.GetWeight:=WEIGHT
+				$WEIGHT.Add(#1)
+				$ELEM2.SetWeight($WEIGHT)
+				$ERRORNODE.IsNull:=NEWLAYER
+				$ELEM2:=LAYERNODE
+				Break
+			EndIf
+	
+			$ENC.Seek(#1)
+			$ENC.GetCurrentElement:=ELEM2
+		Do
+	
+		If($NEWLAYER)
+			$ERRORNODE.AddNode:=LAYERNODE
+			$LAYERNODE.SetWeight(#1)
+			$LAYERNODE.SetCustomString($ELEM.GetValue)
+		EndIf
+	
+		If($LAYERNODE.IsNotNull)
+			// Add new children containing error information
+			// Time
+			$ELEM.Parent.GetChildOfType(#50):=YNODE
+			$LAYERNODE.AddNode:=TIMENODE
+			$TIMENODE.SetValue($YNODE.GetValue)
+			$TIMENODE.GetValue:=VAL
+			$VAL.AddPrefix(@NEWLINETime : )
+			$VAL.AddPostFix(@NEWLINE)
+			$TIMENODE.SetValue($VAL)
+	
+			// Stop code
+			$ELEM.Parent.GetChildOfType(#52):=YNODE
+			$LAYERNODE.AddNode:=STOPCODENODE
+			$STOPCODENODE.SetValue($YNODE.GetValue)
+			$STOPCODENODE.GetValue:=VAL
+			$VAL.AddPrefix(Stop Code : )
+			$VAL.AddPostFix(@NEWLINE)
+			$STOPCODENODE.SetValue($VAL)
+	
+			// Message
+			$ELEM.Parent.Parent.GetChildOfType(#101):=YNODE
+			$LAYERNODE.AddNode:=MESSAGENODE
+			$MESSAGENODE.SetValue($YNODE.GetValue)
+			$MESSAGENODE.GetValue:=VAL
+			$VAL.AddPrefix(Message : )
+			$VAL.AddPostFix(@NEWLINE)
+			$MESSAGENODE.SetValue($VAL)
+	
+			// Format message
+			$ELEM.Parent.Parent.GetChildOfType(#102):=YNODE
+			$LAYERNODE.AddNode:=FMESSAGENODE
+			$FMESSAGENODE.SetValue($YNODE.GetValue)
+			$FMESSAGENODE.GetValue:=VAL
+			$VAL.AddPrefix(Format Message : )
+			$VAL.AddPostFix(@NEWLINE)
+			$FMESSAGENODE.SetValue($VAL)
+		EndIf
+	
+		$LAYERNAMES.Seek(#1)
+		$LAYERNAMES.GetCurrentElement:=ELEM
+	Do
+	
+	// Add value strings for layer nodes
+	$ERRORNODE.Children:=ENC
+	$ENC.SeekToBegin
+	$ENC.GetCurrentElement:=ELEM2
+	While($ELEM2.IsNotNull)
+		$ELEM2.SetValue($ELEM2.GetCustomString)
+		$ELEM2.GetValue:=VAL
+		$VAL.AddPrefix(@NEWLINE)
+		$VAL.AddPostFix( : )
+		$VAL.AddPostFix($ELEM2.GetWeight.ToString)
+		$VAL.AddPostFix(@NEWLINE======================================================================@NEWLINE)
+		$ELEM2.SetValue($VAL)
+	
+		$ENC.Seek(#1)
+		$ENC.GetCurrentElement:=ELEM2
+	Do
+EndFunction
