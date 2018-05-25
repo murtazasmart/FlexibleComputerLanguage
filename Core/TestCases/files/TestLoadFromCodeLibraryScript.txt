@@ -1,0 +1,145 @@
+// Read the Application Verifer log file
+$X.ReadFromFile(/Users/dileepa/Dileepa/WorkDir/LogAnalyzer/tests/test3/AppVerifierLogUnix)
+
+// First get the xml def line out
+$X.Expand({<?,?>})
+
+// Now there should be two childs for X
+// First one is the xml definition line. Second one is the rest of the text
+$X.Children:=FLC
+$FLC.SeekToBegin
+$FLC.Seek(#1)
+$FLC.GetCurrentElement:=INFO
+$INFO.GetValue:=VAL
+$VAL.TrimLeft
+$VAL.TrimRight
+$INFO.SetValue($VAL)
+$INFO.Expand({<avrf:logfile,</avrf:logfile>,<avrf:logSession,</avrf:logSession>})
+$INFO.Children:=SLC
+$SLC.SeekToBegin
+$SLC.GetCurrentElement:=ELEM
+
+While($ELEM.IsNotNull)
+	If($ELEM.GetLValue.IsStringEqualTo(<avrf:logSession).And($ELEM.GetRValue.IsStringEqualTo(</avrf:logSession>)))
+		$ELEM.GetValue.TrimLeft
+		$ELEM.GetValue.TrimRight
+		$ELEM.Expand({<avrf:logEntry,</avrf:logEntry>})
+		$ELEM.Children:=TLC
+		$TLC.SeekToBegin
+		$TLC.GetCurrentElement:=SESSION
+		$TLC.Seek(#1)
+		$TLC.GetCurrentElement:=ELEM2
+		While($ELEM2.IsNotNull)
+			IfNot($ELEM2.GetLValue.IsStringEqualTo(<avrf:logEntry).And($ELEM2.GetRValue.IsStringEqualTo(</avrf:logEntry>)))
+				$TLC.Seek(#1)
+				$TLC.GetCurrentElement:=ELEM2
+				Continue
+			EndIf
+			$Y.AddNode:=LOGENTRY
+			$ELEM2.Expand({<avrf:message>,</avrf:message>,<avrf:formatmessage>,</avrf:formatmessage>,__
+				<avrf:parameter,</avrf:parameter,<avrf:stackTrace>,</avrf:stackTrace>})
+			$ELEM2.Children:=FOLC
+			$FOLC.SeekToBegin
+			$FOLC.GetCurrentElement:=ELEM3
+			$ELEM3.GetValue:=VAL
+			$VAL.TrimLeft
+			$VAL.TrimRight
+			$ELEM3.SetValue($VAL)
+			$LOGENTRY.AddNode:=LOGENTRYHEADER
+			$LOGENTRYHEADER.SetType(#100)
+			$LOGENTRYHEADER.SetValue($VAL)
+			$ELEM3.Expand({Time=",LayerName=",StopCode=",Severity=","})
+			$ELEM3.Children:=LEHC
+			$LEHC.SeekToBegin
+			$LEHC.GetCurrentElement:=ELEM4
+			While($ELEM4.IsNotNull)
+				If($ELEM4.GetLValue.IsStringEqualTo(Time=").And($ELEM4.GetRValue.IsStringEqualTo(")))
+					$LOGENTRYHEADER.AddNode:=HEADERCHILD
+					$HEADERCHILD.SetType(#50)
+					$HEADERCHILD.SetValue($ELEM4.GetValue)
+				EndIf
+
+				If($ELEM4.GetLValue.IsStringEqualTo(LayerName=").And($ELEM4.GetRValue.IsStringEqualTo(")))
+					$LOGENTRYHEADER.AddNode:=HEADERCHILD
+					$HEADERCHILD.SetType(#51)
+					$HEADERCHILD.SetValue($ELEM4.GetValue)
+				EndIf
+
+				If($ELEM4.GetLValue.IsStringEqualTo(StopCode=").And($ELEM4.GetRValue.IsStringEqualTo(")))
+					$LOGENTRYHEADER.AddNode:=HEADERCHILD
+					$HEADERCHILD.SetType(#52)
+					$HEADERCHILD.SetValue($ELEM4.GetValue)
+				EndIf
+
+				If($ELEM4.GetLValue.IsStringEqualTo(Severity=").And($ELEM4.GetRValue.IsStringEqualTo(")))
+					$LOGENTRYHEADER.AddNode:=HEADERCHILD
+					$HEADERCHILD.SetType(#53)
+					$HEADERCHILD.SetValue($ELEM4.GetValue)
+				EndIf
+
+				$LEHC.Seek(#1)
+				$LEHC.GetCurrentElement:=ELEM4
+			Do
+			$FOLC.Seek(#1)
+			$FOLC.GetCurrentElement:=ELEM3
+			While($ELEM3.IsNotNull)
+				If($ELEM3.GetLValue.IsStringEqualTo(<avrf:message>).And($ELEM3.GetRValue.IsStringEqualTo(</avrf:message>)))
+					$LOGENTRY.AddNode:=MESSAGE
+					$MESSAGE.SetValue($ELEM3.GetValue)
+					$MESSAGE.SetType(#101)
+				EndIf
+
+				If($ELEM3.GetLValue.IsStringEqualTo(<avrf:formatmessage>).And($ELEM3.GetRValue.IsStringEqualTo(</avrf:formatmessage>)))
+					$LOGENTRY.AddNode:=FORMATMESSAGE
+					$FORMATMESSAGE.SetValue($ELEM3.GetValue)
+					$FORMATMESSAGE.SetType(#102)
+				EndIf
+
+				If($ELEM3.GetLValue.IsStringEqualTo(<avrf:parameter).And($ELEM3.GetRValue.IsStringEqualTo(</avrf:parameter)))
+					$LOGENTRY.AddNode:=PARAM
+					$ELEM3.Expand({>})
+					$ELEM3.Children:=FILC
+					$FILC.SeekToBegin
+					$PARAM.SetCustomString($FILC.GetCurrentElement.GetValue)
+					$FILC.Seek(#1)
+					$PARAM.SetValue($FILC.GetCurrentElement.GetValue)
+					$PARAM.SetType(#103)
+				EndIf
+
+				$FOLC.Seek(#1)
+				$FOLC.GetCurrentElement:=ELEM3
+			Do
+
+			$TLC.Seek(#1)
+			$TLC.GetCurrentElement:=ELEM2
+		Do
+	EndIf
+
+	$SLC.Seek(#1)
+	$SLC.GetCurrentElement:=ELEM	
+Do
+
+// Done constructing Y
+
+// Start extracting data from Y and generating the report in Z
+$Y.GetSubtree:=YTREE
+$YTREE.IsType(#53):=SEVERITY
+$SEVERITY.IsValue(Error):=ERRORS
+$SEVERITY.IsValue(Warning):=WARNINGS
+$Z.AddNode:=ERRORNODE
+$Z.AddNode:=WARNINGNODE
+$ERRORS.GetItemCount.ToString:=STR
+$STR.AddPostFix( errors@NEWLINE)
+$ERRORNODE.SetValue($STR)
+$WARNINGS.GetItemCount.ToString:=STR
+$STR.AddPrefix(@NEWLINE)
+$STR.AddPostFix( warnings@NEWLINE)
+$WARNINGNODE.SetValue($STR)
+
+{$ERRORS,$ERRORNODE}:=FUNCARG
+FillDetails($FUNCARG)
+
+{$WARNINGS,$WARNINGNODE}:=FUNCARG
+FillDetails($FUNCARG)
+
+$Z.GetAggregatedValue.WriteToFile(/Users/dileepa/Dileepa/WorkDir/LogAnalyzer/tests/test3/Output/report_Unix_New.txt)
