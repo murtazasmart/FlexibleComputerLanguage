@@ -193,6 +193,10 @@ void DefFileReader::AddKeyAndValue(MetaData* pMD, MSTRING sKey, MSTRING sVal)
 	{
 		pMD->s_IntPrefix = sVal;
 	}
+    else if(_MSTR(STRING_ENCLOSURE_SYMBOL) == sKey)
+    {
+        pMD->s_StringEnclosureSymbol = sVal;
+    }
 	else if(_MSTR(BOOL_TRUE) == sKey)
 	{
 		pMD->s_BoolTrue = sVal;

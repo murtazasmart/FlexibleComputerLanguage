@@ -15,6 +15,7 @@
 #include "TestFilterSubtree.h"
 #include "TestCustomStrFilterShorthand.h"
 #include "TestLoadFromCodeLibrary.h"
+#include "TestStringEnclosure.h"
 
 TestCaseExecuter::TestCaseExecuter() {
     RegisterAllTestCases();
@@ -33,6 +34,7 @@ void TestCaseExecuter::RegisterAllTestCases() {
     RegisterTestCase(_MSTR(TestFilterSubtree), new TestFilterSubtree);
     RegisterTestCase(_MSTR(TestCustomStrFilterShorthand), new TestCustomStrFilterShorthand);
     RegisterTestCase(_MSTR(TestLoadFromCodeLibrary), new TestLoadFromCodeLibrary);
+    RegisterTestCase(_MSTR(TestStringEnclosure), new TestStringEnclosure);
 }
 
 void TestCaseExecuter::ExecuteAllTestCases(TestCaseArgument *arg) {
