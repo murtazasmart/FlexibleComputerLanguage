@@ -1,0 +1,2 @@
+$RootNode.SetLValue("pqrs")
+$RootNode.FilterSubtree($Item.GetValue.IsHavingSubstring("abc")).SetLValue("xyz")
