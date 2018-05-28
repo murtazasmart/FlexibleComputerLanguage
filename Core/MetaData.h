@@ -22,6 +22,7 @@ public:
 	MSTRING s_FuncRet;
 	MSTRING s_VarNamePrefix;
 	MSTRING s_IntPrefix;
+    MSTRING s_StringEnclosureSymbol;
 	MSTRING s_BoolTrue;
 	MSTRING s_BoolFalse;
 	MSTRING s_If;

@@ -320,119 +320,159 @@ ScriptReader::ProcessLineRetVal ScriptReader::ProcessLine(MSTRING sLine, MetaDat
 
 void ScriptReader::GetCommandElements(MSTRING sCommand, VEC_CE& vecCE, MetaData* pMD)
 {
-	LST_STR lstTokens, lstRes;
-	lstTokens.push_back(pMD->s_FuncSeperator);
-	lstTokens.push_back(pMD->s_EqualSign);
-	lstTokens.push_back(pMD->s_ArgumentStart);
-	lstTokens.push_back(pMD->s_ArgumentEnd);
-	lstTokens.push_back(pMD->s_ListStart);
-	lstTokens.push_back(pMD->s_ListEnd);
-	lstTokens.push_back(pMD->s_ListElementSeperator);
-	LST_INT lstTypes;
-	Utils::TokenizeStringBasic(sCommand, lstTokens, lstRes, lstTypes);
-	LST_STR::const_iterator ite1 = lstRes.begin();
-	LST_STR::const_iterator iteEnd1 = lstRes.end();
-	LST_INT::const_iterator ite2 = lstTypes.begin();
-	for( ; ite1 != iteEnd1; ++ite1, ++ite2)
-	{
-		CommandElement ce;
-		if(1 == *ite2)
-		{
-			MSTRING sStr = *ite1;
-			if(Utils::IsStringPrefix(sStr, pMD->s_VarNamePrefix))
-			{
-				ce.e_Type = CET_VarName;
-				ce.s_Str = sStr.substr(pMD->s_VarNamePrefix.length(), sStr.length() - pMD->s_VarNamePrefix.length());
-			}
-			else if(Utils::IsStringPrefix(sStr, pMD->s_IntPrefix))
-			{
-				ce.e_Type = CET_Int;
-				ce.s_Str = sStr.substr(pMD->s_IntPrefix.length(), sStr.length() - pMD->s_IntPrefix.length());
-			}
-			else if(sStr == pMD->s_BoolTrue)
-			{
-				ce.e_Type = CET_BoolTrue;
-			}
-			else if(sStr == pMD->s_BoolFalse)
-			{
-				ce.e_Type = CET_BoolFalse;
-			}
-			else if(sStr == pMD->s_If)
-			{
-				ce.e_Type = CET_If;
-			}
-			else if(sStr == pMD->s_IfNot)
-			{
-				ce.e_Type = CET_IfNot;
-			}
-			else if(sStr == pMD->s_EndIf)
-			{
-				ce.e_Type = CET_EndIf;
-			}
-			else if(sStr == pMD->s_While)
-			{
-				ce.e_Type = CET_While;
-			}
-			else if(sStr == pMD->s_Do)
-			{
-				ce.e_Type = CET_Do;
-			}
-			else if(sStr == pMD->s_Break)
-			{
-				ce.e_Type = CET_Break;
-			}
-			else if(sStr == pMD->s_Continue)
-			{
-				ce.e_Type = CET_Continue;
-			}
-			else if(sStr == pMD->s_FuncStart)
-			{
-				ce.e_Type = CET_FunctionStart;
-			}
-			else if(sStr == pMD->s_FuncEnd)
-			{
-				ce.e_Type = CET_FunctionEnd;
-			}
-			else
-			{
-				ce.e_Type = CET_String;
-				Utils::ReplaceSpecialCharacters(sStr);
-				ce.s_Str = sStr;
-			}
-		}
-		else if(2 == *ite2)
-		{
-			if(*ite1 == pMD->s_FuncSeperator)
-			{
-				ce.e_Type = CET_FuncStart;
-			}
-			else if(*ite1 == pMD->s_EqualSign)
-			{
-				ce.e_Type = CET_EqualSign;
-			}
-			else if(*ite1 == pMD->s_ArgumentStart)
-			{
-				ce.e_Type = CET_ArgStart;
-			}
-			else if(*ite1 == pMD->s_ArgumentEnd)
-			{
-				ce.e_Type = CET_ArgEnd;
-			}
-			else if(*ite1 == pMD->s_ListStart)
-			{
-				ce.e_Type = CET_ListStart;
-			}
-			else if(*ite1 == pMD->s_ListEnd)
-			{
-				ce.e_Type = CET_ListEnd;
-			}
-			else if(*ite1 == pMD->s_ListElementSeperator)
-			{
-				ce.e_Type = CET_ListElemSep;
-			}
-		}
-		vecCE.push_back(ce);
-	}
+    // First identify strings in the line
+    LST_STR lstStringEnclosureSymbol, lstHighLevel;
+    LST_INT lstTp;
+    if (pMD->s_StringEnclosureSymbol.empty())
+    {
+        lstHighLevel.push_back(sCommand);
+        lstTp.push_back(1);
+    }
+    else
+    {
+        lstStringEnclosureSymbol.push_back(pMD->s_StringEnclosureSymbol);
+        Utils::TokenizeStringBasic(sCommand, lstStringEnclosureSymbol, lstHighLevel, lstTp);
+    }
+    
+    LST_STR::const_iterator ite = lstHighLevel.begin();
+    LST_STR::const_iterator iteEnd = lstHighLevel.end();
+    LST_INT::const_iterator iteTypes = lstTp.begin();
+    bool bStringOn = false;
+    for ( ; ite != iteEnd; ++ite, ++iteTypes)
+    {
+        if (1 == *iteTypes)
+        {
+            if (bStringOn)
+            {
+                // Current component has to be taken as a string value
+                CommandElement ce;
+                ce.e_Type = CET_String;
+                MSTRING str = *ite;
+                Utils::ReplaceSpecialCharacters(str);
+                ce.s_Str = str;
+                vecCE.push_back(ce);
+            } else {
+                LST_STR lstTokens, lstRes;
+                lstTokens.push_back(pMD->s_FuncSeperator);
+                lstTokens.push_back(pMD->s_EqualSign);
+                lstTokens.push_back(pMD->s_ArgumentStart);
+                lstTokens.push_back(pMD->s_ArgumentEnd);
+                lstTokens.push_back(pMD->s_ListStart);
+                lstTokens.push_back(pMD->s_ListEnd);
+                lstTokens.push_back(pMD->s_ListElementSeperator);
+                LST_INT lstTypes;
+                MSTRING sCommandPart = *ite;
+                Utils::TokenizeStringBasic(sCommandPart, lstTokens, lstRes, lstTypes);
+                LST_STR::const_iterator ite1 = lstRes.begin();
+                LST_STR::const_iterator iteEnd1 = lstRes.end();
+                LST_INT::const_iterator ite2 = lstTypes.begin();
+                for( ; ite1 != iteEnd1; ++ite1, ++ite2)
+                {
+                    CommandElement ce;
+                    if(1 == *ite2)
+                    {
+                        MSTRING sStr = *ite1;
+                        if(Utils::IsStringPrefix(sStr, pMD->s_VarNamePrefix))
+                        {
+                            ce.e_Type = CET_VarName;
+                            ce.s_Str = sStr.substr(pMD->s_VarNamePrefix.length(), sStr.length() - pMD->s_VarNamePrefix.length());
+                        }
+                        else if(Utils::IsStringPrefix(sStr, pMD->s_IntPrefix))
+                        {
+                            ce.e_Type = CET_Int;
+                            ce.s_Str = sStr.substr(pMD->s_IntPrefix.length(), sStr.length() - pMD->s_IntPrefix.length());
+                        }
+                        else if(sStr == pMD->s_BoolTrue)
+                        {
+                            ce.e_Type = CET_BoolTrue;
+                        }
+                        else if(sStr == pMD->s_BoolFalse)
+                        {
+                            ce.e_Type = CET_BoolFalse;
+                        }
+                        else if(sStr == pMD->s_If)
+                        {
+                            ce.e_Type = CET_If;
+                        }
+                        else if(sStr == pMD->s_IfNot)
+                        {
+                            ce.e_Type = CET_IfNot;
+                        }
+                        else if(sStr == pMD->s_EndIf)
+                        {
+                            ce.e_Type = CET_EndIf;
+                        }
+                        else if(sStr == pMD->s_While)
+                        {
+                            ce.e_Type = CET_While;
+                        }
+                        else if(sStr == pMD->s_Do)
+                        {
+                            ce.e_Type = CET_Do;
+                        }
+                        else if(sStr == pMD->s_Break)
+                        {
+                            ce.e_Type = CET_Break;
+                        }
+                        else if(sStr == pMD->s_Continue)
+                        {
+                            ce.e_Type = CET_Continue;
+                        }
+                        else if(sStr == pMD->s_FuncStart)
+                        {
+                            ce.e_Type = CET_FunctionStart;
+                        }
+                        else if(sStr == pMD->s_FuncEnd)
+                        {
+                            ce.e_Type = CET_FunctionEnd;
+                        }
+                        else
+                        {
+                            ce.e_Type = CET_String;
+                            Utils::ReplaceSpecialCharacters(sStr);
+                            ce.s_Str = sStr;
+                        }
+                    }
+                    else if(2 == *ite2)
+                    {
+                        if(*ite1 == pMD->s_FuncSeperator)
+                        {
+                            ce.e_Type = CET_FuncStart;
+                        }
+                        else if(*ite1 == pMD->s_EqualSign)
+                        {
+                            ce.e_Type = CET_EqualSign;
+                        }
+                        else if(*ite1 == pMD->s_ArgumentStart)
+                        {
+                            ce.e_Type = CET_ArgStart;
+                        }
+                        else if(*ite1 == pMD->s_ArgumentEnd)
+                        {
+                            ce.e_Type = CET_ArgEnd;
+                        }
+                        else if(*ite1 == pMD->s_ListStart)
+                        {
+                            ce.e_Type = CET_ListStart;
+                        }
+                        else if(*ite1 == pMD->s_ListEnd)
+                        {
+                            ce.e_Type = CET_ListEnd;
+                        }
+                        else if(*ite1 == pMD->s_ListElementSeperator)
+                        {
+                            ce.e_Type = CET_ListElemSep;
+                        }
+                    }
+                    vecCE.push_back(ce);
+                }
+            }
+        }
+        else if(2 == *iteTypes)
+        {
+            bStringOn = !bStringOn;
+        }
+    }
 }
 
 ExecutionTemplate* ScriptReader::GetEntity(VEC_CE& vecCE, VEC_CE::size_type stStart, VEC_CE::size_type stEnd)

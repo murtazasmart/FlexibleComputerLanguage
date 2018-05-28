@@ -34,6 +34,7 @@
 		3AB047DA20A1D3F700AE312D /* StringOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AB047C820A1D3F700AE312D /* StringOperations.cpp */; };
 		3AB047DB20A1D3F700AE312D /* Tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AB047CA20A1D3F700AE312D /* Tests.cpp */; };
 		3AB047DC20A1D3F700AE312D /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AB047CD20A1D3F700AE312D /* Utils.cpp */; };
+		3AB1A8A120B9690500DEDF6D /* TestStringEnclosure.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AB1A89F20B9690500DEDF6D /* TestStringEnclosure.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -127,6 +128,8 @@
 		3AB047CD20A1D3F700AE312D /* Utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Utils.cpp; sourceTree = "<group>"; };
 		3AB047CE20A1D3F700AE312D /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
 		3AB047CF20A1D3F700AE312D /* Value.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Value.h; sourceTree = "<group>"; };
+		3AB1A89F20B9690500DEDF6D /* TestStringEnclosure.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestStringEnclosure.cpp; sourceTree = "<group>"; };
+		3AB1A8A020B9690500DEDF6D /* TestStringEnclosure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestStringEnclosure.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -165,6 +168,8 @@
 				3A33966220B679840019F245 /* TestTestCase.h */,
 				3A33966C20B6A77A0019F245 /* TestLoadFromCodeLibrary.cpp */,
 				3A33966D20B6A77A0019F245 /* TestLoadFromCodeLibrary.h */,
+				3AB1A89F20B9690500DEDF6D /* TestStringEnclosure.cpp */,
+				3AB1A8A020B9690500DEDF6D /* TestStringEnclosure.h */,
 			);
 			path = TestCases;
 			sourceTree = "<group>";
@@ -338,6 +343,7 @@
 				3AB047D020A1D3F700AE312D /* Bool.cpp in Sources */,
 				3A33966B20B679840019F245 /* TestTestCase.cpp in Sources */,
 				3A33966920B679840019F245 /* TestListInnerCount.cpp in Sources */,
+				3AB1A8A120B9690500DEDF6D /* TestStringEnclosure.cpp in Sources */,
 				3A33966A20B679840019F245 /* TestListInnerCountWithScript.cpp in Sources */,
 				3AB047D820A1D3F700AE312D /* Node.cpp in Sources */,
 			);
