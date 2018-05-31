@@ -33,6 +33,7 @@ private:
 	PENTITY ExecuteBoolCommand(MULONG ulCommand, PENTITY pEntity, PENTITY pArg);
 	PENTITY ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, ExecutionContext* pContext);
 	PENTITY ExecuteEntityCommand(MULONG ulCommand, PENTITY pEntity, PENTITY pArg);
+    PENTITY ExecuteDateTimeCommand(MULONG ulCommand, PENTITY pEntity, PENTITY pArg);
 	void	AddSubtreeToNodeList(PENTITYLIST pList, PNODE pRoot);
     void    FilterSubTree(PNODE root, ExecutionTemplate* arg, ExecutionContext* context, PENTITYLIST resultList);
 };

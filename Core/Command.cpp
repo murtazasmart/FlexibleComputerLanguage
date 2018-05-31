@@ -1,10 +1,11 @@
-#include "Command.h"
+    #include "Command.h"
 #include "Entity.h"
 #include "ExecutionContext.h"
 #include "ExecutionTemplate.h"
 #include "Node.h"
 #include "Value.h"
 #include "Int.h"
+#include "DateTime.h"
 #include "EntityList.h"
 #include "MemMan.h"
 #include "Null.h"
@@ -12,6 +13,7 @@
 #include "AdditionalFunctions.h"
 #include "Bool.h"
 #include "MetaData.h"
+#include "DateTimeOperations.h"
 
 
 Command::Command()
@@ -199,6 +201,10 @@ PENTITY Command::ExecuteEntityCommand(MULONG ulCommand, PENTITY pEntity, PENTITY
 		{
 			return ExecuteBoolCommand(ulCommand, pEntity, pArg);
 		}
+        case ENTITY_TYPE_DATETIME:
+        {
+            return ExecuteDateTimeCommand(ulCommand, pEntity, pArg);
+        }
 	}
 	return 0;
 }
@@ -407,6 +413,7 @@ PENTITY Command::ExecuteStringCommand(MULONG ulCommand, PENTITY pEntity, PENTITY
 	PInt pIntRes = 0;
 	PNull pNullRes = 0;
 	PBool pBoolRes = 0;
+    PString pStrRes = 0;
     
 	switch(ulCommand)
 	{
@@ -532,6 +539,70 @@ PENTITY Command::ExecuteStringCommand(MULONG ulCommand, PENTITY pEntity, PENTITY
 			pIntRes->SetValue(pString->GetValue().length());
 			break;
 		}
+        case COMMAND_TYPE_SECONDS_TO_MONTHS:
+        {
+            MemoryManager::Inst.CreateObject(&pStrRes);
+            if (pString->GetValue() != "")
+            {
+                pStrRes->SetValue(std::to_string(DateTimeOperations::SecondsToMonths(stol(pString->ToString()))));
+            }
+            break;
+        }
+        case COMMAND_TYPE_SECONDS_TO_DAYS:
+        {
+            MemoryManager::Inst.CreateObject(&pStrRes);
+            if (pString->GetValue() != "")
+            {
+                pStrRes->SetValue(std::to_string(DateTimeOperations::SecondsToDays(stol(pString->ToString()))));
+            }
+            break;
+        }
+        case COMMAND_TYPE_SECONDS_TO_YEARS:
+        {
+            MemoryManager::Inst.CreateObject(&pStrRes);
+            if (pString->GetValue() != "")
+            {
+                pStrRes->SetValue(std::to_string(DateTimeOperations::SecondsToYears(stol(pString->ToString()))));
+            }
+            break;
+        }
+        case COMMAND_TYPE_GET_DIFFERENCE_BY_STRING:
+        {
+            MemoryManager::Inst.CreateObject(&pStrRes);
+            if (pString->GetValue() != "")
+            {
+                String* pStrArg = (String*)pArg;
+                pStrRes->SetValue(std::to_string(DateTimeOperations::GetDifferenceByString(pString->ToString(), pStrArg->ToString())));
+            }
+            break;
+        }
+        case COMMAND_TYPE_STRING_TO_READABLE_DATETIME:
+        {
+            MemoryManager::Inst.CreateObject(&pStrRes);
+            if (pString->GetValue() != "")
+            {
+                pStrRes->SetValue(DateTimeOperations::StringToReadable(pString->ToString()));
+            }
+            break;
+        }
+        case COMMAND_TYPE_DATE_NOW:
+        {
+            MemoryManager::Inst.CreateObject(&pStrRes);
+            if (pString->GetValue() != "")
+            {
+                pStrRes->SetValue(std::to_string(DateTimeOperations::GetDateNow()));
+            }
+            break;
+        }
+        case COMMAND_TYPE_STRING_TO_UNIX_TIME:
+        {
+            MemoryManager::Inst.CreateObject(&pStrRes);
+            if (pString->GetValue() != "")
+            {
+                pStrRes->SetValue(std::to_string(DateTimeOperations::StringToUnix(pString->ToString())));
+            }
+            break;
+        }
         case COMMAND_TYPE_STRINGTOINTEGER:
 		{
 			MemoryManager::Inst.CreateObject(&pIntRes);
@@ -572,8 +643,86 @@ PENTITY Command::ExecuteStringCommand(MULONG ulCommand, PENTITY pEntity, PENTITY
 	if(0 != pBoolRes)
 	{
 		return pBoolRes;
-	}
+    }
+    if(0 != pStrRes)
+    {
+        return pStrRes;
+    }
+    
 	return 0;
+}
+
+PENTITY Command::ExecuteDateTimeCommand(MULONG ulCommand, PENTITY pEntity, PENTITY pArg)
+{
+    PDateTime pDateTime = (PDateTime)pEntity;
+    if(0 == pDateTime)
+    {
+        return 0;
+    }
+    
+    PInt pIntRes = 0;
+    PNull pNullRes = 0;
+    PBool pBoolRes = 0;
+    PString pStrRes = 0;
+    PDateTime pDateTimeRes = 0;
+    
+//    switch(ulCommand)
+//    {
+//        case COMMAND_TYPE_DATETOSTRING:
+//        {
+//            MemoryManager::Inst.CreateObject(&pStrRes);
+//            if (pDateTime->GetValue() != "")
+//            {
+//                //TODO
+//            }
+//        }
+//        case COMMAND_TYPE_STRINGTODATE:
+//        {
+//            MemoryManager::Inst.CreateObject(&pStrRes);
+//            if (pDateTime->GetValue() != "")
+//            {
+//                //TODO
+//            }
+//        }
+//        case COMMAND_TYPE_DATEDIFFERENCE:
+//        {
+//            MemoryManager::Inst.CreateObject(&pStrRes);
+//            if (pDateTime->GetValue() != "")
+//            {
+//                //TODO
+//            }
+//        }
+//        case COMMAND_TYPE_DATENOW:
+//        {
+//            MemoryManager::Inst.CreateObject(&pStrRes);
+//            if (pDateTime->GetValue() != "")
+//            {
+//                //TODO
+//            }
+//        }
+//    }
+    
+    if(0 != pIntRes)
+    {
+        return pIntRes;
+    }
+    if(0 != pNullRes)
+    {
+        return pNullRes;
+    }
+    if(0 != pBoolRes)
+    {
+        return pBoolRes;
+    }
+    if(0 != pStrRes)
+    {
+        return pStrRes;
+    }
+    if(0 != pDateTimeRes)
+    {
+        return pDateTimeRes;
+    }
+    return 0;
 }
 
 PENTITY Command::ExecuteNodeCommand(MULONG ulCommand, PENTITY pEntity, ExecutionContext* pContext)
@@ -590,6 +739,7 @@ PENTITY Command::ExecuteNodeCommand(MULONG ulCommand, PENTITY pEntity, Execution
 	PENTITYLIST pNodeListRes = 0;
 	PNull pNullRes = 0;
 	PBool pBoolRes = 0;
+    PENTITY pEntityRes = 0;
     
     // first handle the commands that would need to access the execution context
     if (COMMAND_TYPE_FILTER_SUBTREE == ulCommand) {
@@ -886,6 +1036,23 @@ PENTITY Command::ExecuteNodeCommand(MULONG ulCommand, PENTITY pEntity, Execution
                 pStrRes->SetValue(pNode->GetAggregatedValue());
                 break;
             }
+            case COMMAND_TYPE_GET_ENTITY_OBJECT:
+            {
+                pEntityRes = (pNode->GetEntityObj());
+                break;
+            }
+            case COMMAND_TYPE_SET_ENTITY_OBJECT:
+            {
+                if(ENTITY_TYPE == pArg->ul_Type)
+                {
+                    Entity* pEntityArg = (Entity*)pArg;
+                    if(0 != pEntityArg)
+                    {
+                        pNode->SetEntityObj(pEntityArg);
+                    }
+                }
+                break;
+            }
             case COMMAND_TYPE_GET_SUBTREE:
             {
                 MemoryManager::Inst.CreateObject(&pNodeListRes);
@@ -981,6 +1148,10 @@ PENTITY Command::ExecuteNodeCommand(MULONG ulCommand, PENTITY pEntity, Execution
 	{
 		return pNodeRes;
 	}
+    if(0 != pEntityRes)
+    {
+        return pEntityRes;
+    }
 	if(0 != pNodeListRes)
 	{
 		return pNodeListRes;

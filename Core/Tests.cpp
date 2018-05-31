@@ -11,7 +11,7 @@
 void Tests::RunTest1()
 {
 	DefFileReader dfr;
-	MetaData* pMD = dfr.Read("D:\\99X\\Backend\\FlexibleComputerLanguage\\tests\\test1\\Defs.txt");
+	MetaData* pMD = dfr.Read("/Users/MurtazaA/99X/Backend/MurtazaQLVersion/FlexibleComputerLanguage/tests/test1/Defs.txt");
 	ScriptReader sr;
 	ScriptReaderOutput op;
 	bool bSucc = sr.ProcessScript(pMD->s_RuleFileName, pMD, op);
@@ -59,7 +59,7 @@ void Tests::RunTest2()
 void Tests::RunTest3()
 {
 	DefFileReader dfr;
-	MetaData* pMD = dfr.Read("/Users/dileepa/Dileepa/WorkDir/LogAnalyzer/tests/test3/Defs.txt");
+	MetaData* pMD = dfr.Read("/Users/MurtazaA/99X/Backend/MurtazaQLVersion/FlexibleComputerLanguage/tests/test3/Defs.txt");
 	ScriptReader sr;
 	ScriptReaderOutput op;
 	bool bSucc = sr.ProcessScript(pMD->s_RuleFileName, pMD, op);
@@ -86,10 +86,10 @@ void Tests::RunTest3()
 void Tests::RunTest4()
 {
 	DefFileReader dfr;
-	MetaData* pMD = dfr.Read("D:\\99X\\Backend\\FlexibleComputerLanguage\\tests\\test5\\Defs.txt");
+	MetaData* pMD = dfr.Read("/Users/MurtazaA/99X/Backend/MurtazaQLVersion/FlexibleComputerLanguage/tests/test5/Defs.txt");
 	ScriptReader sr;
 	ScriptReaderOutput op;
-	bool bSucc = sr.ProcessScript(pMD, op, "$X.GetAggregatedValue.WriteToFile(D:\\99X\\Backend\\FlexibleComputerLanguage\\FlexibleComputerLanguage/report_Unix)");
+	bool bSucc = sr.ProcessScript(pMD, op, "$X.GetAggregatedValue.WriteToFile(/Users/MurtazaA/99X/Backend/MurtazaQLVersion/FlexibleComputerLanguage/FlexibleComputerLanguage/report_Unix)");
 	if(!bSucc)
 	{
 		std::wcout<<"\nFailed to read script\n";
@@ -107,7 +107,7 @@ void Tests::RunTest4()
 void Tests::RunTest5()
 {
 	DefFileReader dfr;
-	MetaData* pMD = dfr.Read("/Users/dileepaj/Dileepa/WorkDir/LogAnalyzer/tests/test5/Defs.txt");
+	MetaData* pMD = dfr.Read("/Users/MurtazaA/99X/Backend/MurtazaQLVersion/FlexibleComputerLanguage/tests/test5/Defs.txt");
 	ScriptReader sr;
 	ScriptReaderOutput op;
 	bool bSucc = sr.ProcessScript(pMD->s_RuleFileName, pMD, op);

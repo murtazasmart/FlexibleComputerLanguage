@@ -10,6 +10,7 @@
 #include "Int.h"
 #include "EntityList.h"
 #include "String.h"
+#include "DateTime.h"
 
 bool ScriptReader::ProcessScript(MSTRING sFile, MetaData* pMD, ScriptReaderOutput& op)
 {

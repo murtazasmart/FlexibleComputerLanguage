@@ -126,6 +126,10 @@ PVOID Node::GetCustomObj() {
     return p_CustomObj;
 }
 
+PENTITY Node::GetEntityObj() {
+    return p_EntityObj;
+}
+
 /*!
  * Creates and outputs a string that is constructed by concatenating all the string values of the nodes
  * in the subtree
@@ -276,6 +280,10 @@ void Node::SetMaximumChildWeight(MULONG ulMaxChildWeight)
 
 void Node::SetCustomObj(PVOID obj) {
     p_CustomObj = obj;
+}
+
+void Node::SetEntityObj(PENTITY obj) {
+    p_EntityObj = obj;
 }
 
 void Node::Expand(LST_STR& lstTokens)

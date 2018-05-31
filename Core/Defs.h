@@ -682,6 +682,8 @@
 #define		COMMAND_TYPE_GET_CHILD_NODE_BY_CUSTOM_STRING				56
 #define		COMMAND_TYPE_SET_ID											57
 #define     COMMAND_TYPE_FILTER_SUBTREE                                 58
+#define     COMMAND_TYPE_GET_ENTITY_OBJECT                              59
+#define     COMMAND_TYPE_SET_ENTITY_OBJECT                              60
 
 // String commands
 #define		COMMAND_TYPE_IS_STRING_EQUAL_TO								1000
@@ -696,6 +698,13 @@
 #define		COMMAND_TYPE_WRITE_TO_FILE									1104
 #define		COMMAND_TYPE_GET_LENGTH										1200
 #define		COMMAND_TYPE_STRINGTOINTEGER								1201
+#define     COMMAND_TYPE_SECONDS_TO_MONTHS                              8001
+#define     COMMAND_TYPE_SECONDS_TO_DAYS                                8002
+#define     COMMAND_TYPE_SECONDS_TO_YEARS                               8003
+#define     COMMAND_TYPE_GET_DIFFERENCE_BY_STRING                       8004
+#define     COMMAND_TYPE_STRING_TO_READABLE_DATETIME                    8005
+#define     COMMAND_TYPE_DATE_NOW                                       8006
+#define     COMMAND_TYPE_STRING_TO_UNIX_TIME                            8007
 
 // Int Commands
 #define		COMMAND_TYPE_IS_INT_EQUAL_TO								2000
@@ -712,6 +721,10 @@
 #define		COMMAND_TYPE_BOOL_AND										4000
 #define		COMMAND_TYPE_BOOL_OR										4001
 #define		COMMAND_TYPE_BOOLTOSTRING									4002
+
+// DateTime Commands
+#define     COMMAND_TYPE_DATETOSTRING                                   8000
+
 
 // List commands
 #define		COMMAND_TYPE_GET_ITEM_COUNT									5000
@@ -747,6 +760,8 @@
 #define		ENTITY_TYPE_BOOL											4
 #define		ENTITY_TYPE_LIST											5
 #define		ENTITY_TYPE_EXECUTION_TEMPLATE								6
+#define     ENTITY_TYPE                                                 7
+#define     ENTITY_TYPE_DATETIME                                        8
 #define		ENTITY_TYPE_INVALID											100
 
 // Parser priority levels for LDEL variable types
