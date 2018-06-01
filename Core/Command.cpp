@@ -1147,6 +1147,19 @@ PENTITY Command::ExecuteNodeCommand(MULONG ulCommand, PENTITY pEntity, Execution
             {
                 MemoryManager::Inst.CreateObject(&pBoolRes);
                 pBoolRes->SetValue(!pNode->IsNull());
+                break;
+            }
+            case COMMAND_TYPE_GET_STRING:
+            {
+                MemoryManager::Inst.CreateObject(&pStrRes);
+                pStrRes->SetValue("");
+                break;
+            }
+            case COMMAND_TYPE_GET_INTEGER:
+            {
+                MemoryManager::Inst.CreateObject(&pIntRes);
+                pIntRes->SetValue(0);
+                break;
             }
         }
     }

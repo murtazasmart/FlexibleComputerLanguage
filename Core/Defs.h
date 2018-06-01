@@ -685,6 +685,8 @@
 #define     COMMAND_TYPE_GET_ENTITY_OBJECT                              59
 #define     COMMAND_TYPE_SET_ENTITY_OBJECT                              60
 #define     COMMAND_TYPE_CHECK_NOT_NULL                                 61
+#define     COMMAND_TYPE_GET_STRING                                     62
+#define     COMMAND_TYPE_GET_INTEGER                                    63
 
 // String commands
 #define		COMMAND_TYPE_IS_STRING_EQUAL_TO								1000
