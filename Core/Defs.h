@@ -684,6 +684,7 @@
 #define     COMMAND_TYPE_FILTER_SUBTREE                                 58
 #define     COMMAND_TYPE_GET_ENTITY_OBJECT                              59
 #define     COMMAND_TYPE_SET_ENTITY_OBJECT                              60
+#define     COMMAND_TYPE_CHECK_NOT_NULL                                 61
 
 // String commands
 #define		COMMAND_TYPE_IS_STRING_EQUAL_TO								1000
@@ -736,6 +737,8 @@
 #define     COMMAND_TYPE_LIST_FILTER                                    5006
 #define     COMMAND_TYPE_LIST_GROUPBY                                   5007
 #define     COMMAND_TYPE_LIST_GROUP_SEQUENCE_BY                         5008
+#define     COMMAND_TYPE_GET_NEXT_ELEM                                  5009
+#define     COMMAND_TYPE_GET_UNIQUE_NODE_LIST_WITH_COUNT                5010
 
 // Special Commands
 #define		COMMAND_TYPE_ADDITIONAL_FUNCTION							10000

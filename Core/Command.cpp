@@ -14,6 +14,9 @@
 #include "Bool.h"
 #include "MetaData.h"
 #include "DateTimeOperations.h"
+#include <set>
+#include <algorithm>
+#include <functional>
 
 
 Command::Command()
@@ -89,6 +92,7 @@ MSTRING Command::GetAdditionalFuncName() {
 
 PENTITY Command::Execute(PENTITY pEntity, ExecutionContext* pContext)
 {
+    
 	if(COMMAND_TYPE_ADDITIONAL_FUNCTION == ul_CommandType)
 	{
 		// Additional function can be defined either in the control code or inside the script
@@ -1139,6 +1143,11 @@ PENTITY Command::ExecuteNodeCommand(MULONG ulCommand, PENTITY pEntity, Execution
                 }
                 break;
             }
+            case COMMAND_TYPE_CHECK_NOT_NULL:
+            {
+                MemoryManager::Inst.CreateObject(&pBoolRes);
+                pBoolRes->SetValue(!pNode->IsNull());
+            }
         }
     }
     
@@ -1258,6 +1267,60 @@ PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, Execution
             pListRes->push_back(ite2->second);
         }
     }
+    else if(COMMAND_TYPE_GET_UNIQUE_NODE_LIST_WITH_COUNT == ulCommand)
+    {
+        // ONLY FOR NODE LIST
+        MemoryManager::Inst.CreateObject(&pListRes);
+        pEntityList->SeekToBegin();
+        PNODE currNode = (PNODE)pEntityList->GetCurrElem();
+        std::map<std::string, int> uniqueMap;
+        while(currNode != 0)
+        {
+            std::string str;
+            str.assign(currNode->GetValue());
+            if (uniqueMap[str] == 0)
+            {
+                uniqueMap[str] = 1;
+            }
+            else
+            {
+                uniqueMap[str] = uniqueMap[str] + 1;
+            }
+            pEntityList->Seek(1, false);
+            currNode = (PNODE)pEntityList->GetCurrElem();
+        }
+        
+//        // Declaring the type of Predicate that accepts 2 pairs and return a bool
+//        typedef std::function<bool(std::pair<std::string, int>, std::pair<std::string, int>)> Comparator;
+//
+//        // Defining a lambda function to compare two pairs. It will compare two pairs using second field
+//        Comparator compFunctor =
+//        [](std::pair<std::string, int> elem1 ,std::pair<std::string, int> elem2)
+//        {
+//            return elem1.second > elem2.second;
+//        };
+//
+//        // Declaring a set that will store the pairs using above comparision logic
+//        std::set<std::pair<std::string, int>, Comparator> setOfWords(
+//                                                                     uniqueMap.begin(), uniqueMap.end(), compFunctor);
+//
+//
+//
+//        for (std::pair<std::string, int> element : setOfWords)
+//            std::cout << element.first << " :: " << element.second << '\n';
+//        auto a = std::max_element(uniqueMap.begin(), uniqueMap.end(),
+//                                  [](const std::pair<int, int>& p1, const std::pair<int, int>& p2) {
+//                                      return p1.second < p2.second; });
+//        std::cout << a->first << a->second ;
+//        PNODE maxItem = 0;
+        for (auto const& x : uniqueMap)
+        {
+            PNODE item = MemoryManager::Inst.CreateNode(999);
+            item->SetValue((char *)x.first.c_str());
+            item->SetLValue((char *)std::to_string(x.second).c_str());
+            pListRes->push_back(item);
+        }
+    }
     else if(COMMAND_TYPE_LIST_GROUP_SEQUENCE_BY == ulCommand)
     {
         bool firstKeyDetected = false;
@@ -1327,6 +1390,28 @@ PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, Execution
 			MemoryManager::Inst.CreateObject(&pNullRes);
 		}
 	}
+    else if (COMMAND_TYPE_GET_NEXT_ELEM == ulCommand)
+    {
+        pEntityList->Seek(1, false);
+        PENTITY pEntity = pEntityList->GetCurrElem();
+        if(0 != pEntity)
+        {
+            // If the entity is not a node then it will be deleted immediately after use.
+            // Therefore we need to get a copy.
+            if(ENTITY_TYPE_NODE != pEntity->ul_Type)
+            {
+                pEntityRes = pEntity->GetCopy();
+            }
+            else
+            {
+                pEntityRes = pEntity;
+            }
+        }
+        else
+        {
+            MemoryManager::Inst.CreateObject(&pNullRes);
+        }
+    }
 	else
 	{
         if(0 != p_Arg)
