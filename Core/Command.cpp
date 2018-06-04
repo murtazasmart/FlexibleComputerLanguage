@@ -633,7 +633,24 @@ PENTITY Command::ExecuteStringCommand(MULONG ulCommand, PENTITY pEntity, PENTITY
 				pIntRes->SetValue(0);
 			}
 			break;
-		}
+        }
+        case COMMAND_TYPE_STRINGTOBOOLEAN:
+        {
+            MemoryManager::Inst.CreateObject(&pBoolRes);
+            if (pString->GetValue() != "")
+            {
+                std::string val = pString->GetValue();
+                if (val.compare("true") == 0)
+                {
+                    pBoolRes->SetValue(1);
+                }
+                else
+                {
+                    pBoolRes->SetValue(0);
+                }
+            }
+            break;
+        }
 	}
     
 	if(0 != pIntRes)
@@ -1302,6 +1319,45 @@ PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, Execution
             pEntityList->Seek(1, false);
             currNode = (PNODE)pEntityList->GetCurrElem();
         }
+        
+//        for (auto const& x : uniqueMap)
+//        {
+//            std::cout << x.first  // string (key)
+//            << ':'
+//            << x.second // string's value
+//            << std::endl ;
+//        }
+        
+        std::cout << uniqueMap.begin(). << '\n';
+
+        
+//        std::map<std::string, int> mymap;
+//        mymap["\"abc\""] = 1;
+//        mymap["\"qwe\""] = 4;
+//        mymap["\"uiop\""] = 2;
+//        mymap["\"xyz\""] = 5;
+        
+        // Declaring the type of Predicate that accepts 2 pairs and return a bool
+        typedef std::function<bool(std::pair<std::string, int>, std::pair<std::string, int>)> Comparator;
+        
+        // Defining a lambda function to compare two pairs. It will compare two pairs using second field
+        Comparator compFunctor =
+        [](std::pair<std::string, int> elem1 ,std::pair<std::string, int> elem2)
+        {
+            return elem1.second > elem2.second;
+        };
+        
+        // Declaring a set that will store the pairs using above comparision logic
+        std::set<std::pair<std::string, int>, Comparator> setOfSorted(                                                                      uniqueMap.begin(), uniqueMap.end(), compFunctor);
+        
+        std::cout << setOfSorted.size();
+        
+        // Iterate over a set using range base for loop
+        // It will display the items in sorted order of values
+        // Iterate through all elements in std::map
+         for (std::pair<std::string, int> element : setOfSorted){
+             std::cout << element.first << " :: " << element.second << std::endl;
+         }
         
 //        // Declaring the type of Predicate that accepts 2 pairs and return a bool
 //        typedef std::function<bool(std::pair<std::string, int>, std::pair<std::string, int>)> Comparator;
