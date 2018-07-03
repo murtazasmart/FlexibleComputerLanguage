@@ -1,5 +1,5 @@
 //
-//  String.h
+//  Strings.h
 //  LogAnalyzer
 //
 //  Created by Dileepa Jayathilaka on 1/25/15.
