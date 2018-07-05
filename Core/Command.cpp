@@ -1328,8 +1328,9 @@ PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, Execution
 //            << std::endl ;
 //        }
         
-        std::cout << uniqueMap.begin(). << '\n';
-
+//        std::cout << *uniqueMap. << '\n';
+//        for (auto it = std::begin(uniqueMap); it!=std::end(bar); ++it)
+//            std::cout << ' ' << *it;
         
 //        std::map<std::string, int> mymap;
 //        mymap["\"abc\""] = 1;
