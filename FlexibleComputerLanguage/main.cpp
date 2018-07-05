@@ -39,7 +39,7 @@ std::string run(Node* root, MSTRING querycode)
     MetaData* pMD = dfr.Read("/Users/MurtazaA/99X/Backend/MurtazaQLVersion/FlexibleComputerLanguage/tests/test6/Defs.txt");
     ScriptReader sr;
     ScriptReaderOutput op;
-    bool bSucc = sr.ProcessScript(pMD->s_RuleFileName, pMD, op);
+    bool bSucc = sr.ProcessScript(pMD, op, querycode);
     if(!bSucc)
     {
         std::wcout<<"\nFailed to read script\n";
