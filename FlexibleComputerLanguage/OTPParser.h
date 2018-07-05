@@ -6,8 +6,13 @@
 //  Copyright © 2018 Dileepa Jayathilaka. All rights reserved.
 //
 
-#ifndef OTPParser_h
-#define OTPParser_h
+#include "json.hpp"
+#include "CommonIncludes.h"
 
+class OTPParser
+{
+public:
+    static void createTDTree(nlohmann::json j, Node* parent);
+    static Node* OTPJSONToNodeTree(std::string otpsString);
+};
 
-#endif /* OTPParser_h */
