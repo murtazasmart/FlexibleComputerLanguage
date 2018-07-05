@@ -7,7 +7,7 @@
 #include <set>
 #include <stack>
 #include <algorithm>
-#include <string>
+#include <cstring>
 #include <assert.h>
 
 #include "Defs.h"
