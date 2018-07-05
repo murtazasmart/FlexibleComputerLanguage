@@ -1,13 +1,17 @@
 //
 //  NamedPipeOperations.h
-//  FlexibleComputerLanguage
+//  Named Pipes C/C++
 //
-//  Created by Murtaza Anverali on 7/5/18.
-//  Copyright © 2018 Dileepa Jayathilaka. All rights reserved.
+//  Created by Murtaza Anverali on 7/4/18.
+//  Copyright © 2018 Murtaza Anverali. All rights reserved.
 //
+#include <iostream>
 
-#ifndef NamedPipeOperations_h
-#define NamedPipeOperations_h
-
-
-#endif /* NamedPipeOperations_h */
+class NamedPipeOperations
+{
+    
+public:
+    static std::string readFromPipe(int fd);
+    static int writeToPipe(int fd, std::string s);
+    
+};
