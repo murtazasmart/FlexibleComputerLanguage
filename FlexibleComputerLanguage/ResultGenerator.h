@@ -10,7 +10,6 @@
 #define ResultGenerator_h
 
 #include "Node.h"
-#include "String.h"
 
 class ResultGenerator
 {

@@ -14,7 +14,15 @@ std::string ResultGenerator::TypeFormatting(std::string result, int type)
     switch(type)
     {
         case 0:
+        {
+            std::replace(result.begin(), result.end(), '"', ' ');
+            return result;
+        }
         case 1:
+        {
+            std::replace(result.begin(), result.end(), '"', ' ');
+            return result;
+        }
         case 2:
         {
             std::replace(result.begin(), result.end(), '"', ' ');
