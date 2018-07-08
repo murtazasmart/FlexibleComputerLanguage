@@ -23,11 +23,14 @@
 #include "TestCaseExecuter.h"
 #include "Int.h"
 #include "DateTime.h"
-#include "String.h"
+#include "Strings.h"
 #include "Entity.h"
 #include "OTPParser.h"
 #include "ResultGenerator.h"
 #include "NamedPipeOperations.h"
+#include "spdlog/spdlog.h"
+#include <iostream>
+#include <memory>
 
 using json = nlohmann::json;
 
@@ -36,7 +39,7 @@ int id = 0;
 std::string run(Node* root, MSTRING querycode)
 {
     DefFileReader dfr;
-    MetaData* pMD = dfr.Read("/Users/MurtazaA/99X/Backend/MurtazaQLVersion/FlexibleComputerLanguage/tests/test6/Defs.txt");
+    MetaData* pMD = dfr.Read("/home/murtaza/99X/C++/FlexibleComputerLanguage/tests/Defs.txt");
     ScriptReader sr;
     ScriptReaderOutput op;
     bool bSucc = sr.ProcessScript(pMD, op, querycode);
@@ -60,13 +63,18 @@ std::string run(Node* root, MSTRING querycode)
 
 int main(int argc, const char * argv[])
 {
+
+    // Console logger with color
+//    auto console = spdlog::stdout_color_mt("console");
+//    console->info("Welcome to spdlog!");
+
     std::cout << "Starting.." << std::endl;
     int fdin;
     int fdout;
     
     // FIFO file path
-    std::string sin = "/Users/MurtazaA/99X/Backend/MurtazaQLVersion/FlexibleComputerLanguage/FlexibleComputerLanguage/queryfifoin";
-    std::string sout = "/Users/MurtazaA/99X/Backend/MurtazaQLVersion/FlexibleComputerLanguage/FlexibleComputerLanguage/queryfifoout";
+    std::string sin = "/tmp/queryfifoin";
+    std::string sout = "/tmp/queryfifoout";
     char *fifosin = (char *)sin.c_str();
     char *fifosout = (char *)sout.c_str();
     
@@ -86,40 +94,43 @@ int main(int argc, const char * argv[])
         
         close(fdin);
         // END
+
+        std::cout << requestString << std::endl << std::endl;
         
         // PROCESS START
         json request = json::parse(requestString);
-        std::string otps = request["otp"].get<std::string>();
+
+        std::string otps = request["otp"].dump();
         Node* r = OTPParser::OTPJSONToNodeTree(otps);
         std::string queryResults = "";
         for (auto& data : json::iterator_wrapper(request["queries"]))
         {
             json query = data.value();
             std::string queryString = query.get<std::string>();
-            std::cout << queryString << std::endl;
-            // HAVE TO WRITE FUNCTION TO RETURN RESULT JSON
+//            std::cout << queryString << std::endl << std::endl;
+//             HAVE TO WRITE FUNCTION TO RETURN RESULT JSON
             std::string result = run(r, queryString);
-            
+
             if (queryResults.compare("") != 0)
             {
-                queryResults = queryResults + ",\"" + result + "\"";
+                queryResults = queryResults + "," + result;
             }
             else
             {
-                queryResults = queryResults + "\"" + result + "\"";
+                queryResults = queryResults + result;
             }
         }
-        std::string response = "{\"reqId\": " + request["reqId"].get<std::string>() + ", \"queries\": [" + queryResults + "]}";
+        std::string response = "{\"reqId\": \"" + request["reqId"].get<std::string>() + "\", \"queries\": [" + queryResults + "]}";
         std::cout << response << std::endl;
         // PROCESS END
         
         // START
-        std::string s = queryResults + " processed in server.";
+//        std::string s = response + " processed in server.";
         // Open FIFO for write only
         fdout = open(fifosout, O_WRONLY);
-        
-        NamedPipeOperations::writeToPipe(fdout, s);
-        
+
+        NamedPipeOperations::writeToPipe(fdout, response);
+
         close(fdout);
         
         requestString = "";
