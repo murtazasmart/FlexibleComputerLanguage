@@ -28,11 +28,16 @@
 #include "OTPParser.h"
 #include "ResultGenerator.h"
 #include "NamedPipeOperations.h"
-#include "spdlog/spdlog.h"
+#include "easylogging++.h"
+#include "Logger.h"
 #include <iostream>
 #include <memory>
 
-using json = nlohmann::json;
+#define     JSON_PARSE_ERROR            1
+#define     JSON_TO_NODE_TREE_ERROR     2
+#define     QUERY_LANGUAGE_ERROR        3
+
+INITIALIZE_EASYLOGGINGPP
 
 int id = 0;
 
@@ -64,77 +69,116 @@ std::string run(Node* root, MSTRING querycode)
 int main(int argc, const char * argv[])
 {
 
-    // Console logger with color
-//    auto console = spdlog::stdout_color_mt("console");
-//    console->info("Welcome to spdlog!");
+//    Tests t = Tests();
+//    t.RunTest1();
+//    t.RunTest3();
 
-    std::cout << "Starting.." << std::endl;
+    Logger::ConfigureLogger();
+
+    LOG(INFO) << "Starting..";
     int fdin;
     int fdout;
-    
+
     // FIFO file path
     std::string sin = "/tmp/queryfifoin";
     std::string sout = "/tmp/queryfifoout";
     char *fifosin = (char *)sin.c_str();
     char *fifosout = (char *)sout.c_str();
-    
+
     // Creating the named file(FIFO)
     // mkfifo(<pathname>,<permission>)
     mkfifo(fifosin, 0666);
     mkfifo(fifosout, 0666);
-    
+
     while (1)
     {
+        std::string reqId = "0";
+
         // START
-        fdin = open(fifosin, O_RDONLY);
-        std::cout << "New start.." << std::endl;
-        // First open in read only and read
-        
-        std::string requestString = NamedPipeOperations::readFromPipe(fdin);
-        
-        close(fdin);
-        // END
-
-        std::cout << requestString << std::endl << std::endl;
-        
-        // PROCESS START
-        json request = json::parse(requestString);
-
-        std::string otps = request["otp"].dump();
-        Node* r = OTPParser::OTPJSONToNodeTree(otps);
-        std::string queryResults = "";
-        for (auto& data : json::iterator_wrapper(request["queries"]))
+        try
         {
-            json query = data.value();
-            std::string queryString = query.get<std::string>();
-//            std::cout << queryString << std::endl << std::endl;
-//             HAVE TO WRITE FUNCTION TO RETURN RESULT JSON
-            std::string result = run(r, queryString);
+            fdin = open(fifosin, O_RDONLY);
+            LOG(INFO) << "New start..";
+            // First open in read only and read
 
-            if (queryResults.compare("") != 0)
+            std::string requestString = NamedPipeOperations::readFromPipe(fdin);
+
+            close(fdin);
+            // END
+
+            LOG(INFO) << requestString;
+
+            // PROCESS START
+            nlohmann::json request;
+            try
             {
-                queryResults = queryResults + "," + result;
-            }
-            else
+                request = nlohmann::json::parse(requestString);
+            } catch (int ex)
             {
-                queryResults = queryResults + result;
+                LOG(ERROR) << "Request:" << request;
+                throw JSON_PARSE_ERROR;
             }
+
+            reqId = request["reqId"].get<std::string>();
+            std::string otps = request["otp"].dump();
+            Node *r;
+
+            try {
+                r = OTPParser::OTPJSONToNodeTree(otps);
+            } catch (int ex)
+            {
+                LOG(ERROR) << "Request:" << request;
+                throw JSON_TO_NODE_TREE_ERROR;
+            }
+
+            std::string queryResults = "";
+            for (auto &data : nlohmann::json::iterator_wrapper(request["queries"]))
+            {
+                nlohmann::json query = data.value();
+                std::string queryString = query.get<std::string>();
+                //             HAVE TO WRITE FUNCTION TO RETURN RESULT JSON
+                std::string result;
+
+                try
+                {
+                    result = run(r, queryString);
+                } catch (int ex)
+                {
+                    LOG(ERROR) << "OTPS:" <<  otps;
+                    LOG(ERROR) << "QueryString:" << queryString;
+                    throw QUERY_LANGUAGE_ERROR;
+                }
+
+                if (queryResults.compare("") != 0)
+                {
+                    queryResults = queryResults + "," + result;
+                } else
+                {
+                    queryResults = queryResults + result;
+                }
+            }
+            std::string response =
+                    "{\"reqId\": \"" + request["reqId"].get<std::string>() + "\", \"queries\": [" + queryResults + "]}";
+            LOG(INFO) << response;
+            // PROCESS END
+
+            // START
+            // Open FIFO for write only
+            fdout = open(fifosout, O_WRONLY);
+
+            NamedPipeOperations::writeToPipe(fdout, response);
+
+            close(fdout);
+
+            requestString = "";
+            // END
         }
-        std::string response = "{\"reqId\": \"" + request["reqId"].get<std::string>() + "\", \"queries\": [" + queryResults + "]}";
-        std::cout << response << std::endl;
-        // PROCESS END
-        
-        // START
-//        std::string s = response + " processed in server.";
-        // Open FIFO for write only
-        fdout = open(fifosout, O_WRONLY);
-
-        NamedPipeOperations::writeToPipe(fdout, response);
-
-        close(fdout);
-        
-        requestString = "";
-        // END
+        catch (int ex)
+        {
+            NamedPipeOperations::writeToPipe(fdout, "{\"reqId\":" + reqId + "\", \"error\": {\"id\":\"" + std::to_string(ex) + "\", \"message\":\"Query language has failed.\"}}");
+            mkfifo(fifosin, 0666);
+            mkfifo(fifosout, 0666);
+        }
     }
     return 0;
 }
