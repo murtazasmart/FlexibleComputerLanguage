@@ -14,8 +14,8 @@ int main(int argc, const char * argv[])
 {
 
     // insert code here...
-    //Tests tt;
-    //tt.RunTest5();
+    Tests tt;
+    //tt.RunTest3();
     
     TestCaseExecuter tce;
     TestCaseArgument tca;
