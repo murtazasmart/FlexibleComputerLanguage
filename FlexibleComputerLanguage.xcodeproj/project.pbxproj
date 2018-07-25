@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3A07698020FF987C007413AF /* TestListSeek.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A07697E20FF987C007413AF /* TestListSeek.cpp */; };
 		3A33964020B6725F0019F245 /* NodeCustomValueShorthand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A33963C20B6725F0019F245 /* NodeCustomValueShorthand.cpp */; };
 		3A33964120B6725F0019F245 /* SpecialCommandExecuter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A33963E20B6725F0019F245 /* SpecialCommandExecuter.cpp */; };
 		3A33966320B679840019F245 /* TestCaseBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A33965020B679840019F245 /* TestCaseBase.cpp */; };
@@ -51,6 +52,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3A07697E20FF987C007413AF /* TestListSeek.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TestListSeek.cpp; sourceTree = "<group>"; };
+		3A07697F20FF987C007413AF /* TestListSeek.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestListSeek.h; sourceTree = "<group>"; };
 		3A33963C20B6725F0019F245 /* NodeCustomValueShorthand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NodeCustomValueShorthand.cpp; sourceTree = "<group>"; };
 		3A33963D20B6725F0019F245 /* NodeCustomValueShorthand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NodeCustomValueShorthand.h; sourceTree = "<group>"; };
 		3A33963E20B6725F0019F245 /* SpecialCommandExecuter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpecialCommandExecuter.cpp; sourceTree = "<group>"; };
@@ -170,6 +173,8 @@
 				3A33966D20B6A77A0019F245 /* TestLoadFromCodeLibrary.h */,
 				3AB1A89F20B9690500DEDF6D /* TestStringEnclosure.cpp */,
 				3AB1A8A020B9690500DEDF6D /* TestStringEnclosure.h */,
+				3A07697E20FF987C007413AF /* TestListSeek.cpp */,
+				3A07697F20FF987C007413AF /* TestListSeek.h */,
 			);
 			path = TestCases;
 			sourceTree = "<group>";
@@ -320,6 +325,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3A33966820B679840019F245 /* TestListGroupBy.cpp in Sources */,
+				3A07698020FF987C007413AF /* TestListSeek.cpp in Sources */,
 				3A33964120B6725F0019F245 /* SpecialCommandExecuter.cpp in Sources */,
 				3AB047D720A1D3F700AE312D /* MemMan.cpp in Sources */,
 				3A33966320B679840019F245 /* TestCaseBase.cpp in Sources */,

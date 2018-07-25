@@ -1119,7 +1119,7 @@ PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, Execution
 	else if(COMMAND_TYPE_SEEK == ulCommand)
 	{
 		PInt pInt = (PInt)p_Arg->GetEntity();
-		if(0 != p_EntityArg)
+		if(0 != pInt)
 		{
 			pEntityList->Seek(pInt->GetValue(), pInt->b_IsNegative);
 		}
