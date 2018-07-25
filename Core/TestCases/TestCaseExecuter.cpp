@@ -17,6 +17,7 @@
 #include "TestLoadFromCodeLibrary.h"
 #include "TestStringEnclosure.h"
 #include "TestListSeek.h"
+#include "TestCompound1.h"
 
 TestCaseExecuter::TestCaseExecuter() {
     RegisterAllTestCases();
@@ -37,6 +38,7 @@ void TestCaseExecuter::RegisterAllTestCases() {
     RegisterTestCase(_MSTR(TestLoadFromCodeLibrary), new TestLoadFromCodeLibrary);
     RegisterTestCase(_MSTR(TestStringEnclosure), new TestStringEnclosure);
     RegisterTestCase(_MSTR(TestListSeek), new TestListSeek);
+    RegisterTestCase(_MSTR(TestCompound1), new TestCompound1);
 }
 
 void TestCaseExecuter::ExecuteAllTestCases(TestCaseArgument *arg) {

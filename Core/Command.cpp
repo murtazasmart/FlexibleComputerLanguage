@@ -559,6 +559,15 @@ PENTITY Command::ExecuteStringCommand(MULONG ulCommand, PENTITY pEntity, PENTITY
 			}
 			break;
 		}
+        case COMMAND_TYPE_STRINGTOBOOL:
+        {
+            MemoryManager::Inst.CreateObject(&pBoolRes);
+            PString pStrArg = (PString)pEntity;
+            MSTRING sArg = pStrArg->GetValue();
+            Utils::MakeLower(sArg);
+            pBoolRes->SetValue(sArg == "true");
+        }
+            break;
 	}
     
 	if(0 != pIntRes)

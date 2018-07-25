@@ -36,6 +36,7 @@
 		3AB047DB20A1D3F700AE312D /* Tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AB047CA20A1D3F700AE312D /* Tests.cpp */; };
 		3AB047DC20A1D3F700AE312D /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AB047CD20A1D3F700AE312D /* Utils.cpp */; };
 		3AB1A8A120B9690500DEDF6D /* TestStringEnclosure.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AB1A89F20B9690500DEDF6D /* TestStringEnclosure.cpp */; };
+		3AB4376A2108B2EE00A251F9 /* TestCompound1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AB437682108B2EE00A251F9 /* TestCompound1.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -133,6 +134,10 @@
 		3AB047CF20A1D3F700AE312D /* Value.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Value.h; sourceTree = "<group>"; };
 		3AB1A89F20B9690500DEDF6D /* TestStringEnclosure.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestStringEnclosure.cpp; sourceTree = "<group>"; };
 		3AB1A8A020B9690500DEDF6D /* TestStringEnclosure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestStringEnclosure.h; sourceTree = "<group>"; };
+		3AB437682108B2EE00A251F9 /* TestCompound1.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TestCompound1.cpp; sourceTree = "<group>"; };
+		3AB437692108B2EE00A251F9 /* TestCompound1.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestCompound1.h; sourceTree = "<group>"; };
+		3AB4376B2108B32400A251F9 /* TestCompound1Script.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestCompound1Script.txt; sourceTree = "<group>"; };
+		3AB4376C2108B32400A251F9 /* TestCompound1ScriptDefs.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TestCompound1ScriptDefs.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -175,6 +180,8 @@
 				3AB1A8A020B9690500DEDF6D /* TestStringEnclosure.h */,
 				3A07697E20FF987C007413AF /* TestListSeek.cpp */,
 				3A07697F20FF987C007413AF /* TestListSeek.h */,
+				3AB437682108B2EE00A251F9 /* TestCompound1.cpp */,
+				3AB437692108B2EE00A251F9 /* TestCompound1.h */,
 			);
 			path = TestCases;
 			sourceTree = "<group>";
@@ -182,6 +189,8 @@
 		3A33964520B679840019F245 /* files */ = {
 			isa = PBXGroup;
 			children = (
+				3AB4376B2108B32400A251F9 /* TestCompound1Script.txt */,
+				3AB4376C2108B32400A251F9 /* TestCompound1ScriptDefs.txt */,
 				3A33964620B679840019F245 /* TestCustomStrFilterShorthandScript.txt */,
 				3A33964720B679840019F245 /* TestCustomStrFilterShorthandScriptDefs.txt */,
 				3A33964820B679840019F245 /* TestFilterSubtreeScript.txt */,
@@ -348,6 +357,7 @@
 				3A33966520B679840019F245 /* TestCustomStrFilterShorthand.cpp in Sources */,
 				3AB047D020A1D3F700AE312D /* Bool.cpp in Sources */,
 				3A33966B20B679840019F245 /* TestTestCase.cpp in Sources */,
+				3AB4376A2108B2EE00A251F9 /* TestCompound1.cpp in Sources */,
 				3A33966920B679840019F245 /* TestListInnerCount.cpp in Sources */,
 				3AB1A8A120B9690500DEDF6D /* TestStringEnclosure.cpp in Sources */,
 				3A33966A20B679840019F245 /* TestListInnerCountWithScript.cpp in Sources */,
