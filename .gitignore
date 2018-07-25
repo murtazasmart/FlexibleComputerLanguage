@@ -4,7 +4,10 @@ cmake-build-debug/
 .idea
 
 # CMake removed
-CMakeLists.txt
+# CMakeLists.txt
 
 # Remove XCode related files
 FlexibleComputerLanguage.xcodeproj/
+
+# Remove log files
+logs
