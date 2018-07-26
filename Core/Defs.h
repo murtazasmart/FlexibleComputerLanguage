@@ -709,6 +709,7 @@
 #define     COMMAND_TYPE_DATE_NOW                                       8006
 #define     COMMAND_TYPE_STRING_TO_UNIX_TIME                            8007
 #define     COMMAND_TYPE_STRINGTOBOOLEAN                                8008
+#define     COMMAND_TYPE_STRINGTOBOOL                                   1202
 
 // Int Commands
 #define		COMMAND_TYPE_IS_INT_EQUAL_TO								2000

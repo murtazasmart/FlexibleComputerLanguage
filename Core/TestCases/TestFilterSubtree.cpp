@@ -58,6 +58,7 @@ TestCaseExecutionResult TestFilterSubtree::Execute(TestCaseArgument* arg) {
         return TestCaseExecutionResult(false, _MSTR(Result list size is wrong));
     }
     
+    
     EntityList::iterator ite = result->begin();
     PNODE node = (PNODE)(*ite);
     if (node->GetID() != 2) {

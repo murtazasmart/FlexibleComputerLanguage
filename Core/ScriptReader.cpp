@@ -41,7 +41,13 @@ bool ScriptReader::ProcessScript(MSTRING sFile, MetaData* pMD, ScriptReaderOutpu
 	LST_INT::const_iterator ite2 = lstLineNumbers.begin();
 	for( ; ite1 != iteEnd1; ++ite1, ++ite2)
 	{
-		ScriptReader::ProcessLineRetVal ret = ProcessLine(*ite1, pMD);
+        MSTRING line = *ite1;
+        Utils::TrimLeft(line, _MSTR( \t\n));
+        Utils::TrimRight(line, _MSTR( \t\n));
+        if (line.empty()) {
+            continue;
+        }
+		ScriptReader::ProcessLineRetVal ret = ProcessLine(line, pMD);
 		if(0 != ret.p_ET)
 		{
 			MSTRINGSTREAM sCodeLine;
@@ -190,7 +196,7 @@ void ScriptReader::ReadFileToLines(MSTRING sFile, MSTRING sLineContinuation, MST
 
 ScriptReader::ProcessLineRetVal ScriptReader::ProcessLine(MSTRING sLine, MetaData* pMD)
 {
-	// First, parse the string with the following as tokens
+    // First, parse the string with the following as tokens
 	// {, }, (, ), ,, =, .
 	VEC_CE vecCE;
 	GetCommandElements(sLine, vecCE, pMD);
@@ -314,7 +320,6 @@ ScriptReader::ProcessLineRetVal ScriptReader::ProcessLine(MSTRING sLine, MetaDat
 		ExecutionTemplate* pET = GetEntity(vecCE, 0, vecCE.size() - 1);
 		ret.p_ET = pET;
 	}
-    
     
 	return ret;
 }

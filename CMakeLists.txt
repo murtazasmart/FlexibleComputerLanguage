@@ -14,6 +14,8 @@ add_executable(FlexibleComputerLanguage1
         Core/TestCases/TestCaseExecuter.cpp
         Core/TestCases/TestCaseExecuter.h
         Core/TestCases/TestCaseIncludes.h
+        Core/TestCases/TestCompound1.cpp
+        Core/TestCases/TestCompound1.h
         Core/TestCases/TestCustomStrFilterShorthand.cpp
         Core/TestCases/TestCustomStrFilterShorthand.h
         Core/TestCases/TestFilterSubtree.cpp
@@ -26,6 +28,8 @@ add_executable(FlexibleComputerLanguage1
         Core/TestCases/TestListInnerCount.h
         Core/TestCases/TestListInnerCountWithScript.cpp
         Core/TestCases/TestListInnerCountWithScript.h
+        Core/TestCases/TestListSeek.h
+        Core/TestCases/TestListSeek.cpp
         Core/TestCases/TestLoadFromCodeLibrary.cpp
         Core/TestCases/TestLoadFromCodeLibrary.h
         Core/TestCases/TestStringEnclosure.cpp
