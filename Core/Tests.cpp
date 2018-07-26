@@ -59,7 +59,7 @@ void Tests::RunTest2()
 void Tests::RunTest3()
 {
 	DefFileReader dfr;
-	MetaData* pMD = dfr.Read("/Users/dileepa/Dileepa/WorkDir/LogAnalyzer/tests/test3/Defs.txt");
+	MetaData* pMD = dfr.Read("/Users/dileepaj/Dileepa/WorkDir/LogAnalyzer/tests/test3/Defs.txt");
 	ScriptReader sr;
 	ScriptReaderOutput op;
 	bool bSucc = sr.ProcessScript(pMD->s_RuleFileName, pMD, op);

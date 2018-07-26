@@ -696,6 +696,7 @@
 #define		COMMAND_TYPE_WRITE_TO_FILE									1104
 #define		COMMAND_TYPE_GET_LENGTH										1200
 #define		COMMAND_TYPE_STRINGTOINTEGER								1201
+#define     COMMAND_TYPE_STRINGTOBOOL                                   1202
 
 // Int Commands
 #define		COMMAND_TYPE_IS_INT_EQUAL_TO								2000
