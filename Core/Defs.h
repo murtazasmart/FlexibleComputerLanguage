@@ -687,6 +687,7 @@
 #define     COMMAND_TYPE_CHECK_NOT_NULL                                 61
 #define     COMMAND_TYPE_GET_STRING                                     62
 #define     COMMAND_TYPE_GET_INTEGER                                    63
+#define     COMMAND_TYPE_GET_BOOLEAN                                    64
 
 // String commands
 #define		COMMAND_TYPE_IS_STRING_EQUAL_TO								1000
@@ -710,6 +711,8 @@
 #define     COMMAND_TYPE_STRING_TO_UNIX_TIME                            8007
 #define     COMMAND_TYPE_STRINGTOBOOLEAN                                8008
 #define     COMMAND_TYPE_STRINGTOBOOL                                   1202
+#define     COMMAND_TYPE_GET_COMMA                                    8009
+#define     COMMAND_TYPE_NEXT_SIBLING                                   8010
 
 // Int Commands
 #define		COMMAND_TYPE_IS_INT_EQUAL_TO								2000
@@ -726,6 +729,9 @@
 #define		COMMAND_TYPE_BOOL_AND										4000
 #define		COMMAND_TYPE_BOOL_OR										4001
 #define		COMMAND_TYPE_BOOLTOSTRING									4002
+#define		COMMAND_TYPE_SET_BOOL									    4003
+#define		COMMAND_TYPE_TO_FALSE									    4004
+#define		COMMAND_TYPE_TO_TRUE									    4005
 
 // DateTime Commands
 #define     COMMAND_TYPE_DATETOSTRING                                   8000

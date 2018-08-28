@@ -391,6 +391,27 @@ PENTITY Command::ExecuteBoolCommand(MULONG ulCommand, PENTITY pEntity, PENTITY p
 			}
 			break;
 		}
+		case COMMAND_TYPE_SET_BOOL:
+		{
+			if(ENTITY_TYPE_BOOL == pArg->ul_Type)
+			{
+				PBool pBoolArg = (PBool)pArg;
+			}
+//			MemoryManager::Inst.CreateObject(&pBoolRes);
+//			pBoolRes->SetValue(pBoolArg);
+//			pBool->SetValue(pBoolArg);
+			break;
+		}
+		case COMMAND_TYPE_TO_FALSE:
+		{
+			pBool->SetValue(false);
+			break;
+		}
+		case COMMAND_TYPE_TO_TRUE:
+		{
+			pBool->SetValue(true);
+			break;
+		}
 	}
     
     
@@ -658,6 +679,7 @@ PENTITY Command::ExecuteStringCommand(MULONG ulCommand, PENTITY pEntity, PENTITY
             MSTRING sArg = pStrArg->GetValue();
             Utils::MakeLower(sArg);
             pBoolRes->SetValue(sArg == "true");
+            break;
         }
             break;
 	}
@@ -1133,6 +1155,8 @@ PENTITY Command::ExecuteNodeCommand(MULONG ulCommand, PENTITY pEntity, Execution
                 }
                 break;
             }
+//                pNodeRes = pNode->GetRightSibling();
+//                break;
             case COMMAND_TYPE_LAST_CHILD:
             {
                 pNodeRes = pNode->GetLastChild();
@@ -1185,6 +1209,29 @@ PENTITY Command::ExecuteNodeCommand(MULONG ulCommand, PENTITY pEntity, Execution
             {
                 MemoryManager::Inst.CreateObject(&pIntRes);
                 pIntRes->SetValue(0);
+                break;
+            }
+            case COMMAND_TYPE_GET_BOOLEAN:
+            {
+                MemoryManager::Inst.CreateObject(&pBoolRes);
+				pBoolRes->SetValue(true);
+                break;
+            }
+			case COMMAND_TYPE_GET_COMMA:
+			{
+				MemoryManager::Inst.CreateObject(&pStrRes);
+				PString pStr = (PString) ",";
+				pStrRes->SetValue(",");
+				break;
+			}
+            case COMMAND_TYPE_NEXT_SIBLING:
+            {
+				pNodeRes = pNode->GetRightSibling();
+				if (pNodeRes == 0)
+				{
+					MemoryManager::Inst.CreateObject(&pNullRes);
+					pNodeRes == 0;
+				}
                 break;
             }
         }
