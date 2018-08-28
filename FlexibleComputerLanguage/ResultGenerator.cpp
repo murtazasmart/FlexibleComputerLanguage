@@ -63,7 +63,7 @@ std::string ResultGenerator::CreateArray(Node* result, int type)
         }
         else if (customString.compare("normal") == 0)
         {
-            value = TypeFormatting(child->GetValue(), type);
+            value = TypeFormatting((child->GetValue() != 0) ? child->GetValue() : "", type);
         }
         if(resultString == "")
         {
@@ -98,7 +98,7 @@ std::string ResultGenerator::CreateObject(Node* result, int type)
         }
         else if (customString.compare("normal") == 0)
         {
-            value = TypeFormatting(child->GetValue(), type);
+            value = TypeFormatting((child->GetValue() != 0) ? child->GetValue() : "", type);
         }
         if(resultString == "")
         {
@@ -131,7 +131,7 @@ std::string ResultGenerator::ValueFormatting(Node* result)
     }
     else if (typeString.compare("normal") == 0)
     {
-        stringResult = TypeFormatting(result->GetValue(), atoi(result->GetRVal()));
+        stringResult = TypeFormatting((result->GetValue() != 0) ? result->GetValue() : "", atoi(result->GetRVal()));
     }
     return stringResult;
 }
