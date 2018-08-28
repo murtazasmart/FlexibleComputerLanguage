@@ -10,20 +10,33 @@
 #include "NamedPipeOperations.h"
 #include <string.h>
 
+#define BUF_SIZE 1000000
+
 std::string NamedPipeOperations::readFromPipe(int fd)
 {
 //    int BUF_SIZE = 4;
 //    char str1[BUF_SIZE];
 //    std::string resultString;
+    char buff[BUF_SIZE];
+    char * chrp;
     std::string resultString = "";
     FILE *stream;
     int c;
     stream = fdopen (fd, "r");
-    while ((c = fgetc (stream)) != EOF)
+    chrp = fgets (buff, BUF_SIZE, stream);
+    while ((chrp != 0))
     {
-        // putchar (c);
-        resultString = resultString + (char)c;
+        resultString = resultString + buff;
+        chrp = fgets (buff, BUF_SIZE, stream);
     }
+    // while ((c = fgetc (stream)) != EOF)
+    // {
+    //     // putchar (c);
+    //     resultString = resultString + (char)c;
+    // }
+    // char** line;
+    // size_t* n = 0;
+    // getline(line, n, stream);
     fclose (stream);
 
     close(fd);
@@ -77,5 +90,6 @@ int NamedPipeOperations::writeToPipe(int fd, std::string s)
     stream = fdopen (fd, "w");
     fprintf (stream, (char *)s.c_str());
     fclose (stream);
+    close(fd);
     return 0;
 };
