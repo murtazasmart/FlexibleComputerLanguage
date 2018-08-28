@@ -36,9 +36,12 @@ void OTPParser::createTDTree(nlohmann::json j, Node* parent)
             MemoryManager::Inst.CreateObject(&pStr);
             pStr->SetValue((char *)jsonvalue.dump().c_str());
             Node* datanode = MemoryManager::Inst.CreateNode(++id);
+            std::string val = jsonvalue.dump();
+//            std::replace(val.begin(), val.end(), '"', '\0');
+            val.erase(std::remove(val.begin(), val.end(), '"'), val.end());
             datanode->SetEntityObj((PENTITY)pStr);
             datanode->SetValue((char *)data.key().c_str());
-            datanode->SetLValue((char *)jsonvalue.dump().c_str());
+            datanode->SetLValue((char *)val.c_str());
             parent->AppendNode(datanode);
         }
     }
@@ -75,9 +78,12 @@ Node* OTPParser::OTPJSONToNodeTree(std::string otpsString)
                 } else {
                     PString pStr = 0;
                     MemoryManager::Inst.CreateObject(&pStr);
+                    std::string val = tdjson["val"].dump();
+//                    std::replace(val.begin(), val.end(), '"', '\0');
+                    val.erase(std::remove(val.begin(), val.end(), '"'), val.end());
                     pStr->SetValue((char *)tdjson["val"].dump().c_str());
                     tdnode->SetEntityObj((PENTITY)pStr);
-                    tdnode->SetLValue((char *)tdjson["val"].dump().c_str());
+                    tdnode->SetLValue((char *)val.c_str());
                     //                    std::cout << ((PENTITY)tdnode->GetEntityObj())->ul_Type;
                     
                     //                    tdnode->SetValue((char *)tdjson["val"].dump().c_str());
