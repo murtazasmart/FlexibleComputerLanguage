@@ -13,13 +13,14 @@
 
 class ResultGenerator
 {
-private:
+  private:
     static std::string TypeFormatting(std::string result, int type);
-    static std::string CreateArray(Node* result, int type);
-    static std::string CreateObject(Node* result, int type);
-    static std::string ValueFormatting(Node* result);
-public:
-    static std::string CreateResult(Node* result);
+    static std::string CreateArray(Node *result, int type);
+    static std::string CreateObject(Node *result, int type);
+    static std::string ValueFormatting(Node *result);
+
+  public:
+    static std::string CreateResult(Node *result);
 };
 
 #endif /* ResultGenerator_h */

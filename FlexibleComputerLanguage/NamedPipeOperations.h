@@ -9,9 +9,8 @@
 
 class NamedPipeOperations
 {
-    
-public:
+
+  public:
     static std::string readFromPipe(int fd);
     static int writeToPipe(int fd, std::string s);
-    
 };
