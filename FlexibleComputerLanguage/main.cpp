@@ -41,12 +41,22 @@ INITIALIZE_EASYLOGGINGPP
 
 int id = 0;
 
+
+#include "EntityList.h"
+
 std::string run(Node* root, MSTRING querycode)
 {
+    // PENTITYLIST list = new EntityList();
+    // list->push_back(new String("abc"));
+    // list->push_back(new String("abcde"));
+    // list->push_back(new String("def"));
+    // list->push_back(new String("abcd"));
+    // list->push_back(new String("dabc"));
     DefFileReader dfr;
     MetaData* pMD = dfr.Read("/home/murtaza/99X/C++/FlexibleComputerLanguage/tests/Defs.txt");
     ScriptReader sr;
     ScriptReaderOutput op;
+//    bool bSucc = sr.ProcessScript(pMD->s_RuleFileName, pMD, op);
     bool bSucc = sr.ProcessScript(pMD, op, querycode);
     if(!bSucc)
     {
@@ -64,6 +74,67 @@ std::string run(Node* root, MSTRING querycode)
     ec.map_Var["RESULT"] = pRESULT;
     op.p_ETL->Execute(&ec);
     return ResultGenerator::CreateResult(pRESULT);
+}
+
+std::string processQuery(std::string requestString, nlohmann::json request)
+{
+    // START
+    std::string reqId = "0";
+    try
+    {
+        reqId = request["reqId"].get<std::string>();
+        std::string otps = request["otp"].dump();
+        Node *r;
+
+        try {
+            r = OTPParser::OTPJSONToNodeTree(otps);
+        } catch (int ex)
+        {
+            LOG(ERROR) << "Request:" << request;
+            throw JSON_TO_NODE_TREE_ERROR;
+        }
+
+        std::string queryResults = "";
+        for (auto &data : nlohmann::json::iterator_wrapper(request["queries"]))
+        {
+            nlohmann::json query = data.value();
+            std::string queryString = query.get<std::string>();
+            //             HAVE TO WRITE FUNCTION TO RETURN RESULT JSON
+            std::string result;
+
+            try
+            {
+                result = run(r, queryString);
+            } catch (int ex)
+            {
+                LOG(ERROR) << "OTPS:" <<  otps;
+                LOG(ERROR) << "QueryString:" << queryString;
+                throw QUERY_LANGUAGE_ERROR;
+            }
+
+            if (queryResults.compare("") != 0)
+            {
+                queryResults = queryResults + "," + result;
+            } else
+            {
+                queryResults = queryResults + result;
+            }
+        }
+        std::string response =
+                "{\"reqId\": \"" + request["reqId"].get<std::string>() + "\", \"queries\": [" + queryResults + "]}";
+        // PROCESS END
+        return response;
+    }
+    catch (int ex)
+    {
+        return "{\"reqId\":" + reqId + "\", \"error\": {\"id\":\"" + std::to_string(ex) + "\", \"message\":\"Query language has failed.\"}}";
+    }
+}
+
+
+std::string processTest(std::string requestString)
+{
+    return requestString + "processed";
 }
 
 int main(int argc, const char * argv[])
@@ -118,47 +189,16 @@ int main(int argc, const char * argv[])
                 LOG(ERROR) << "Request:" << request;
                 throw JSON_PARSE_ERROR;
             }
-
-            reqId = request["reqId"].get<std::string>();
-            std::string otps = request["otp"].dump();
-            Node *r;
-
-            try {
-                r = OTPParser::OTPJSONToNodeTree(otps);
-            } catch (int ex)
+            std::string type = request["type"].get<std::string>();
+            std::string response = "";
+            if ( type == "query")
             {
-                LOG(ERROR) << "Request:" << request;
-                throw JSON_TO_NODE_TREE_ERROR;
+                response = processQuery(requestString, request);
             }
-
-            std::string queryResults = "";
-            for (auto &data : nlohmann::json::iterator_wrapper(request["queries"]))
+            else if ( type == "test")
             {
-                nlohmann::json query = data.value();
-                std::string queryString = query.get<std::string>();
-                //             HAVE TO WRITE FUNCTION TO RETURN RESULT JSON
-                std::string result;
-
-                try
-                {
-                    result = run(r, queryString);
-                } catch (int ex)
-                {
-                    LOG(ERROR) << "OTPS:" <<  otps;
-                    LOG(ERROR) << "QueryString:" << queryString;
-                    throw QUERY_LANGUAGE_ERROR;
-                }
-
-                if (queryResults.compare("") != 0)
-                {
-                    queryResults = queryResults + "," + result;
-                } else
-                {
-                    queryResults = queryResults + result;
-                }
+                response = processTest(requestString);
             }
-            std::string response =
-                    "{\"reqId\": \"" + request["reqId"].get<std::string>() + "\", \"queries\": [" + queryResults + "]}";
             LOG(INFO) << response;
             // PROCESS END
 
@@ -169,6 +209,8 @@ int main(int argc, const char * argv[])
             NamedPipeOperations::writeToPipe(fdout, response);
 
             close(fdout);
+
+            LOG(INFO) << "request wrapped up";
 
             requestString = "";
             // END
@@ -190,11 +232,11 @@ int main(int argc, const char * argv[])
 //    {
 ////        std::cout << argv[1];
 ////        std::string query = argv[1];
-//        json request = json::parse(argv[1]);
+//        nlohmann::json request = nlohmann::json::parse(argv[1]);
 //        std::string queryResults = "";
-//        for (auto& data : json::iterator_wrapper(request["queries"]))
+//        for (auto& data : nlohmann::json::iterator_wrapper(request["queries"]))
 //        {
-//            json query = data.value();
+//            nlohmann::json query = data.value();
 //            std::string queryString = query.get<std::string>();
 //            std::cout << queryString << std::endl;
 //            std::string result = "abcqwe";
@@ -212,7 +254,7 @@ int main(int argc, const char * argv[])
 //    }
 //    std::string line;
 //    std::string j;
-//    std::ifstream myfile ("/Users/MurtazaA/99X/Backend/tracified-backend/otp2.txt");
+//    std::ifstream myfile ("/home/murtaza/99X/tracified-backend/otp.txt");
 //    if (myfile.is_open())
 //    {
 //        getline (myfile,line);
@@ -224,7 +266,8 @@ int main(int argc, const char * argv[])
 //    Node* r = OTPParser::OTPJSONToNodeTree(j);
 ////    OTPParser.OTP
 //    // HAVE TO WRITE FUNCTION TO RETURN RESULT JSON
-//        run(r, "$Y.SetValue($X.GetValue)\n$X.GetAggregatedValue.WriteToFile(D:\\99X\\Backend\\FlexibleComputerLanguage\\FlexibleComputerLanguage/report_Unix)");
+//        std::string res = run(r, "$Y.SetValue($X.GetValue)\n$X.GetAggregatedValue.WriteToFile(D:\\99X\\Backend\\FlexibleComputerLanguage\\FlexibleComputerLanguage/report_Unix)");
+//        std::cout << res;
 ////    Tests t1 = Tests();
 ////    t.RunTest3();
 ////    TestCaseExecuter texec = TestCaseExecuter();
@@ -233,6 +276,27 @@ int main(int argc, const char * argv[])
 ////    TestCaseArgument tca;
 ////    tca.scriptsFolder = "/Users/MurtazaA/99X/Backend/MurtazaQLVersion/FlexibleComputerLanguage/Core/TestCases/files/";
 ////    tce.ExecuteAllTestCases(&tca);
+//
+//
+////    PENTITYLIST list = new EntityList();
+////    list->push_back(new String("abc"));
+////    list->push_back(new String("abcde"));
+////    list->push_back(new String("def"));
+////    list->push_back(new String("abcd"));
+////    list->push_back(new String("dabc"));
+////
+////    DefFileReader dfr;
+////    MetaData* pMD = dfr.Read("/home/murtaza/99X/C++/FlexibleComputerLanguage/Core/TestCases/files/TestListGroupByScript.txt");
+////    ScriptReader sr;
+////    ScriptReaderOutput op;
+////    bool bSucc = sr.ProcessScript(pMD->s_RuleFileName, pMD, op);
+////    ExecutionContext ec;
+////    ec.p_mapFunctions = &op.map_Functions;
+////    ec.p_MD = pMD;
+////
+////    ec.map_Var["BigList"] = list;
+////    op.p_ETL->Execute(&ec);
+////    PENTITYLIST result = (PENTITYLIST)(ec.map_Var["Result"]);
 //
 //    return 0;
 //}
