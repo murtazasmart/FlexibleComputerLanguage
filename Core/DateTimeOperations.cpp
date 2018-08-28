@@ -74,6 +74,7 @@ std::string DateTimeOperations::StringToReadable(std::string date) {
     // convert to tm struct for UTC
     tm *gmtm = gmtime(&tdate);
     dt = asctime(gmtm);
+    dt[strlen(dt) - 1] = 0;
     return dt;
     
 }
