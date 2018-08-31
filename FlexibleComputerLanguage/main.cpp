@@ -232,6 +232,8 @@ int main(int argc, const char * argv[])
     pthread_t tid[THREADS];
     pthread_mutex_init(&mutex_read, NULL);
     pthread_mutex_init(&mutex_write, NULL);
+    pthread_cond_init(&ready_read, NULL);
+    pthread_cond_init(&ready_write, NULL);
 
 //    Tests t = Tests();
 //    t.RunTest1();
@@ -259,16 +261,9 @@ int main(int argc, const char * argv[])
         // START
         try
         {
-            pthread_cond_init(&ready_read, NULL);
-            pthread_cond_init(&ready_write, NULL);
-
             pthread_create(&tid[0], NULL, readSlave, (void *)fifosin);
             pthread_create(&tid[1], NULL, intermediateSlave, NULL);
             pthread_create(&tid[2], NULL, writeSlave, (void *)fifosout);
-
-            for (i=0; i<THREADS; i++){
-                pthread_join(tid[i], NULL);
-            }
         }
         catch (int ex)
         {
@@ -277,6 +272,9 @@ int main(int argc, const char * argv[])
             mkfifo(fifosin, 0666);
             mkfifo(fifosout, 0666);
         }
+    }
+    for (i=0; i<THREADS; i++){
+        pthread_join(tid[i], NULL);
     }
     return 0;
 }
