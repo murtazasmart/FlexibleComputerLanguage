@@ -156,10 +156,11 @@ void * readSlave(void *fifosin)
     pthread_mutex_lock(&mutex_read);
 
     requestString = NamedPipeOperations::readFromPipe(fdin);
-    close(fdin);
     
     pthread_cond_signal(&ready_read);
     pthread_mutex_unlock(&mutex_read);
+
+    close(fdin);
 
     LOG(INFO) << requestString;
 
@@ -217,9 +218,10 @@ void * writeSlave(void *fifosout)
     pthread_cond_wait(&ready_write, &mutex_write);
     
     NamedPipeOperations::writeToPipe(fdout, response);
-    close(fdout);
     
     pthread_mutex_unlock(&mutex_write);
+
+    close(fdout);
 
     LOG(INFO) << "request wrapped up";
 
