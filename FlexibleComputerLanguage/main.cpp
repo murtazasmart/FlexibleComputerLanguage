@@ -32,15 +32,24 @@
 #include "Logger.h"
 #include <iostream>
 #include <memory>
+#include <pthread.h>
 
 #define     JSON_PARSE_ERROR            1
 #define     JSON_TO_NODE_TREE_ERROR     2
 #define     QUERY_LANGUAGE_ERROR        3
 
+#define THREADS 3
+
 INITIALIZE_EASYLOGGINGPP
 
+// shared data
 int id = 0;
-
+pthread_mutex_t mutex_read;
+pthread_mutex_t mutex_write;
+pthread_cond_t ready_read;
+pthread_cond_t ready_write;
+std::string requestString;
+std::string response;
 
 #include "EntityList.h"
 
@@ -137,8 +146,92 @@ std::string processTest(std::string requestString)
     return requestString + "processed";
 }
 
+void * readSlave(void *fifosin)
+{
+    int fdin;
+
+    fdin = open((char *) fifosin, O_RDONLY);
+    LOG(INFO) << "New start...";
+    
+    pthread_mutex_lock(&mutex_read);
+
+    requestString = NamedPipeOperations::readFromPipe(fdin);
+    close(fdin);
+    
+    pthread_cond_signal(&ready_read);
+    pthread_mutex_unlock(&mutex_read);
+
+    LOG(INFO) << requestString;
+
+    return;
+}
+
+void * intermediateSlave(void *)
+{
+    pthread_mutex_lock(&mutex_read);
+    pthread_cond_wait(&ready_read, &mutex_read);
+    
+    std::string intermediateRequest = requestString;
+    requestString = "";
+
+    pthread_mutex_unlock(&mutex_read);
+
+    nlohmann::json request;
+    try
+    {
+        request = nlohmann::json::parse(intermediateRequest);
+    } catch (int ex)
+    {
+        LOG(ERROR) << "Request:" << request;
+        throw JSON_PARSE_ERROR;
+    }
+    std::string type = request["type"].get<std::string>();
+
+    std::string intermediateResponse = "";
+
+    if ( type == "query")
+    {
+        intermediateResponse = processQuery(intermediateRequest, request);
+    }
+    else if ( type == "test")
+    {
+        intermediateResponse = processTest(intermediateRequest);
+    }
+    LOG(INFO) << intermediateResponse;
+
+    pthread_mutex_lock(&mutex_write);
+    
+    response = intermediateResponse;
+
+    pthread_cond_signal(&ready_write);
+    pthread_mutex_unlock(&mutex_write);
+}
+
+void * writeSlave(void *fifosout)
+{
+    int fdout;
+
+    fdout = open((char *)fifosout, O_WRONLY);
+
+    pthread_mutex_lock(&mutex_write);
+    pthread_cond_wait(&ready_write, &mutex_write);
+    
+    NamedPipeOperations::writeToPipe(fdout, response);
+    close(fdout);
+    
+    pthread_mutex_unlock(&mutex_write);
+
+    LOG(INFO) << "request wrapped up";
+
+    return;
+}
+
 int main(int argc, const char * argv[])
 {
+    int i;
+    pthread_t tid[THREADS];
+    pthread_mutex_init(&mutex_read, NULL);
+    pthread_mutex_init(&mutex_write, NULL);
 
 //    Tests t = Tests();
 //    t.RunTest1();
@@ -147,8 +240,6 @@ int main(int argc, const char * argv[])
     Logger::ConfigureLogger();
 
     LOG(INFO) << "Starting..";
-    int fdin;
-    int fdout;
 
     // FIFO file path
     std::string sin = "/tmp/queryfifoin";
@@ -168,55 +259,20 @@ int main(int argc, const char * argv[])
         // START
         try
         {
-            fdin = open(fifosin, O_RDONLY);
-            LOG(INFO) << "New start..";
-            // First open in read only and read
+            pthread_cond_init(&ready_read, NULL);
+            pthread_cond_init(&ready_write, NULL);
 
-            std::string requestString = NamedPipeOperations::readFromPipe(fdin);
+            pthread_create(&tid[0], NULL, readSlave, (void *)fifosin);
+            pthread_create(&tid[1], NULL, intermediateSlave, NULL);
+            pthread_create(&tid[2], NULL, writeSlave, (void *)fifosout);
 
-            close(fdin);
-            // END
-
-            LOG(INFO) << requestString;
-
-            // PROCESS START
-            nlohmann::json request;
-            try
-            {
-                request = nlohmann::json::parse(requestString);
-            } catch (int ex)
-            {
-                LOG(ERROR) << "Request:" << request;
-                throw JSON_PARSE_ERROR;
+            for (i=0; i<THREADS; i++){
+                pthread_join(tid[i], NULL);
             }
-            std::string type = request["type"].get<std::string>();
-            std::string response = "";
-            if ( type == "query")
-            {
-                response = processQuery(requestString, request);
-            }
-            else if ( type == "test")
-            {
-                response = processTest(requestString);
-            }
-            LOG(INFO) << response;
-            // PROCESS END
-
-            // START
-            // Open FIFO for write only
-            fdout = open(fifosout, O_WRONLY);
-
-            NamedPipeOperations::writeToPipe(fdout, response);
-
-            close(fdout);
-
-            LOG(INFO) << "request wrapped up";
-
-            requestString = "";
-            // END
         }
         catch (int ex)
         {
+            int fdout = open(fifosout, O_WRONLY);
             NamedPipeOperations::writeToPipe(fdout, "{\"reqId\":" + reqId + "\", \"error\": {\"id\":\"" + std::to_string(ex) + "\", \"message\":\"Query language has failed.\"}}");
             mkfifo(fifosin, 0666);
             mkfifo(fifosout, 0666);
