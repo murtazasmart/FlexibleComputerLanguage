@@ -62,7 +62,7 @@ std::string run(Node* root, MSTRING querycode)
     // list->push_back(new String("abcd"));
     // list->push_back(new String("dabc"));
     DefFileReader dfr;
-    MetaData* pMD = dfr.Read("/home/murtaza/99X/C++/FlexibleComputerLanguage/tests/Defs.txt");
+    MetaData* pMD = dfr.Read("/home/FlexibleComputerLanguage/tests/Defs.txt");
     ScriptReader sr;
     ScriptReaderOutput op;
 //    bool bSucc = sr.ProcessScript(pMD->s_RuleFileName, pMD, op);
@@ -163,14 +163,13 @@ void * readSlave(void *fifosin)
     close(fdin);
 
     LOG(INFO) << requestString;
-
-    return;
 }
 
 void * intermediateSlave(void *)
 {
     pthread_mutex_lock(&mutex_read);
     pthread_cond_wait(&ready_read, &mutex_read);
+    LOG(INFO) << "New start 1...";
     
     std::string intermediateRequest = requestString;
     requestString = "";
@@ -216,6 +215,7 @@ void * writeSlave(void *fifosout)
 
     pthread_mutex_lock(&mutex_write);
     pthread_cond_wait(&ready_write, &mutex_write);
+    LOG(INFO) << "New start...2";
     
     NamedPipeOperations::writeToPipe(fdout, response);
     
@@ -224,8 +224,6 @@ void * writeSlave(void *fifosout)
     close(fdout);
 
     LOG(INFO) << "request wrapped up";
-
-    return;
 }
 
 int main(int argc, const char * argv[])
@@ -266,6 +264,9 @@ int main(int argc, const char * argv[])
             pthread_create(&tid[0], NULL, readSlave, (void *)fifosin);
             pthread_create(&tid[1], NULL, intermediateSlave, NULL);
             pthread_create(&tid[2], NULL, writeSlave, (void *)fifosout);
+            for (i=0; i<THREADS; i++){
+                pthread_join(tid[i], NULL);
+            }
         }
         catch (int ex)
         {
@@ -274,9 +275,6 @@ int main(int argc, const char * argv[])
             mkfifo(fifosin, 0666);
             mkfifo(fifosout, 0666);
         }
-    }
-    for (i=0; i<THREADS; i++){
-        pthread_join(tid[i], NULL);
     }
     return 0;
 }
