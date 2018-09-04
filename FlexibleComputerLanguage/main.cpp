@@ -44,12 +44,18 @@ INITIALIZE_EASYLOGGINGPP
 
 // shared data
 int id = 0;
+
 pthread_mutex_t mutex_read;
 pthread_mutex_t mutex_write;
+
 pthread_cond_t ready_read;
 pthread_cond_t ready_write;
+
 std::string requestString;
 std::string response;
+
+int fdIn;
+int fdOut;
 
 #include "EntityList.h"
 
@@ -146,21 +152,16 @@ std::string processTest(std::string requestString)
     return requestString + "processed";
 }
 
-void * readSlave(void *fifosin)
+void * readSlave(void *)
 {
-    int fdin;
-
-    fdin = open((char *) fifosin, O_RDONLY);
+    pthread_mutex_lock(&mutex_read);
     LOG(INFO) << "New start...";
     
-    pthread_mutex_lock(&mutex_read);
+    requestString = NamedPipeOperations::readFromPipe(fdIn);
 
-    requestString = NamedPipeOperations::readFromPipe(fdin);
-    
     pthread_cond_signal(&ready_read);
     pthread_mutex_unlock(&mutex_read);
 
-    close(fdin);
 
     LOG(INFO) << requestString;
 }
@@ -207,21 +208,15 @@ void * intermediateSlave(void *)
     pthread_mutex_unlock(&mutex_write);
 }
 
-void * writeSlave(void *fifosout)
+void * writeSlave(void *)
 {
-    int fdout;
-
-    fdout = open((char *)fifosout, O_WRONLY);
-
     pthread_mutex_lock(&mutex_write);
     pthread_cond_wait(&ready_write, &mutex_write);
     LOG(INFO) << "New start...2";
     
-    NamedPipeOperations::writeToPipe(fdout, response);
+    NamedPipeOperations::writeToPipe(fdOut, response);
     
     pthread_mutex_unlock(&mutex_write);
-
-    close(fdout);
 
     LOG(INFO) << "request wrapped up";
 }
@@ -254,6 +249,9 @@ int main(int argc, const char * argv[])
     mkfifo(fifosin, 0666);
     mkfifo(fifosout, 0666);
 
+    fdIn = open((char *)fifosin, O_RDONLY);
+    fdOut = open((char *)fifosout, O_WRONLY);
+
     while (1)
     {
         std::string reqId = "0";
@@ -261,9 +259,9 @@ int main(int argc, const char * argv[])
         // START
         try
         {
-            pthread_create(&tid[0], NULL, readSlave, (void *)fifosin);
+            pthread_create(&tid[0], NULL, readSlave, NULL);
             pthread_create(&tid[1], NULL, intermediateSlave, NULL);
-            pthread_create(&tid[2], NULL, writeSlave, (void *)fifosout);
+            pthread_create(&tid[2], NULL, writeSlave, NULL);
             for (i=0; i<THREADS; i++){
                 pthread_join(tid[i], NULL);
             }
@@ -276,6 +274,10 @@ int main(int argc, const char * argv[])
             mkfifo(fifosout, 0666);
         }
     }
+
+    close(fdIn);
+    close(fdOut);
+
     return 0;
 }
 
