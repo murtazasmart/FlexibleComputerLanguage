@@ -155,9 +155,12 @@ std::string processTest(std::string requestString)
 void * readSlave(void *)
 {
     pthread_mutex_lock(&mutex_read);
+    //int fdin = ((char *)fifosin, O_RDONLY);
     LOG(INFO) << "New start...";
     
     requestString = NamedPipeOperations::readFromPipe(fdIn);
+
+    //close(fdin);
 
     pthread_cond_signal(&ready_read);
     pthread_mutex_unlock(&mutex_read);
@@ -212,9 +215,13 @@ void * writeSlave(void *)
 {
     pthread_mutex_lock(&mutex_write);
     pthread_cond_wait(&ready_write, &mutex_write);
+    //int fdout = ((char *)fifosout, O_WRONLY);
+
     LOG(INFO) << "New start...2";
     
     NamedPipeOperations::writeToPipe(fdOut, response);
+
+    //close(fdout);
     
     pthread_mutex_unlock(&mutex_write);
 
@@ -249,11 +256,13 @@ int main(int argc, const char * argv[])
     mkfifo(fifosin, 0666);
     mkfifo(fifosout, 0666);
 
-    fdIn = open((char *)fifosin, O_RDONLY);
-    fdOut = open((char *)fifosout, O_WRONLY);
+    
 
     while (1)
     {
+        fdIn = open((char *)fifosin, O_RDONLY);
+        fdOut = open((char *)fifosout, O_WRONLY);
+        
         std::string reqId = "0";
 
         // START
@@ -263,7 +272,7 @@ int main(int argc, const char * argv[])
             pthread_create(&tid[1], NULL, intermediateSlave, NULL);
             pthread_create(&tid[2], NULL, writeSlave, NULL);
             for (i=0; i<THREADS; i++){
-                LOG(INFO) << "Joining threads..";
+                //LOG(INFO) << "Joining threads..";
                 pthread_join(tid[i], NULL);
             }
         }
@@ -274,10 +283,11 @@ int main(int argc, const char * argv[])
             mkfifo(fifosin, 0666);
             mkfifo(fifosout, 0666);
         }
+
+        close(fdIn);
+        close(fdOut);
     }
 
-    close(fdIn);
-    close(fdOut);
 
     return 0;
 }
