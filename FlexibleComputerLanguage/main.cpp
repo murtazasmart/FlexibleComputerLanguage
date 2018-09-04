@@ -263,6 +263,7 @@ int main(int argc, const char * argv[])
             pthread_create(&tid[1], NULL, intermediateSlave, NULL);
             pthread_create(&tid[2], NULL, writeSlave, NULL);
             for (i=0; i<THREADS; i++){
+                LOG(INFO) << "Joining threads..";
                 pthread_join(tid[i], NULL);
             }
         }

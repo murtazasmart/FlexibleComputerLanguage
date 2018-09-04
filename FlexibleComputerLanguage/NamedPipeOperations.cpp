@@ -23,14 +23,15 @@ std::string NamedPipeOperations::readFromPipe(int fd)
     FILE *stream;
     int c;
     stream = fdopen(fd, "r");
-    std::cout << "here 1 " << fd << std::endl;
+    // std::cout << "here 1 " << fd << std::endl;
     chrp = fgets(buff, BUF_SIZE, stream);
-    std::cout << "here 2 " << stream << std::endl;
+    // std::cout << "here 2 " << stream << std::endl;
     while ((chrp != 0))
     {
         resultString = resultString + buff;
         chrp = fgets(buff, BUF_SIZE, stream);
     }
+    //rewind(stream); // Temporary fix
     // while ((c = fgetc (stream)) != EOF)
     // {
     //     // putchar (c);
@@ -90,10 +91,10 @@ int NamedPipeOperations::writeToPipe(int fd, std::string s)
     //    }
     FILE *stream;
     stream = fdopen(fd, "w");
-    std::cout << "here 3 " << fd << std::endl;
+    // std::cout << "here 3 " << fd << std::endl;
     fprintf(stream, (char *)s.c_str());
-    // fputs((char *)s.c_str(), stream);
-    std::cout << "here 4 " << stream << std::endl;
+    //fputs((char *)s.c_str(), stream);
+    // std::cout << "here 4 " << stream << std::endl;
     fclose(stream);
     close(fd);
     return 0;
