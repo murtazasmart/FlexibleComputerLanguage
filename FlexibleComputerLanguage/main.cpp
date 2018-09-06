@@ -254,9 +254,9 @@ void *writeSlave(void *fifosout)
             //LOG(INFO) << "New start...2";
 
             NamedPipeOperations::writeToPipe((FILE *)writeStream, response);
+            LOG(INFO) << "response " << response;
             response = "";
             writeFlag = 0;
-            LOG(INFO) << "response " << response;
             pthread_mutex_unlock(&mutex_write);
 
             LOG(INFO) << "request wrapped up";
@@ -316,7 +316,7 @@ int main(int argc, const char *argv[])
         mkfifo(fifosin, 0666);
         mkfifo(fifosout, 0666);
     }
-    
+
     return 0;
 }
 
