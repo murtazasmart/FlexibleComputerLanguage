@@ -34,9 +34,9 @@
 #include <memory>
 #include <pthread.h>
 
-#define     JSON_PARSE_ERROR            1
-#define     JSON_TO_NODE_TREE_ERROR     2
-#define     QUERY_LANGUAGE_ERROR        3
+#define JSON_PARSE_ERROR 1
+#define JSON_TO_NODE_TREE_ERROR 2
+#define QUERY_LANGUAGE_ERROR 3
 
 #define THREADS 3
 
@@ -45,18 +45,18 @@ INITIALIZE_EASYLOGGINGPP
 // shared data
 int id = 0;
 
+int readFlag = 0;
+int writeFlag = 0;
+
 pthread_mutex_t mutex_read;
 pthread_mutex_t mutex_write;
-
-pthread_cond_t ready_read;
-pthread_cond_t ready_write;
 
 std::string requestString;
 std::string response;
 
 #include "EntityList.h"
 
-std::string run(Node* root, MSTRING querycode)
+std::string run(Node *root, MSTRING querycode)
 {
     // PENTITYLIST list = new EntityList();
     // list->push_back(new String("abc"));
@@ -65,20 +65,20 @@ std::string run(Node* root, MSTRING querycode)
     // list->push_back(new String("abcd"));
     // list->push_back(new String("dabc"));
     DefFileReader dfr;
-    MetaData* pMD = dfr.Read("/home/FlexibleComputerLanguage/tests/Defs.txt");
+    MetaData *pMD = dfr.Read("/home/FlexibleComputerLanguage/tests/Defs.txt");
     ScriptReader sr;
     ScriptReaderOutput op;
-//    bool bSucc = sr.ProcessScript(pMD->s_RuleFileName, pMD, op);
+    //    bool bSucc = sr.ProcessScript(pMD->s_RuleFileName, pMD, op);
     bool bSucc = sr.ProcessScript(pMD, op, querycode);
-    if(!bSucc)
+    if (!bSucc)
     {
-        std::wcout<<"\nFailed to read script\n";
+        std::wcout << "\nFailed to read script\n";
     }
     ExecutionContext ec;
     ec.p_mapFunctions = &op.map_Functions;
     ec.p_MD = pMD;
-    Node* pY = MemoryManager::Inst.CreateNode(++id);
-    Node* pRESULT = MemoryManager::Inst.CreateNode(++id);
+    Node *pY = MemoryManager::Inst.CreateNode(++id);
+    Node *pRESULT = MemoryManager::Inst.CreateNode(++id);
     std::string s = "52";
     root->SetValue((char *)s.c_str());
     ec.map_Var["X"] = root;
@@ -98,9 +98,11 @@ std::string processQuery(std::string requestString, nlohmann::json request)
         std::string otps = request["otp"].dump();
         Node *r;
 
-        try {
+        try
+        {
             r = OTPParser::OTPJSONToNodeTree(otps);
-        } catch (int ex)
+        }
+        catch (int ex)
         {
             LOG(ERROR) << "Request:" << request;
             throw JSON_TO_NODE_TREE_ERROR;
@@ -117,9 +119,10 @@ std::string processQuery(std::string requestString, nlohmann::json request)
             try
             {
                 result = run(r, queryString);
-            } catch (int ex)
+            }
+            catch (int ex)
             {
-                LOG(ERROR) << "OTPS:" <<  otps;
+                LOG(ERROR) << "OTPS:" << otps;
                 LOG(ERROR) << "QueryString:" << queryString;
                 throw QUERY_LANGUAGE_ERROR;
             }
@@ -127,13 +130,14 @@ std::string processQuery(std::string requestString, nlohmann::json request)
             if (queryResults.compare("") != 0)
             {
                 queryResults = queryResults + "," + result;
-            } else
+            }
+            else
             {
                 queryResults = queryResults + result;
             }
         }
         std::string response =
-                "{\"reqId\": \"" + request["reqId"].get<std::string>() + "\", \"queries\": [" + queryResults + "]}";
+            "{\"reqId\": \"" + request["reqId"].get<std::string>() + "\", \"queries\": [" + queryResults + "]}";
         // PROCESS END
         return response;
     }
@@ -143,115 +147,136 @@ std::string processQuery(std::string requestString, nlohmann::json request)
     }
 }
 
-
 std::string processTest(std::string requestString)
 {
-    return requestString + "processed";
+    return requestString + " processed";
 }
 
-void * readSlave(void *fifosin)
+void *readSlave(void *fifosin)
 {
     LOG(INFO) << "readSlave started";
     int fdIn = open((char *)fifosin, O_RDONLY);
     FILE *readStream = NamedPipeOperations::openPipeToRead(fdIn);
-        
-    while (1) {
-        pthread_mutex_lock(&mutex_read);
-        LOG(INFO) << "New start...";
+    while (1)
+    {
+        if (readFlag == 0)
+        {
+            pthread_mutex_lock(&mutex_read);
+            //LOG(INFO) << "New start...0";
 
-        requestString = NamedPipeOperations::readFromPipe((FILE *)readStream);
+            requestString = NamedPipeOperations::readFromPipe((FILE *)readStream);
 
-        LOG(INFO) << requestString ;
-        pthread_cond_signal(&ready_read);
-        pthread_mutex_unlock(&mutex_read);
+            if (requestString.length() != 0)
+            {
+                LOG(INFO) << "requestString " << requestString;
+                readFlag = 1;
+            }
+            pthread_mutex_unlock(&mutex_read);
+        }
     }
-        
+
     NamedPipeOperations::closeReadPipe(readStream, fdIn);
     close(fdIn);
 }
 
-void * processSlave(void *)
+void *processSlave(void *)
 {
+    std::string intermediateRequest = "";
+    std::string intermediateResponse = "";
     LOG(INFO) << "processSlave started";
-    while(1) {
-        pthread_mutex_lock(&mutex_read);
-        pthread_cond_wait(&ready_read, &mutex_read);
-
-        LOG(INFO) << "New start...1";
-        
-        std::string intermediateRequest = requestString;
-        requestString = "";
-
-        pthread_mutex_unlock(&mutex_read);
-
-        nlohmann::json request;
-        try
+    while (1)
+    {
+        if (readFlag == 1)
         {
-            request = nlohmann::json::parse(intermediateRequest);
-        } catch (int ex)
-        {
-            LOG(ERROR) << "Request:" << request;
-            throw JSON_PARSE_ERROR;
-        }
-        std::string type = request["type"].get<std::string>();
+            pthread_mutex_lock(&mutex_read);
+            //LOG(INFO) << "New start...1";
 
-        std::string intermediateResponse = "";
+            intermediateRequest = requestString;
+            requestString = "";
 
-        if ( type == "query")
-        {
-            intermediateResponse = processQuery(intermediateRequest, request);
-        }
-        else if ( type == "test")
-        {
-            intermediateResponse = processTest(intermediateRequest);
+            readFlag = 0;
+            pthread_mutex_unlock(&mutex_read);
         }
 
-        pthread_mutex_lock(&mutex_write);
+        if (intermediateRequest.length() != 0)
+        {
+            nlohmann::json request;
+            try
+            {
+                LOG(INFO) << "intermediateRequest " << intermediateRequest;
+                request = nlohmann::json::parse(intermediateRequest);
+            }
+            catch (int ex)
+            {
+                LOG(ERROR) << "Request:" << request;
+                throw JSON_PARSE_ERROR;
+            }
+            std::string type = request["type"].get<std::string>();
 
-        LOG(INFO) << intermediateResponse ;
-        
-        response = intermediateResponse;
+            if (type == "query")
+            {
+                intermediateResponse = processQuery(intermediateRequest, request);
+                intermediateRequest = "";
+            }
+            else if (type == "test")
+            {
+                intermediateResponse = processTest(intermediateRequest);
+                intermediateRequest = "";
+            }
+        }
 
-        pthread_cond_signal(&ready_write);
-        pthread_mutex_unlock(&mutex_write);
+        if ((writeFlag == 0) && (intermediateResponse.length() != 0))
+        {
+            pthread_mutex_lock(&mutex_write);
+
+            response = intermediateResponse;
+            LOG(INFO) << "intermediateResponse " << intermediateResponse;
+            intermediateResponse = "";
+            writeFlag = 1;
+
+            pthread_mutex_unlock(&mutex_write);
+        }
     }
 }
 
-void * writeSlave(void *fifosout)
+void *writeSlave(void *fifosout)
 {
     LOG(INFO) << "writeSlave started";
     int fdOut = open((char *)fifosout, O_WRONLY);
     FILE *writeStream = NamedPipeOperations::openPipeToWrite(fdOut);
 
-    while(1) {
-        pthread_mutex_lock(&mutex_write);
-        pthread_cond_wait(&ready_write, &mutex_write);
+    while (1)
+    {
+        if (writeFlag == 1)
+        {
+            pthread_mutex_lock(&mutex_write);
+            //pthread_cond_wait(&ready_write, &mutex_write);
+            //LOG(INFO) << "New start...2";
 
-        LOG(INFO) << "New start...2";
-        
-        NamedPipeOperations::writeToPipe((FILE *)writeStream, response);
-        
-        pthread_mutex_unlock(&mutex_write);
+            NamedPipeOperations::writeToPipe((FILE *)writeStream, response);
+            response = "";
+            writeFlag = 0;
+            LOG(INFO) << "response " << response;
+            pthread_mutex_unlock(&mutex_write);
 
-        LOG(INFO) << "request wrapped up";
+            LOG(INFO) << "request wrapped up";
+        }
     }
 
     NamedPipeOperations::closeWritePipe(writeStream, fdOut);
     close(fdOut);
 }
 
-int main(int argc, const char * argv[])
+int main(int argc, const char *argv[])
 {
     int i;
     pthread_t tid[THREADS];
     pthread_mutex_init(&mutex_read, NULL);
     pthread_mutex_init(&mutex_write, NULL);
-    pthread_cond_init(&ready_read, NULL);
-    pthread_cond_init(&ready_write, NULL);
 
-//    Tests t = Tests();
-//    t.RunTest1();
-//    t.RunTest3();
+    //    Tests t = Tests();
+    //    t.RunTest1();
+    //    t.RunTest3();
 
     Logger::ConfigureLogger();
 
@@ -268,43 +293,32 @@ int main(int argc, const char * argv[])
     mkfifo(fifosin, 0666);
     mkfifo(fifosout, 0666);
 
-    
-    
+    std::string reqId = "0";
 
-    //while (1)
-    //{
-        std::string reqId = "0";
-
-        // START
-        try
+    // START
+    try
+    {
+        pthread_create(&tid[0], NULL, readSlave, (void *)fifosin);
+        pthread_create(&tid[1], NULL, processSlave, NULL);
+        pthread_create(&tid[2], NULL, writeSlave, (void *)fifosout);
+        for (i = 0; i < THREADS; i++)
         {
-            pthread_create(&tid[0], NULL, readSlave, (void *)fifosin);
-            pthread_create(&tid[1], NULL, processSlave, NULL);
-            pthread_create(&tid[2], NULL, writeSlave, (void *)fifosout);
-            for (i=0; i<THREADS; i++){
-                //LOG(INFO) << "Joining threads..";
-                pthread_join(tid[i], NULL);
-            }
+            pthread_join(tid[i], NULL);
         }
-        catch (int ex)
-        {
-            int fdout = open(fifosout, O_WRONLY);
-            FILE *stream = NamedPipeOperations::openPipeToWrite(fdout);
-            NamedPipeOperations::writeToPipe(stream, "{\"reqId\":" + reqId + "\", \"error\": {\"id\":\"" + std::to_string(ex) + "\", \"message\":\"Query language has failed.\"}}");
-            NamedPipeOperations::closeWritePipe(stream, fdout);
-            close(fdout);
-            mkfifo(fifosin, 0666);
-            mkfifo(fifosout, 0666);
-        }
-
-        
-    //}
+    }
+    catch (int ex)
+    {
+        int fdout = open(fifosout, O_WRONLY);
+        FILE *stream = NamedPipeOperations::openPipeToWrite(fdout);
+        NamedPipeOperations::writeToPipe(stream, "{\"reqId\":" + reqId + "\", \"error\": {\"id\":\"" + std::to_string(ex) + "\", \"message\":\"Query language has failed.\"}}");
+        NamedPipeOperations::closeWritePipe(stream, fdout);
+        close(fdout);
+        mkfifo(fifosin, 0666);
+        mkfifo(fifosout, 0666);
+    }
     
-    
-
     return 0;
 }
-
 
 //int main(int argc, const char * argv[])
 //{

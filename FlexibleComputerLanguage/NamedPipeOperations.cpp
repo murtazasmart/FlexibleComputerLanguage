@@ -27,10 +27,10 @@ std::string NamedPipeOperations::readFromPipe(FILE *stream)
     // std::cout << "here 1 " << fd << std::endl;
     chrp = fgets(buff, BUF_SIZE, stream);
     std::string someStr(buff);
-    std::cout << "here 1 " << chrp << std::endl;
+    //std::cout << "here 1 " << chrp << std::endl;
     while ((chrp != 0))
     {
-        std::cout << "here 2 " << chrp << std::endl;
+        //std::cout << "here 2 " << chrp << std::endl;
         resultString = resultString + buff;
         chrp = fgets(buff, BUF_SIZE, stream);
     }
