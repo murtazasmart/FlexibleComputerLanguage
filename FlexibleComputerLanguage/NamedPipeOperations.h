@@ -11,6 +11,10 @@ class NamedPipeOperations
 {
 
   public:
-    static std::string readFromPipe(int fd);
-    static int writeToPipe(int fd, std::string s);
+    static std::string readFromPipe(FILE *stream);
+    static int writeToPipe(FILE *stream, std::string s);
+    static FILE *openPipeToRead(int fd);
+    static int closeReadPipe(FILE *stream, int fd);
+    static FILE *openPipeToWrite(int fd);
+    static int closeWritePipe(FILE *stream, int fd);
 };

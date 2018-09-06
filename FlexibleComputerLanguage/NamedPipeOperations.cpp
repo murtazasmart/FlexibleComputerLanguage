@@ -9,10 +9,11 @@
 #include <iostream>
 #include "NamedPipeOperations.h"
 #include <string.h>
+#include <sys/types.h>
 
 #define BUF_SIZE 1000000
 
-std::string NamedPipeOperations::readFromPipe(int fd)
+std::string NamedPipeOperations::readFromPipe(FILE *stream)
 {
     //    int BUF_SIZE = 4;
     //    char str1[BUF_SIZE];
@@ -20,18 +21,19 @@ std::string NamedPipeOperations::readFromPipe(int fd)
     char buff[BUF_SIZE];
     char *chrp;
     std::string resultString = "";
-    FILE *stream;
+    //FILE *stream;
     int c;
-    stream = fdopen(fd, "r");
+    //stream = fdopen(fd, "r");
     // std::cout << "here 1 " << fd << std::endl;
     chrp = fgets(buff, BUF_SIZE, stream);
-    // std::cout << "here 2 " << stream << std::endl;
+    std::string someStr(buff);
+    std::cout << "here 1 " << chrp << std::endl;
     while ((chrp != 0))
     {
+        std::cout << "here 2 " << chrp << std::endl;
         resultString = resultString + buff;
         chrp = fgets(buff, BUF_SIZE, stream);
     }
-    //rewind(stream); // Temporary fix
     // while ((c = fgetc (stream)) != EOF)
     // {
     //     // putchar (c);
@@ -40,9 +42,9 @@ std::string NamedPipeOperations::readFromPipe(int fd)
     // char** line;
     // size_t* n = 0;
     // getline(line, n, stream);
-    fclose(stream);
+    //fclose(stream);
 
-    close(fd);
+    //close(fd);
     //    while (1)
     //    {
     //        int read2result = read(fd, str1, BUF_SIZE);
@@ -61,7 +63,7 @@ std::string NamedPipeOperations::readFromPipe(int fd)
     return resultString;
 };
 
-int NamedPipeOperations::writeToPipe(int fd, std::string s)
+int NamedPipeOperations::writeToPipe(FILE *stream, std::string s)
 {
     //    int BUF_SIZE = 4;
     //    char str1[BUF_SIZE];
@@ -89,13 +91,49 @@ int NamedPipeOperations::writeToPipe(int fd, std::string s)
     //        int status = write(fd, str1, strlen(str1));
     //        // std::cout << "write status " << status << std::endl;
     //    }
-    FILE *stream;
-    stream = fdopen(fd, "w");
+    //FILE *stream;
+    //stream = fdopen(fd, "w");
     // std::cout << "here 3 " << fd << std::endl;
     fprintf(stream, (char *)s.c_str());
     //fputs((char *)s.c_str(), stream);
     // std::cout << "here 4 " << stream << std::endl;
-    fclose(stream);
-    close(fd);
+    //fclose(stream);
+    //close(fd);
     return 0;
 };
+ 
+FILE *NamedPipeOperations::openPipeToRead(int fd)
+{
+    //std::cout << "openPipeToRead " << fd << std::endl;
+    FILE *stream;
+    stream = fdopen(fd, "r");
+    //std::cout << "openPipeToRead 1 " << fd << std::endl;
+    return stream;
+};
+
+int NamedPipeOperations::closeReadPipe(FILE *stream, int fd)
+{
+    //std::cout << "closeReadPipe " << fd << std::endl;
+    fclose(stream);
+    close(fd);
+    //std::cout << "closeReadPipe 1 " << fd << std::endl;
+    return 0;
+}
+
+FILE *NamedPipeOperations::openPipeToWrite(int fd)
+{
+    //std::cout << "openPipeToWrite " << fd << std::endl;
+    FILE *stream;
+    stream = fdopen(fd, "w");
+    //std::cout << "openPipeToWrite 1 " << fd << std::endl;
+    return stream;
+};
+
+int NamedPipeOperations::closeWritePipe(FILE *stream, int fd)
+{
+    //std::cout << "closeWritePipe " << fd << std::endl;
+    fclose(stream);
+    close(fd);
+    //std::cout << "closeWritePipe 1 " << fd << std::endl;
+    return 0;
+}

@@ -54,9 +54,6 @@ pthread_cond_t ready_write;
 std::string requestString;
 std::string response;
 
-int fdIn;
-int fdOut;
-
 #include "EntityList.h"
 
 std::string run(Node* root, MSTRING querycode)
@@ -152,80 +149,95 @@ std::string processTest(std::string requestString)
     return requestString + "processed";
 }
 
-void * readSlave(void *)
+void * readSlave(void *fifosin)
 {
-    pthread_mutex_lock(&mutex_read);
-    //int fdin = ((char *)fifosin, O_RDONLY);
-    LOG(INFO) << "New start...";
-    
-    requestString = NamedPipeOperations::readFromPipe(fdIn);
+    LOG(INFO) << "readSlave started";
+    int fdIn = open((char *)fifosin, O_RDONLY);
+    FILE *readStream = NamedPipeOperations::openPipeToRead(fdIn);
+        
+    while (1) {
+        pthread_mutex_lock(&mutex_read);
+        LOG(INFO) << "New start...";
 
-    //close(fdin);
+        requestString = NamedPipeOperations::readFromPipe((FILE *)readStream);
 
-    pthread_cond_signal(&ready_read);
-    pthread_mutex_unlock(&mutex_read);
-
-
-    LOG(INFO) << requestString;
+        LOG(INFO) << requestString ;
+        pthread_cond_signal(&ready_read);
+        pthread_mutex_unlock(&mutex_read);
+    }
+        
+    NamedPipeOperations::closeReadPipe(readStream, fdIn);
+    close(fdIn);
 }
 
-void * intermediateSlave(void *)
+void * processSlave(void *)
 {
-    pthread_mutex_lock(&mutex_read);
-    pthread_cond_wait(&ready_read, &mutex_read);
-    LOG(INFO) << "New start 1...";
-    
-    std::string intermediateRequest = requestString;
-    requestString = "";
+    LOG(INFO) << "processSlave started";
+    while(1) {
+        pthread_mutex_lock(&mutex_read);
+        pthread_cond_wait(&ready_read, &mutex_read);
 
-    pthread_mutex_unlock(&mutex_read);
+        LOG(INFO) << "New start...1";
+        
+        std::string intermediateRequest = requestString;
+        requestString = "";
 
-    nlohmann::json request;
-    try
-    {
-        request = nlohmann::json::parse(intermediateRequest);
-    } catch (int ex)
-    {
-        LOG(ERROR) << "Request:" << request;
-        throw JSON_PARSE_ERROR;
+        pthread_mutex_unlock(&mutex_read);
+
+        nlohmann::json request;
+        try
+        {
+            request = nlohmann::json::parse(intermediateRequest);
+        } catch (int ex)
+        {
+            LOG(ERROR) << "Request:" << request;
+            throw JSON_PARSE_ERROR;
+        }
+        std::string type = request["type"].get<std::string>();
+
+        std::string intermediateResponse = "";
+
+        if ( type == "query")
+        {
+            intermediateResponse = processQuery(intermediateRequest, request);
+        }
+        else if ( type == "test")
+        {
+            intermediateResponse = processTest(intermediateRequest);
+        }
+
+        pthread_mutex_lock(&mutex_write);
+
+        LOG(INFO) << intermediateResponse ;
+        
+        response = intermediateResponse;
+
+        pthread_cond_signal(&ready_write);
+        pthread_mutex_unlock(&mutex_write);
     }
-    std::string type = request["type"].get<std::string>();
-
-    std::string intermediateResponse = "";
-
-    if ( type == "query")
-    {
-        intermediateResponse = processQuery(intermediateRequest, request);
-    }
-    else if ( type == "test")
-    {
-        intermediateResponse = processTest(intermediateRequest);
-    }
-    LOG(INFO) << intermediateResponse;
-
-    pthread_mutex_lock(&mutex_write);
-    
-    response = intermediateResponse;
-
-    pthread_cond_signal(&ready_write);
-    pthread_mutex_unlock(&mutex_write);
 }
 
-void * writeSlave(void *)
+void * writeSlave(void *fifosout)
 {
-    pthread_mutex_lock(&mutex_write);
-    pthread_cond_wait(&ready_write, &mutex_write);
-    //int fdout = ((char *)fifosout, O_WRONLY);
+    LOG(INFO) << "writeSlave started";
+    int fdOut = open((char *)fifosout, O_WRONLY);
+    FILE *writeStream = NamedPipeOperations::openPipeToWrite(fdOut);
 
-    LOG(INFO) << "New start...2";
-    
-    NamedPipeOperations::writeToPipe(fdOut, response);
+    while(1) {
+        pthread_mutex_lock(&mutex_write);
+        pthread_cond_wait(&ready_write, &mutex_write);
 
-    //close(fdout);
-    
-    pthread_mutex_unlock(&mutex_write);
+        LOG(INFO) << "New start...2";
+        
+        NamedPipeOperations::writeToPipe((FILE *)writeStream, response);
+        
+        pthread_mutex_unlock(&mutex_write);
 
-    LOG(INFO) << "request wrapped up";
+        LOG(INFO) << "request wrapped up";
+    }
+
+    NamedPipeOperations::closeWritePipe(writeStream, fdOut);
+    close(fdOut);
 }
 
 int main(int argc, const char * argv[])
@@ -257,20 +269,18 @@ int main(int argc, const char * argv[])
     mkfifo(fifosout, 0666);
 
     
+    
 
-    while (1)
-    {
-        fdIn = open((char *)fifosin, O_RDONLY);
-        fdOut = open((char *)fifosout, O_WRONLY);
-        
+    //while (1)
+    //{
         std::string reqId = "0";
 
         // START
         try
         {
-            pthread_create(&tid[0], NULL, readSlave, NULL);
-            pthread_create(&tid[1], NULL, intermediateSlave, NULL);
-            pthread_create(&tid[2], NULL, writeSlave, NULL);
+            pthread_create(&tid[0], NULL, readSlave, (void *)fifosin);
+            pthread_create(&tid[1], NULL, processSlave, NULL);
+            pthread_create(&tid[2], NULL, writeSlave, (void *)fifosout);
             for (i=0; i<THREADS; i++){
                 //LOG(INFO) << "Joining threads..";
                 pthread_join(tid[i], NULL);
@@ -279,15 +289,18 @@ int main(int argc, const char * argv[])
         catch (int ex)
         {
             int fdout = open(fifosout, O_WRONLY);
-            NamedPipeOperations::writeToPipe(fdout, "{\"reqId\":" + reqId + "\", \"error\": {\"id\":\"" + std::to_string(ex) + "\", \"message\":\"Query language has failed.\"}}");
+            FILE *stream = NamedPipeOperations::openPipeToWrite(fdout);
+            NamedPipeOperations::writeToPipe(stream, "{\"reqId\":" + reqId + "\", \"error\": {\"id\":\"" + std::to_string(ex) + "\", \"message\":\"Query language has failed.\"}}");
+            NamedPipeOperations::closeWritePipe(stream, fdout);
+            close(fdout);
             mkfifo(fifosin, 0666);
             mkfifo(fifosout, 0666);
         }
 
-        close(fdIn);
-        close(fdOut);
-    }
-
+        
+    //}
+    
+    
 
     return 0;
 }
