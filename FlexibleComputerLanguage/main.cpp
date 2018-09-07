@@ -216,13 +216,12 @@ void *processSlave(void *)
             if (type == "query")
             {
                 intermediateResponse = processQuery(intermediateRequest, request);
-                intermediateRequest = "";
             }
             else if (type == "test")
             {
                 intermediateResponse = processTest(intermediateRequest);
-                intermediateRequest = "";
             }
+            intermediateRequest = "";
         }
 
         if ((writeFlag == 0) && (intermediateResponse.length() != 0))
@@ -242,29 +241,29 @@ void *processSlave(void *)
 void *writeSlave(void *fifosout)
 {
     LOG(INFO) << "writeSlave started";
-    int fdOut = open((char *)fifosout, O_WRONLY);
-    FILE *writeStream = NamedPipeOperations::openPipeToWrite(fdOut);
 
     while (1)
     {
         if (writeFlag == 1)
         {
             pthread_mutex_lock(&mutex_write);
-            //pthread_cond_wait(&ready_write, &mutex_write);
             //LOG(INFO) << "New start...2";
 
+            int fdOut = open((char *)fifosout, O_WRONLY);
+            FILE *writeStream = NamedPipeOperations::openPipeToWrite(fdOut);
+            
             NamedPipeOperations::writeToPipe((FILE *)writeStream, response);
+
             LOG(INFO) << "response " << response;
             response = "";
             writeFlag = 0;
             pthread_mutex_unlock(&mutex_write);
 
+            NamedPipeOperations::closeWritePipe(writeStream, fdOut);
+            close(fdOut);
             LOG(INFO) << "request wrapped up";
         }
     }
-
-    NamedPipeOperations::closeWritePipe(writeStream, fdOut);
-    close(fdOut);
 }
 
 int main(int argc, const char *argv[])

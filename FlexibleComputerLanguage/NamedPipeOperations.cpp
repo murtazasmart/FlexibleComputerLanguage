@@ -10,6 +10,7 @@
 #include "NamedPipeOperations.h"
 #include <string.h>
 #include <sys/types.h>
+#include <stdio.h>
 
 #define BUF_SIZE 1000000
 
@@ -96,7 +97,7 @@ int NamedPipeOperations::writeToPipe(FILE *stream, std::string s)
     // std::cout << "here 3 " << fd << std::endl;
     fprintf(stream, (char *)s.c_str());
     //fputs((char *)s.c_str(), stream);
-    // std::cout << "here 4 " << stream << std::endl;
+    // std::cout << "here 4 " << stream << s << std::endl;
     //fclose(stream);
     //close(fd);
     return 0;
