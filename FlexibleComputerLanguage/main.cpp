@@ -65,7 +65,7 @@ std::string run(Node *root, MSTRING querycode)
     // list->push_back(new String("abcd"));
     // list->push_back(new String("dabc"));
     DefFileReader dfr;
-    MetaData *pMD = dfr.Read("/home/FlexibleComputerLanguage/tests/Defs.txt");
+    MetaData *pMD = dfr.Read("/home/sam/FlexibleComputerLanguage/FlexibleComputerLanguage/tests/Defs.txt");
     ScriptReader sr;
     ScriptReaderOutput op;
     //    bool bSucc = sr.ProcessScript(pMD->s_RuleFileName, pMD, op);
@@ -168,7 +168,7 @@ void *readSlave(void *fifosin)
 
             if (requestString.length() != 0)
             {
-                LOG(INFO) << "requestString " << requestString;
+                // LOG(INFO) << "requestString " << requestString;
                 readFlag = 1;
             }
             pthread_mutex_unlock(&mutex_read);
@@ -203,7 +203,7 @@ void *processSlave(void *)
             nlohmann::json request;
             try
             {
-                LOG(INFO) << "intermediateRequest " << intermediateRequest;
+                //LOG(INFO) << "intermediateRequest " << intermediateRequest;
                 request = nlohmann::json::parse(intermediateRequest);
             }
             catch (int ex)
@@ -229,7 +229,7 @@ void *processSlave(void *)
             pthread_mutex_lock(&mutex_write);
 
             response = intermediateResponse;
-            LOG(INFO) << "intermediateResponse " << intermediateResponse;
+            //LOG(INFO) << "intermediateResponse " << intermediateResponse;
             intermediateResponse = "";
             writeFlag = 1;
 
