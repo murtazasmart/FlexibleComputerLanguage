@@ -106,11 +106,7 @@ std::string processQuery(std::string requestString, nlohmann::json request)
 
         try
         {
-            auto pt15 = std::chrono::system_clock::now(); // testing purposes
             r = OTPParser::OTPJSONToNodeTree(otps);
-            auto pt16 = std::chrono::system_clock::now(); // testing purposes
-            elapsed_time = pt16-pt15;
-            LOG(INFO) << "Time elapsed processQuery 1st part: " << elapsed_time.count();
         }
         catch (int ex)
         {
@@ -119,7 +115,6 @@ std::string processQuery(std::string requestString, nlohmann::json request)
         }
 
         std::string queryResults = "";
-        auto pt17 = std::chrono::system_clock::now(); // testing purposes
         for (auto &data : nlohmann::json::iterator_wrapper(request["queries"]))
         {
             nlohmann::json query = data.value();
@@ -129,11 +124,7 @@ std::string processQuery(std::string requestString, nlohmann::json request)
 
             try
             {
-                auto pt19 = std::chrono::system_clock::now(); // testing purposes
                 result = run(r, queryString);
-                auto pt20 = std::chrono::system_clock::now(); // testing purposes
-                elapsed_time = pt20-pt19;
-                LOG(INFO) << "Time elapsed processQuery 2nd part: " << elapsed_time.count();
             }
             catch (int ex)
             {
@@ -151,9 +142,6 @@ std::string processQuery(std::string requestString, nlohmann::json request)
                 queryResults = queryResults + result;
             }
         }
-        auto pt18 = std::chrono::system_clock::now(); // testing purposes
-        elapsed_time = pt18-pt17;
-        LOG(INFO) << "Time elapsed processQuery 3rd part: " << elapsed_time.count();
         std::string response =
             "{\"reqId\": \"" + request["reqId"].get<std::string>() + "\", \"queries\": [" + queryResults + "]}";
         // PROCESS END
@@ -172,18 +160,13 @@ std::string processTest(std::string requestString)
 
 void *readSlave(void *fifosin)
 {
-    auto pt1 = std::chrono::system_clock::now(); // testing purposes
     LOG(INFO) << "readSlave started";
     int fdIn = open((char *)fifosin, O_RDONLY);
     FILE *readStream = NamedPipeOperations::openPipeToRead(fdIn);
-    auto pt2 = std::chrono::system_clock::now(); // testing purposes
-    elapsed_time = pt2-pt1;
-    LOG(INFO) << "Time elapsed readslave header: " << elapsed_time.count();
     while (1)
     {
         if (readFlag == 0)
         {
-            auto pt3 = std::chrono::system_clock::now(); // testing purposes
             pthread_mutex_lock(&mutex_read);
             //LOG(INFO) << "New start...0";
 
@@ -195,9 +178,6 @@ void *readSlave(void *fifosin)
                 readFlag = 1;
             }
             pthread_mutex_unlock(&mutex_read);
-            auto pt4 = std::chrono::system_clock::now(); // testing purposes
-            elapsed_time = pt4-pt3; // testing purposes
-            LOG(INFO) << "Time elapsed readslave task: " << elapsed_time.count(); // testing purposes
         }
     }
 
@@ -214,7 +194,6 @@ void *processSlave(void *)
     {
         if (readFlag == 1)
         {
-            auto pt5 = std::chrono::system_clock::now(); // testing purposes
             pthread_mutex_lock(&mutex_read);
             //LOG(INFO) << "New start...1";
 
@@ -223,9 +202,6 @@ void *processSlave(void *)
 
             readFlag = 0;
             pthread_mutex_unlock(&mutex_read);
-            auto pt6 = std::chrono::system_clock::now(); // testing purposes
-            elapsed_time = pt6-pt5; // testing purposes
-            LOG(INFO) << "Time elapsed processslave 1st task: " << elapsed_time.count(); // testing purposes
         }
 
         if (intermediateRequest.length() != 0)
@@ -234,11 +210,7 @@ void *processSlave(void *)
             try
             {
                 //LOG(INFO) << "intermediateRequest " << intermediateRequest;
-                auto pt7 = std::chrono::system_clock::now(); // testing purposes
                 request = nlohmann::json::parse(intermediateRequest);
-                auto pt8 = std::chrono::system_clock::now(); // testing purposes
-                elapsed_time = pt8-pt7; // testing purposes
-                LOG(INFO) << "Time elapsed processslave 2nd task: " << elapsed_time.count(); // testing purposes
             }
             catch (int ex)
             {
@@ -246,7 +218,6 @@ void *processSlave(void *)
                 throw JSON_PARSE_ERROR;
             }
             std::string type = request["type"].get<std::string>();
-            auto pt9 = std::chrono::system_clock::now(); // testing purposes
 
             if (type == "query")
             {
@@ -256,15 +227,11 @@ void *processSlave(void *)
             {
                 intermediateResponse = processTest(intermediateRequest);
             }
-            auto pt10 = std::chrono::system_clock::now(); // testing purposes
-            elapsed_time = pt10-pt9; // testing purposes
-            LOG(INFO) << "Time elapsed processslave 3rd task: " << elapsed_time.count(); // testing purposes
             intermediateRequest.clear();
         }
 
         if ((writeFlag == 0) && (intermediateResponse.length() != 0))
         {
-            auto pt11 = std::chrono::system_clock::now(); // testing purposes
             pthread_mutex_lock(&mutex_write);
 
             response = intermediateResponse;
@@ -273,9 +240,6 @@ void *processSlave(void *)
             writeFlag = 1;
 
             pthread_mutex_unlock(&mutex_write);
-            auto pt12 = std::chrono::system_clock::now(); // testing purposes
-            elapsed_time = pt12-pt11; // testing purposes
-            LOG(INFO) << "Time elapsed processslave 4th task: " << elapsed_time.count(); // testing purposes
         }
     }
 }
@@ -290,7 +254,6 @@ void *writeSlave(void *fifosout)
         {
             pthread_mutex_lock(&mutex_write);
             //LOG(INFO) << "New start...2";
-            auto pt13 = std::chrono::system_clock::now(); // testing purposes
             int fdOut = open((char *)fifosout, O_WRONLY);
             FILE *writeStream = NamedPipeOperations::openPipeToWrite(fdOut);
             
@@ -304,9 +267,6 @@ void *writeSlave(void *fifosout)
             NamedPipeOperations::closeWritePipe(writeStream, fdOut);
             close(fdOut);
             LOG(INFO) << "request wrapped up";
-            auto pt14 = std::chrono::system_clock::now(); // testing purposes
-            elapsed_time = pt14-pt13; // testing purposes
-            LOG(INFO) << "Time elapsed writeslave task: " << elapsed_time.count(); // testing purposes
         }
     }
 }
