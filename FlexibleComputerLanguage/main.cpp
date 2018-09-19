@@ -106,7 +106,11 @@ std::string processQuery(std::string requestString, nlohmann::json request)
 
         try
         {
+            auto pt15 = std::chrono::system_clock::now(); // testing purposes
             r = OTPParser::OTPJSONToNodeTree(otps);
+            auto pt16 = std::chrono::system_clock::now(); // testing purposes
+            elapsed_time = pt16-pt15;
+            LOG(INFO) << "Time elapsed processQuery 1st part: " << elapsed_time.count();
         }
         catch (int ex)
         {
@@ -115,6 +119,7 @@ std::string processQuery(std::string requestString, nlohmann::json request)
         }
 
         std::string queryResults = "";
+        auto pt17 = std::chrono::system_clock::now(); // testing purposes
         for (auto &data : nlohmann::json::iterator_wrapper(request["queries"]))
         {
             nlohmann::json query = data.value();
@@ -124,7 +129,11 @@ std::string processQuery(std::string requestString, nlohmann::json request)
 
             try
             {
+                auto pt19 = std::chrono::system_clock::now(); // testing purposes
                 result = run(r, queryString);
+                auto pt20 = std::chrono::system_clock::now(); // testing purposes
+                elapsed_time = pt20-pt19;
+                LOG(INFO) << "Time elapsed processQuery 2nd part: " << elapsed_time.count();
             }
             catch (int ex)
             {
@@ -142,6 +151,9 @@ std::string processQuery(std::string requestString, nlohmann::json request)
                 queryResults = queryResults + result;
             }
         }
+        auto pt18 = std::chrono::system_clock::now(); // testing purposes
+        elapsed_time = pt18-pt17;
+        LOG(INFO) << "Time elapsed processQuery 3rd part: " << elapsed_time.count();
         std::string response =
             "{\"reqId\": \"" + request["reqId"].get<std::string>() + "\", \"queries\": [" + queryResults + "]}";
         // PROCESS END
