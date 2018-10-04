@@ -11,9 +11,11 @@ COPY . ./FlexibleComputerLanguage
 
 WORKDIR ./FlexibleComputerLanguage
 
-RUN cmake .
-
 RUN cmake -version
+
+RUN ls
+
+RUN cmake .
 
 RUN make
 
