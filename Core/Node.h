@@ -23,6 +23,7 @@ protected:
 	PNODE p_FirstChild;
 	PNODE p_LastChild;
     PVOID p_CustomObj;
+    PENTITY p_EntityObj;
     
 	MULONG ul_ChildCount;
     
@@ -56,6 +57,7 @@ public:
 	MULONG GetMinimumChildWeight();
 	MULONG GetMaximumChildWeight();
     PVOID GetCustomObj();
+    PENTITY GetEntityObj();
     
 	// Set functions
 	void SetValue(PMCHAR pVal);
@@ -74,6 +76,7 @@ public:
 	void SetMinimumChildWeight(MULONG ulMinChildWeight);
 	void SetMaximumChildWeight(MULONG ulMinChildWeight);
     void SetCustomObj(PVOID obj);
+    void SetEntityObj(PENTITY obj);
     
     // Overridden from Entity
     virtual MSTRING ToString();
