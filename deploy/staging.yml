@@ -55,5 +55,5 @@
             BE_PORT: "{{ lookup('env','BE_PORT') }}"
             BE_MONGOLAB_URI: "{{ lookup('env','BE_MONGOLAB_URI') }}"
             BE_MONGOLAB_URI_TEST: "{{ lookup('env','BE_MONGOLAB_URI_TEST') }}"
-          volumes:
-            - backend_logs:/app/logs
+          # volumes:
+          #   - backend_logs:/app/logs
