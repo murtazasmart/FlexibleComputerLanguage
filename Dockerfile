@@ -19,7 +19,7 @@ RUN cmake .
 
 RUN make
 
-FROM alpine:3.7 AS app
+FROM alpine:3.7
 
 COPY --from=build ./FlexibleComputerLanguage/FlexibleComputerLanguage1 ./myapp/FlexibleComputerLanguage1
 
