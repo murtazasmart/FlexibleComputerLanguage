@@ -36,13 +36,15 @@
         become: true
         # shell: "$(/home/{{ ansible_user }}/.local/bin/aws ecr get-login --no-include-email --region ap-south-1)"
         shell: "$(/home/ubuntu/.local/bin/aws ecr get-login --no-include-email --region ap-south-1)"
-        environment:
+        environment: 
           AWS_ACCESS_KEY_ID: "{{ lookup('env','AWS_ACCESS_KEY_ID') }}"
           AWS_SECRET_ACCESS_KEY : "{{ lookup('env','AWS_SECRET_ACCESS_KEY') }}"
       - name: Create volume for docker
         become: true
         docker_volume:
           name: backend_logs
+      - name: Print name
+        shell: "echo {{ ansible_user }}"
       - name: Run docker
         become: true
         docker_container:
