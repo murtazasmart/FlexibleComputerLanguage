@@ -33,6 +33,9 @@
 #include <iostream>
 #include <memory>
 #include <pthread.h>
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
 
 //Testing purposes
 #include  <chrono>
@@ -94,13 +97,13 @@ std::string run(Node *root, MSTRING querycode)
     return ResultGenerator::CreateResult(pRESULT);
 }
 
-std::string processQuery(std::string requestString, nlohmann::json request)
+std::string processQuery(std::string requestString, Document request)
 {
     // START
     std::string reqId = "0";
     try
     {
-        reqId = request["reqId"].get<std::string>();
+        reqId = request["reqId"].GetString();
         std::string otps = request["otp"].dump();
         Node *r;
 
@@ -115,10 +118,14 @@ std::string processQuery(std::string requestString, nlohmann::json request)
         }
 
         std::string queryResults = "";
-        for (auto &data : nlohmann::json::iterator_wrapper(request["queries"]))
+
+        Document queries;
+        queries.Parse(request["queries"]);
+        //for (auto &data : nlohmann::json::iterator_wrapper(request["queries"]))
+        for (Value::ConstMemberIterator data = queries.MemberBegin(); data != queries.MemberEnd(); ++data)
         {
-            nlohmann::json query = data.value();
-            std::string queryString = query.get<std::string>();
+            Document query = data.value();
+            std::string queryString = query.GetString();
             //             HAVE TO WRITE FUNCTION TO RETURN RESULT JSON
             std::string result;
 
@@ -143,7 +150,7 @@ std::string processQuery(std::string requestString, nlohmann::json request)
             }
         }
         std::string response =
-            "{\"reqId\": \"" + request["reqId"].get<std::string>() + "\", \"queries\": [" + queryResults + "]}";
+            "{\"reqId\": \"" + request["reqId"].GetString() + "\", \"queries\": [" + queryResults + "]}";
         // PROCESS END
         return response;
     }
@@ -206,18 +213,19 @@ void *processSlave(void *)
 
         if (intermediateRequest.length() != 0)
         {
-            nlohmann::json request;
+            //nlohmann::json request;
+            Document request;
             try
             {
                 //LOG(INFO) << "intermediateRequest " << intermediateRequest;
-                request = nlohmann::json::parse(intermediateRequest);
+                request.Parse(intermediateRequest);
             }
             catch (int ex)
             {
                 LOG(ERROR) << "Request:" << request;
                 throw JSON_PARSE_ERROR;
             }
-            std::string type = request["type"].get<std::string>();
+            std::string type = request["type"].GetString();
 
             if (type == "query")
             {

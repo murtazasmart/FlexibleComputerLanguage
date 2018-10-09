@@ -12,6 +12,6 @@
 class OTPParser
 {
   public:
-    static void createTDTree(nlohmann::json j, Node *parent);
+    static void createTDTree(Document j, Node *parent);
     static Node *OTPJSONToNodeTree(std::string otpsString);
 };

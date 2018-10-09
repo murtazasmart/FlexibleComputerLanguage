@@ -13,16 +13,19 @@
 #include "MetaData.h"
 #include "Strings.h"
 #include "Entity.h"
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
 
 //Testing purposes
 #include  <chrono>
 
 // This will iter add oobject to a tree and return tree at the end
 
-void OTPParser::createTDTree(nlohmann::json j, Node *parent)
+void OTPParser::createTDTree(Document j, Node *parent)
 {
     int id = 0;
-    for (auto &data : nlohmann::json::iterator_wrapper(j))
+    for (Value::ConstMemberIterator data = j.MemberBegin(); data != j.MemberEnd(); ++data)
     {
         nlohmann::json jsonvalue = data.value();
         if (jsonvalue.is_object() || jsonvalue.is_array())
@@ -54,38 +57,44 @@ Node *OTPParser::OTPJSONToNodeTree(std::string otpsString)
 {
     int id = 0;
     //auto start_1 = std::chrono::system_clock::now();
-    nlohmann::json otps = nlohmann::json::parse(otpsString);
+    Document otps;
+    otps.Parse(otpsString);
     //auto end_1 = std::chrono::system_clock::now();
     //std::chrono::duration<double> elapsed_1 = end_1 - start_1;
     //std::cout << "First " << elapsed_1.count() << std::endl;
     Node *root = MemoryManager::Inst.CreateNode(++id);
     int i = 0, j = 0, k = 0;
     //auto start_2 = std::chrono::system_clock::now();
-    for (auto &tp : nlohmann::json::iterator_wrapper(otps[0]))
+    for (Value::ConstValueIterator tp = otps[0].Begin(); tp != otps[0].End(); ++tp)
     {
-        nlohmann::json tpjson = tp.value();
+        Document tpjson;
+        tpjson.Parse(tp.value());
         Node *tpnode = MemoryManager::Inst.CreateNode(++id);
-        tpnode->SetValue((char *)tpjson["stageID"].get<std::string>().c_str());
+        tpnode->SetValue((char *)tpjson["stageID"].GetString().c_str());
         root->AppendNode(tpnode);
         //auto start_3 = std::chrono::system_clock::now();
-        for (auto &tdp : nlohmann::json::iterator_wrapper(tpjson["traceabilityDataPackets"]))
+        for (Value::ConstMemberIterator tdp = tpjson["traceabilityDataPackets"].MemberBegin(); tdp != tpjson["traceabilityDataPackets"].MemberEnd(); ++tdp)
         {
-            nlohmann::json tdpjson = tdp.value();
+            Document tdpjson;
+            tdpjson.Parse(tdp.value());
             Node *tdpnode = MemoryManager::Inst.CreateNode(++id);
-            tdpnode->SetValue((char *)tdpjson["userID"].get<std::string>().c_str());
+            tdpnode->SetValue((char *)tdpjson["userID"].GetString().c_str());
             tpnode->AppendNode(tdpnode);
             //auto start_4 = std::chrono::system_clock::now();
-            for (auto &td : nlohmann::json::iterator_wrapper(tdpjson["traceabilityData"]))
+            for (Value::ConstMemberIterator td = tdpjson["traceabilityData"].MemberBegin(); td != tdpjson["traceabilityData"].MemberEnd(); ++td)
             {
-                nlohmann::json tdjson = td.value();
+                Document tdjson;
+                tdjson.Parse(td.value());
                 Node *tdnode = MemoryManager::Inst.CreateNode(++id);
                 tdpnode->AppendNode(tdnode);
-                tdnode->SetValue((char *)tdjson["key"].get<std::string>().c_str());
+                tdnode->SetValue((char *)tdjson["key"].GetString().c_str());
                 //                tdnode->SetValue((char *)"something is better");
-                if (tdjson["val"].is_object() || tdjson["val"].is_array())
+                if (tdjson["val"].IsObject() || tdjson["val"].IsArray())
                 {
                     //auto start_5 = std::chrono::system_clock::now();
-                    createTDTree(tdjson["val"], tdnode);
+                    Document val;
+                    val.Parse(tdjson["val"]);
+                    createTDTree(val, tdnode);
                     //auto end_5 = std::chrono::system_clock::now();
                     //std::chrono::duration<double> elapsed_5 = end_5 - start_5;
                     //std::cout << "Creating TD Tree " << elapsed_5.count() << std::endl;
@@ -105,7 +114,7 @@ Node *OTPParser::OTPJSONToNodeTree(std::string otpsString)
                     //                    tdnode->SetValue((char *)tdjson["val"].dump().c_str());
                 }
                 //                std::cout << (char *)std::to_string(tdjson["type"].get<int>()).c_str();
-                tdnode->SetRValue((char *)std::to_string(tdjson["type"].get<int>()).c_str());
+                tdnode->SetRValue((char *)std::to_string(tdjson["type"].GetInt()).c_str());
             }
             //auto end_4 = std::chrono::system_clock::now();
             //std::chrono::duration<double> elapsed_4 = end_4 - start_4;
