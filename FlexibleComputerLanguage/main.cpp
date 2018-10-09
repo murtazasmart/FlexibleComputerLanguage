@@ -46,6 +46,8 @@
 
 #define THREADS 3
 
+using namespace rapidjson;
+
 INITIALIZE_EASYLOGGINGPP
 
 // shared data

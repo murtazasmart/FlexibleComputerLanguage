@@ -8,6 +8,9 @@
 
 #include "json.hpp"
 #include "CommonIncludes.h"
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
 
 class OTPParser
 {

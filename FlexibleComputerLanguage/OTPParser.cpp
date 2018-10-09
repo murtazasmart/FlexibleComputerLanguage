@@ -20,6 +20,8 @@
 //Testing purposes
 #include  <chrono>
 
+using namespace rapidjson;
+
 // This will iter add oobject to a tree and return tree at the end
 
 void OTPParser::createTDTree(Document j, Node *parent)
@@ -27,12 +29,13 @@ void OTPParser::createTDTree(Document j, Node *parent)
     int id = 0;
     for (Value::ConstMemberIterator data = j.MemberBegin(); data != j.MemberEnd(); ++data)
     {
-        nlohmann::json jsonvalue = data.value();
-        if (jsonvalue.is_object() || jsonvalue.is_array())
+        Document jsonvalue;
+        jsonvalue.Parse(data->value.GetString());
+        if (jsonvalue.IsObject() || jsonvalue.IsArray())
         {
             Node *datanode = MemoryManager::Inst.CreateNode(++id);
             //            std::cout << (char *)data.key().c_str();
-            datanode->SetValue((char *)data.key().c_str());
+            datanode->SetValue((char *)(data->name.GetString()).c_str());
             parent->AppendNode(datanode);
             createTDTree(jsonvalue, datanode);
         }
@@ -40,13 +43,13 @@ void OTPParser::createTDTree(Document j, Node *parent)
         {
             PString pStr = 0;
             MemoryManager::Inst.CreateObject(&pStr);
-            pStr->SetValue((char *)jsonvalue.dump().c_str());
+            pStr->SetValue((char *)(jsonvalue.dump()).c_str());
             Node *datanode = MemoryManager::Inst.CreateNode(++id);
             std::string val = jsonvalue.dump();
             //            std::replace(val.begin(), val.end(), '"', '\0');
             val.erase(std::remove(val.begin(), val.end(), '"'), val.end());
             datanode->SetEntityObj((PENTITY)pStr);
-            datanode->SetValue((char *)data.key().c_str());
+            datanode->SetValue((char *)(data->name.GetString()).c_str());
             datanode->SetLValue((char *)val.c_str());
             parent->AppendNode(datanode);
         }
