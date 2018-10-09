@@ -53,7 +53,7 @@
           name: grammar
           image: 453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/grammar
           restart: yes
-          restart_policy: always
+          restart_policy: on-failure
           state: started
           pull: yes
           volumes:
