@@ -34,8 +34,8 @@
           name: awscli
       - name: Get ECR login credentials and login with Docker
         become: true
-        # shell: "$(/home/{{ ansible_user }}/.local/bin/aws ecr get-login --no-include-email --region ap-south-1)"
-        shell: "$(/home/ubuntu/.local/bin/aws ecr get-login --no-include-email --region ap-south-1)"
+        shell: "$(/home/{{ ansible_user }}/.local/bin/aws ecr get-login --no-include-email --region ap-south-1)"
+        # shell: "$(/home/ubuntu/.local/bin/aws ecr get-login --no-include-email --region ap-south-1)"
         environment: 
           AWS_ACCESS_KEY_ID: "{{ lookup('env','AWS_ACCESS_KEY_ID') }}"
           AWS_SECRET_ACCESS_KEY : "{{ lookup('env','AWS_SECRET_ACCESS_KEY') }}"
@@ -43,31 +43,18 @@
         become: true
         docker_volume:
           name: backend_logs
-      - name: Print name
-        shell: "echo {{ ansible_user }}"
+      - name: Create volume for IPC named pipes
+        become: true
+        docker_volume:
+          name: ipc_named_pipes
       - name: Run docker
         become: true
         docker_container:
           name: grammar
           image: 453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/grammar
           restart: yes
+          restart_policy: on-failure
           state: started
           pull: yes
-          # name: tracified-backend
-          # image: 453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/tracified-backend-staging
-          # published_ports: "{{ lookup('env','BE_PORT') }}:{{ lookup('env','BE_PORT') }}"
-          # restart: yes
-          # state: started
-          # pull: yes
-          # env:
-          #   BE_PORT: "{{ lookup('env','BE_PORT') }}"
-          #   BE_MONGOLAB_URI: "{{ lookup('env','BE_MONGOLAB_URI') }}"
-          #   BE_MONGOLAB_URI_TEST: "{{ lookup('env','BE_MONGOLAB_URI_TEST') }}"
-          #   BE_JWT_SECRET: "{{ lookup('env','BE_JWT_SECRET') }}"
-          #   BE_WORKFLOW_URI: "{{ lookup('env','BE_WORKFLOW_URI') }}"
-          #   BE_CUSTGEN_URI: "{{ lookup('env','BE_CUSTGEN_URI') }}"
-          #   BE_ECOMGEN_URI: "{{ lookup('env','BE_ECOMGEN_URI') }}"
-          #   BE_DEFAULTTRACEABILITYPROFILEQUERYLIMIT: "{{ lookup('env','BE_DEFAULTTRACEABILITYPROFILEQUERYLIMIT') }}"
-          #   BE_DEFAULTTRACEABILITYPROFILEQUERYPAGE: "{{ lookup('env','BE_DEFAULTTRACEABILITYPROFILEQUERYPAGE') }}"
-          # volumes:
-          #   - backend_logs:/app/logs
+          volumes:
+            - ipc_named_pipes:/tmp
