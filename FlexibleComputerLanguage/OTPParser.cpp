@@ -14,6 +14,9 @@
 #include "Strings.h"
 #include "Entity.h"
 
+//Testing purposes
+#include  <chrono>
+
 // This will iter add oobject to a tree and return tree at the end
 
 void OTPParser::createTDTree(nlohmann::json j, Node *parent)
@@ -50,21 +53,28 @@ void OTPParser::createTDTree(nlohmann::json j, Node *parent)
 Node *OTPParser::OTPJSONToNodeTree(std::string otpsString)
 {
     int id = 0;
+    //auto start_1 = std::chrono::system_clock::now();
     nlohmann::json otps = nlohmann::json::parse(otpsString);
+    //auto end_1 = std::chrono::system_clock::now();
+    //std::chrono::duration<double> elapsed_1 = end_1 - start_1;
+    //std::cout << "First " << elapsed_1.count() << std::endl;
     Node *root = MemoryManager::Inst.CreateNode(++id);
     int i = 0, j = 0, k = 0;
+    //auto start_2 = std::chrono::system_clock::now();
     for (auto &tp : nlohmann::json::iterator_wrapper(otps[0]))
     {
         nlohmann::json tpjson = tp.value();
         Node *tpnode = MemoryManager::Inst.CreateNode(++id);
         tpnode->SetValue((char *)tpjson["stageID"].get<std::string>().c_str());
         root->AppendNode(tpnode);
+        //auto start_3 = std::chrono::system_clock::now();
         for (auto &tdp : nlohmann::json::iterator_wrapper(tpjson["traceabilityDataPackets"]))
         {
             nlohmann::json tdpjson = tdp.value();
             Node *tdpnode = MemoryManager::Inst.CreateNode(++id);
             tdpnode->SetValue((char *)tdpjson["userID"].get<std::string>().c_str());
             tpnode->AppendNode(tdpnode);
+            //auto start_4 = std::chrono::system_clock::now();
             for (auto &td : nlohmann::json::iterator_wrapper(tdpjson["traceabilityData"]))
             {
                 nlohmann::json tdjson = td.value();
@@ -74,7 +84,11 @@ Node *OTPParser::OTPJSONToNodeTree(std::string otpsString)
                 //                tdnode->SetValue((char *)"something is better");
                 if (tdjson["val"].is_object() || tdjson["val"].is_array())
                 {
+                    //auto start_5 = std::chrono::system_clock::now();
                     createTDTree(tdjson["val"], tdnode);
+                    //auto end_5 = std::chrono::system_clock::now();
+                    //std::chrono::duration<double> elapsed_5 = end_5 - start_5;
+                    //std::cout << "Creating TD Tree " << elapsed_5.count() << std::endl;
                 }
                 else
                 {
@@ -93,7 +107,16 @@ Node *OTPParser::OTPJSONToNodeTree(std::string otpsString)
                 //                std::cout << (char *)std::to_string(tdjson["type"].get<int>()).c_str();
                 tdnode->SetRValue((char *)std::to_string(tdjson["type"].get<int>()).c_str());
             }
+            //auto end_4 = std::chrono::system_clock::now();
+            //std::chrono::duration<double> elapsed_4 = end_4 - start_4;
+            //std::cout << "Inner 2nd for " << elapsed_4.count() << std::endl;
         }
+        //auto end_3 = std::chrono::system_clock::now();
+        //std::chrono::duration<double> elapsed_3 = end_3 - start_3;
+        //std::cout << "Inner 1st for " << elapsed_3.count() << std::endl;
     }
+    //auto end_2 = std::chrono::system_clock::now();
+    //std::chrono::duration<double> elapsed_2 = end_2 - start_2;
+    //std::cout << "Outer for " << elapsed_2.count() << std::endl;
     return root;
 }
