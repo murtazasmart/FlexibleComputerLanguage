@@ -16,6 +16,10 @@ std::string ResultGenerator::TypeFormatting(std::string result, int type)
     case 0:
     {
         std::replace(result.begin(), result.end(), '"', ' ');
+
+        if(result.length()==0){
+            result = "\"\"" ;
+        }
         return result;
     }
     case 1:

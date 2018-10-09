@@ -2,12 +2,19 @@
 tests/
 cmake-build-debug/
 .idea
+.vscode
 
 # CMake removed
 # CMakeLists.txt
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
 
 # Remove XCode related files
 FlexibleComputerLanguage.xcodeproj/
+FlexibleComputerLanguage1
 
 # Remove log files
 logs
+*.log
