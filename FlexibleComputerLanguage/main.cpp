@@ -54,7 +54,7 @@ std::string run(Node* root, MSTRING querycode)
     // list->push_back(new String("dabc"));
     DefFileReader dfr;
     // CAUTION: This file path is hardcoded and can cause crashes. You have been warned!
-    MetaData* pMD = dfr.Read("/home/ubuntu/Defs.txt");
+    MetaData* pMD = dfr.Read("Defs.txt");
     ScriptReader sr;
     ScriptReaderOutput op;
 //    bool bSucc = sr.ProcessScript(pMD->s_RuleFileName, pMD, op);
