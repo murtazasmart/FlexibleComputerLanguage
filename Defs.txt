@@ -1,4 +1,4 @@
-DEF	RULE_FILE_NAME					/Users/MurtazaA/99X/Backend/MurtazaQLVersion/FlexibleComputerLanguage/tests/test6/script.txt
+DEF	RULE_FILE_NAME					/home/murtaza/99X/C++/FlexibleComputerLanguage/tests/Script.txt
 DEF	LINE_CONTINUATION_STRING			__
 DEF	FUNCTION_SEPERATOR				.
 DEF	EQUAL_SIGN					:=
@@ -143,3 +143,9 @@ DEF	STRINGTOINTEGER					StringToInteger
 DEF	GET_STRING					GetStringVar
 DEF	GET_INTEGER					GetIntegerVar
 DEF	STRINGTOBOOLEAN					StringToBoolean
+DEF	GET_COMMA					GetComma
+DEF	GET_BOOLEAN					GetBooleanVar
+DEF	SET_BOOL					SetBoolean
+DEF	TO_FALSE					ToFalse
+DEF	TO_TRUE						ToTrue
+DEF	NEXT_SIBLING					NextSibling
