@@ -57,5 +57,5 @@
           state: started
           pull: yes
           volumes:
-            - ipc_named_pipes:myapp/tmp
-            - grammar_logs:myapp/logs
+            - ipc_named_pipes:/myapp/tmp
+            - grammar_logs:/myapp/logs
