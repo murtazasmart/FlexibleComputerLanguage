@@ -46,7 +46,7 @@
 
 #define THREADS 3
 
-using namespace rapidjson;
+//using namespace rapidjson;
 
 INITIALIZE_EASYLOGGINGPP
 
@@ -99,14 +99,14 @@ std::string run(Node *root, MSTRING querycode)
     return ResultGenerator::CreateResult(pRESULT);
 }
 
-std::string processQuery(std::string requestString, Document request)
+std::string processQuery(std::string requestString, rapidjson::Document& request)
 {
     // START
     std::string reqId = "0";
     try
     {
         reqId = request["reqId"].GetString();
-        std::string otps = request["otp"].dump();
+        std::string otps = request["otp"].GetString();
         Node *r;
 
         try
@@ -115,18 +115,19 @@ std::string processQuery(std::string requestString, Document request)
         }
         catch (int ex)
         {
-            LOG(ERROR) << "Request:" << request;
+            LOG(ERROR) << "Request:" << (std::string)request.GetString();
             throw JSON_TO_NODE_TREE_ERROR;
         }
 
         std::string queryResults = "";
 
-        Document queries;
-        queries.Parse(request["queries"]);
+        rapidjson::Document queries;
+        queries.Parse(request["queries"].GetString());
         //for (auto &data : nlohmann::json::iterator_wrapper(request["queries"]))
-        for (Value::ConstMemberIterator data = queries.MemberBegin(); data != queries.MemberEnd(); ++data)
+        for (rapidjson::Value::ConstMemberIterator data = queries.MemberBegin(); data != queries.MemberEnd(); ++data)
         {
-            Document query = data.value();
+            rapidjson::Document query;
+            query.Parse(data->value.GetString());
             std::string queryString = query.GetString();
             //             HAVE TO WRITE FUNCTION TO RETURN RESULT JSON
             std::string result;
@@ -151,8 +152,9 @@ std::string processQuery(std::string requestString, Document request)
                 queryResults = queryResults + result;
             }
         }
+        std::string resReqId = request["reqId"].GetString();
         std::string response =
-            "{\"reqId\": \"" + request["reqId"].GetString() + "\", \"queries\": [" + queryResults + "]}";
+            "{\"reqId\": \"" + resReqId + "\", \"queries\": [" + queryResults + "]}";
         // PROCESS END
         return response;
     }
@@ -216,15 +218,15 @@ void *processSlave(void *)
         if (intermediateRequest.length() != 0)
         {
             //nlohmann::json request;
-            Document request;
+            rapidjson::Document request;
             try
             {
                 //LOG(INFO) << "intermediateRequest " << intermediateRequest;
-                request.Parse(intermediateRequest);
+                request.Parse(intermediateRequest.c_str());
             }
             catch (int ex)
             {
-                LOG(ERROR) << "Request:" << request;
+                LOG(ERROR) << "Request:" << (std::string)request.GetString();
                 throw JSON_PARSE_ERROR;
             }
             std::string type = request["type"].GetString();

@@ -12,9 +12,11 @@
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
 
+// using namespace rapidjson;
+
 class OTPParser
 {
   public:
-    static void createTDTree(Document j, Node *parent);
+    static void createTDTree(rapidjson::Document& j, Node *parent);
     static Node *OTPJSONToNodeTree(std::string otpsString);
 };

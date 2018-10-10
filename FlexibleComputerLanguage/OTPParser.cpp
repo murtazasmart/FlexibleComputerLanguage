@@ -20,22 +20,22 @@
 //Testing purposes
 #include  <chrono>
 
-using namespace rapidjson;
+// using namespace rapidjson;
 
 // This will iter add oobject to a tree and return tree at the end
 
-void OTPParser::createTDTree(Document j, Node *parent)
+void OTPParser::createTDTree(rapidjson::Document& j, Node *parent)
 {
     int id = 0;
-    for (Value::ConstMemberIterator data = j.MemberBegin(); data != j.MemberEnd(); ++data)
+    for (rapidjson::Value::ConstMemberIterator data = j.MemberBegin(); data != j.MemberEnd(); ++data)
     {
-        Document jsonvalue;
+        rapidjson::Document jsonvalue;
         jsonvalue.Parse(data->value.GetString());
         if (jsonvalue.IsObject() || jsonvalue.IsArray())
         {
             Node *datanode = MemoryManager::Inst.CreateNode(++id);
             //            std::cout << (char *)data.key().c_str();
-            datanode->SetValue((char *)(data->name.GetString()).c_str());
+            datanode->SetValue((char *)data->name.GetString());
             parent->AppendNode(datanode);
             createTDTree(jsonvalue, datanode);
         }
@@ -43,13 +43,13 @@ void OTPParser::createTDTree(Document j, Node *parent)
         {
             PString pStr = 0;
             MemoryManager::Inst.CreateObject(&pStr);
-            pStr->SetValue((char *)(jsonvalue.dump()).c_str());
+            pStr->SetValue(jsonvalue.GetString());
             Node *datanode = MemoryManager::Inst.CreateNode(++id);
-            std::string val = jsonvalue.dump();
+            std::string val = jsonvalue.GetString();
             //            std::replace(val.begin(), val.end(), '"', '\0');
             val.erase(std::remove(val.begin(), val.end(), '"'), val.end());
             datanode->SetEntityObj((PENTITY)pStr);
-            datanode->SetValue((char *)(data->name.GetString()).c_str());
+            datanode->SetValue((char *)data->name.GetString());
             datanode->SetLValue((char *)val.c_str());
             parent->AppendNode(datanode);
         }
@@ -60,43 +60,43 @@ Node *OTPParser::OTPJSONToNodeTree(std::string otpsString)
 {
     int id = 0;
     //auto start_1 = std::chrono::system_clock::now();
-    Document otps;
-    otps.Parse(otpsString);
+    rapidjson::Document otps;
+    otps.Parse(otpsString.c_str());
     //auto end_1 = std::chrono::system_clock::now();
     //std::chrono::duration<double> elapsed_1 = end_1 - start_1;
     //std::cout << "First " << elapsed_1.count() << std::endl;
     Node *root = MemoryManager::Inst.CreateNode(++id);
     int i = 0, j = 0, k = 0;
     //auto start_2 = std::chrono::system_clock::now();
-    for (Value::ConstValueIterator tp = otps[0].Begin(); tp != otps[0].End(); ++tp)
+    for (rapidjson::Value::ConstMemberIterator tp = otps[0].MemberBegin(); tp != otps[0].MemberEnd(); ++tp)
     {
-        Document tpjson;
-        tpjson.Parse(tp.value());
+        rapidjson::Document tpjson;
+        tpjson.Parse(tp->value.GetString());
         Node *tpnode = MemoryManager::Inst.CreateNode(++id);
-        tpnode->SetValue((char *)tpjson["stageID"].GetString().c_str());
+        tpnode->SetValue((char *)tpjson["stageID"].GetString());
         root->AppendNode(tpnode);
         //auto start_3 = std::chrono::system_clock::now();
-        for (Value::ConstMemberIterator tdp = tpjson["traceabilityDataPackets"].MemberBegin(); tdp != tpjson["traceabilityDataPackets"].MemberEnd(); ++tdp)
+        for (rapidjson::Value::ConstValueIterator tdp = tpjson["traceabilityDataPackets"].Begin(); tdp != tpjson["traceabilityDataPackets"].End(); ++tdp)
         {
-            Document tdpjson;
-            tdpjson.Parse(tdp.value());
+            rapidjson::Document tdpjson;
+            tdpjson.Parse(tdp->GetString());
             Node *tdpnode = MemoryManager::Inst.CreateNode(++id);
-            tdpnode->SetValue((char *)tdpjson["userID"].GetString().c_str());
+            tdpnode->SetValue((char *)tdpjson["userID"].GetString());
             tpnode->AppendNode(tdpnode);
             //auto start_4 = std::chrono::system_clock::now();
-            for (Value::ConstMemberIterator td = tdpjson["traceabilityData"].MemberBegin(); td != tdpjson["traceabilityData"].MemberEnd(); ++td)
+            for (rapidjson::Value::ConstValueIterator td = tdpjson["traceabilityData"].Begin(); td != tdpjson["traceabilityData"].End(); ++td)
             {
-                Document tdjson;
-                tdjson.Parse(td.value());
+                rapidjson::Document tdjson;
+                tdjson.Parse(td->GetString());
                 Node *tdnode = MemoryManager::Inst.CreateNode(++id);
                 tdpnode->AppendNode(tdnode);
-                tdnode->SetValue((char *)tdjson["key"].GetString().c_str());
+                tdnode->SetValue((char *)tdjson["key"].GetString());
                 //                tdnode->SetValue((char *)"something is better");
                 if (tdjson["val"].IsObject() || tdjson["val"].IsArray())
                 {
                     //auto start_5 = std::chrono::system_clock::now();
-                    Document val;
-                    val.Parse(tdjson["val"]);
+                    rapidjson::Document val;
+                    val.Parse(tdjson["val"].GetString());
                     createTDTree(val, tdnode);
                     //auto end_5 = std::chrono::system_clock::now();
                     //std::chrono::duration<double> elapsed_5 = end_5 - start_5;
@@ -106,10 +106,10 @@ Node *OTPParser::OTPJSONToNodeTree(std::string otpsString)
                 {
                     PString pStr = 0;
                     MemoryManager::Inst.CreateObject(&pStr);
-                    std::string val = tdjson["val"].dump();
+                    std::string val = tdjson["val"].GetString();
                     //                    std::replace(val.begin(), val.end(), '"', '\0');
                     val.erase(std::remove(val.begin(), val.end(), '"'), val.end());
-                    pStr->SetValue((char *)tdjson["val"].dump().c_str());
+                    pStr->SetValue(tdjson["val"].GetString());
                     tdnode->SetEntityObj((PENTITY)pStr);
                     tdnode->SetLValue((char *)val.c_str());
                     //                    std::cout << ((PENTITY)tdnode->GetEntityObj())->ul_Type;
