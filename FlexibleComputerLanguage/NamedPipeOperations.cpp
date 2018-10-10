@@ -88,7 +88,7 @@ int NamedPipeOperations::writeToPipe(int fd, std::string s)
     //    }
     FILE *stream;
     stream = fdopen(fd, "w");
-    std::cout << s.c_str();
+    std::cout << s.c_str() << std::endl;
     fprintf(stream, (char *)s.c_str());
     fclose(stream);
     close(fd);
