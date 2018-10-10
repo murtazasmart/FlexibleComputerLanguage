@@ -124,7 +124,8 @@ std::string processQuery(std::string requestString, nlohmann::json request)
         std::string response =
                 "{\"reqId\": \"" + request["reqId"].get<std::string>() + "\", \"queries\": [" + queryResults + "]}";
         // PROCESS END
-        return response;
+        // return response;
+        return "{\"reqId\": \"1\", \"queries\": [{\"type\": 4, \"val\": \"2018-08-05T12:07:28.607Z\"},{\"type\": 4, \"val\": \"Your product has been graded for ripeness/ maturity and size\"},{\"type\": 0, \"val\": true},{\"type\": 4, \"val\": \"Temperature : 10 - 12 Relative Humidity : 85%\"}]}"
     }
     catch (int ex)
     {
