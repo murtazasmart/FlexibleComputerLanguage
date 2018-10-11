@@ -175,7 +175,8 @@ void *readSlave(void *fifosin)
 
             if (requestString.length() != 0)
             {
-                // LOG(INFO) << "requestString " << requestString;
+                LOG(INFO) << "requestString " << requestString;
+                LOG(INFO) << "Something was read";
                 readFlag = 1;
             }
             pthread_mutex_unlock(&mutex_read);
@@ -196,7 +197,7 @@ void *processSlave(void *)
         if (readFlag == 1)
         {
             pthread_mutex_lock(&mutex_read);
-            //LOG(INFO) << "New start...1";
+            // LOG(INFO) << "New start...";
 
             intermediateRequest = requestString;
             requestString.clear();
