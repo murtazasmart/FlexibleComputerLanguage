@@ -42,7 +42,7 @@
       - name: Create volume for docker
         become: true
         docker_volume:
-          name: backend_logs
+          name: grammar_logs
       - name: Create volume for IPC named pipes
         become: true
         docker_volume:
@@ -58,3 +58,4 @@
           pull: yes
           volumes:
             - ipc_named_pipes:/tmp
+            - grammar_logs:/myapp/logs
