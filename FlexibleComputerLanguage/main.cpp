@@ -105,7 +105,7 @@ std::string processQuery(std::string requestString, rapidjson::Document& request
     std::string reqId = "0";
     try
     {
-        LOG(ERROR) << "AA";
+        //LOG(ERROR) << "AA";
         reqId = request["reqId"].GetString();
         rapidjson::StringBuffer buffer;
         rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
@@ -116,26 +116,24 @@ std::string processQuery(std::string requestString, rapidjson::Document& request
 
         try
         {
-            LOG(ERROR) << "AAA";
+            //LOG(ERROR) << "AAA";
             r = OTPParser::OTPJSONToNodeTree(otps);
         }
         catch (int ex)
         {
-            request.Accept(writer);
-            LOG(ERROR) << "Request:" << buffer.GetString();
+            //request.Accept(writer);
+            //LOG(ERROR) << "Request:" << buffer.GetString();
             throw JSON_TO_NODE_TREE_ERROR;
         }
 
         std::string queryResults = "";
 
-        LOG(ERROR) << "AAAAA";
-        rapidjson::Document queries;
-        queries.Parse(request["queries"].GetString());
+        //LOG(ERROR) << "AAAAA";
+        rapidjson::Value& queries = request["queries"];
         //for (auto &data : nlohmann::json::iterator_wrapper(request["queries"]))
-        for (rapidjson::Value::ConstMemberIterator data = queries.MemberBegin(); data != queries.MemberEnd(); ++data)
+        for (rapidjson::Value::ConstValueIterator data = queries.Begin(); data != queries.End(); ++data)
         {
-            rapidjson::Document query;
-            query.Parse(data->value.GetString());
+            const rapidjson::Value& query = (*data);
             std::string queryString = query.GetString();
             //             HAVE TO WRITE FUNCTION TO RETURN RESULT JSON
             std::string result;
@@ -146,8 +144,8 @@ std::string processQuery(std::string requestString, rapidjson::Document& request
             }
             catch (int ex)
             {
-                LOG(ERROR) << "OTPS:" << otps;
-                LOG(ERROR) << "QueryString:" << queryString;
+                //LOG(ERROR) << "OTPS:" << otps;
+                //LOG(ERROR) << "QueryString:" << queryString;
                 throw QUERY_LANGUAGE_ERROR;
             }
 
@@ -193,7 +191,7 @@ void *readSlave(void *fifosin)
 
             if (requestString.length() != 0)
             {
-                LOG(INFO) << "requestString " << requestString;
+                //LOG(INFO) << "requestString " << requestString;
                 readFlag = 1;
             }
             pthread_mutex_unlock(&mutex_read);
@@ -229,19 +227,19 @@ void *processSlave(void *)
             rapidjson::Document request;
             try
             {
-                LOG(INFO) << "intermediateRequest " << intermediateRequest;
+                //LOG(INFO) << "intermediateRequest " << intermediateRequest;
                 request.Parse(intermediateRequest.c_str());
-                rapidjson::StringBuffer buffer;
-                rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-                request.Accept(writer);
-                LOG(INFO)  << "Request:" << buffer.GetString();
+                //rapidjson::StringBuffer buffer;
+                //rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+                //request.Accept(writer);
+                //LOG(INFO)  << "Request:" << buffer.GetString();
             }
             catch (int ex)
             {
                 LOG(ERROR) << "Request:" << (std::string)request.GetString();
                 throw JSON_PARSE_ERROR;
             }
-            LOG(ERROR) << "A";
+            //LOG(ERROR) << "A";
             std::string type = request["type"].GetString();
             if (type == "query")
             {
