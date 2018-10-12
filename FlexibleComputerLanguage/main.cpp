@@ -105,22 +105,30 @@ std::string processQuery(std::string requestString, rapidjson::Document& request
     std::string reqId = "0";
     try
     {
+        LOG(ERROR) << "AA";
         reqId = request["reqId"].GetString();
-        std::string otps = request["otp"].GetString();
+        rapidjson::StringBuffer buffer;
+        rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+        request["otp"].Accept(writer);
+        std::string otps = buffer.GetString();
+
         Node *r;
 
         try
         {
+            LOG(ERROR) << "AAA";
             r = OTPParser::OTPJSONToNodeTree(otps);
         }
         catch (int ex)
         {
-            LOG(ERROR) << "Request:" << (std::string)request.GetString();
+            request.Accept(writer);
+            LOG(ERROR) << "Request:" << buffer.GetString();
             throw JSON_TO_NODE_TREE_ERROR;
         }
 
         std::string queryResults = "";
 
+        LOG(ERROR) << "AAAAA";
         rapidjson::Document queries;
         queries.Parse(request["queries"].GetString());
         //for (auto &data : nlohmann::json::iterator_wrapper(request["queries"]))
@@ -185,7 +193,7 @@ void *readSlave(void *fifosin)
 
             if (requestString.length() != 0)
             {
-                // LOG(INFO) << "requestString " << requestString;
+                LOG(INFO) << "requestString " << requestString;
                 readFlag = 1;
             }
             pthread_mutex_unlock(&mutex_read);
@@ -221,16 +229,20 @@ void *processSlave(void *)
             rapidjson::Document request;
             try
             {
-                //LOG(INFO) << "intermediateRequest " << intermediateRequest;
+                LOG(INFO) << "intermediateRequest " << intermediateRequest;
                 request.Parse(intermediateRequest.c_str());
+                rapidjson::StringBuffer buffer;
+                rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+                request.Accept(writer);
+                LOG(INFO)  << "Request:" << buffer.GetString();
             }
             catch (int ex)
             {
                 LOG(ERROR) << "Request:" << (std::string)request.GetString();
                 throw JSON_PARSE_ERROR;
             }
+            LOG(ERROR) << "A";
             std::string type = request["type"].GetString();
-
             if (type == "query")
             {
                 intermediateResponse = processQuery(intermediateRequest, request);

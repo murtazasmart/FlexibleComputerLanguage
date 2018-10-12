@@ -13,9 +13,11 @@
 #include "MetaData.h"
 #include "Strings.h"
 #include "Entity.h"
+#include "easylogging++.h"
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
+#include "stdbool.h"
 
 //Testing purposes
 #include  <chrono>
@@ -24,13 +26,14 @@
 
 // This will iter add oobject to a tree and return tree at the end
 
-void OTPParser::createTDTree(rapidjson::Document& j, Node *parent)
+void OTPParser::createTDTree(rapidjson::Value& j, Node *parent)
 {
     int id = 0;
+    LOG(INFO) << "Check and compare how nlohmann handles things here and emulate it with rapidjson";
     for (rapidjson::Value::ConstMemberIterator data = j.MemberBegin(); data != j.MemberEnd(); ++data)
     {
-        rapidjson::Document jsonvalue;
-        jsonvalue.Parse(data->value.GetString());
+        rapidjson::Value& jsonvalue = j[data->name.GetString()];
+        LOG(INFO)<<"BBB "<< data->name.GetString();
         if (jsonvalue.IsObject() || jsonvalue.IsArray())
         {
             Node *datanode = MemoryManager::Inst.CreateNode(++id);
@@ -52,6 +55,7 @@ void OTPParser::createTDTree(rapidjson::Document& j, Node *parent)
             datanode->SetValue((char *)data->name.GetString());
             datanode->SetLValue((char *)val.c_str());
             parent->AppendNode(datanode);
+            LOG(INFO)<<"BBBBB " << jsonvalue.GetString();
         }
     }
 }
@@ -68,39 +72,67 @@ Node *OTPParser::OTPJSONToNodeTree(std::string otpsString)
     Node *root = MemoryManager::Inst.CreateNode(++id);
     int i = 0, j = 0, k = 0;
     //auto start_2 = std::chrono::system_clock::now();
+
     for (rapidjson::Value::ConstMemberIterator tp = otps[0].MemberBegin(); tp != otps[0].MemberEnd(); ++tp)
     {
-        rapidjson::Document tpjson;
-        tpjson.Parse(tp->value.GetString());
+        rapidjson::Value& tpjson = otps[0][tp->name.GetString()];
         Node *tpnode = MemoryManager::Inst.CreateNode(++id);
+        LOG(ERROR) << "stageID " << tpjson["stageID"].GetString();
         tpnode->SetValue((char *)tpjson["stageID"].GetString());
         root->AppendNode(tpnode);
         //auto start_3 = std::chrono::system_clock::now();
         for (rapidjson::Value::ConstValueIterator tdp = tpjson["traceabilityDataPackets"].Begin(); tdp != tpjson["traceabilityDataPackets"].End(); ++tdp)
         {
-            rapidjson::Document tdpjson;
-            tdpjson.Parse(tdp->GetString());
+            //rapidjson::Document tdpjson;
+            //tdpjson.Parse(tdp->GetString());
+            const rapidjson::Value& tdpjson = (*tdp);
             Node *tdpnode = MemoryManager::Inst.CreateNode(++id);
             tdpnode->SetValue((char *)tdpjson["userID"].GetString());
             tpnode->AppendNode(tdpnode);
             //auto start_4 = std::chrono::system_clock::now();
             for (rapidjson::Value::ConstValueIterator td = tdpjson["traceabilityData"].Begin(); td != tdpjson["traceabilityData"].End(); ++td)
             {
-                rapidjson::Document tdjson;
-                tdjson.Parse(td->GetString());
+                const rapidjson::Value& tdjson = (*td);
                 Node *tdnode = MemoryManager::Inst.CreateNode(++id);
-                tdpnode->AppendNode(tdnode);
                 tdnode->SetValue((char *)tdjson["key"].GetString());
                 //                tdnode->SetValue((char *)"something is better");
                 if (tdjson["val"].IsObject() || tdjson["val"].IsArray())
                 {
+                    LOG(INFO)<<"B";
                     //auto start_5 = std::chrono::system_clock::now();
-                    rapidjson::Document val;
-                    val.Parse(tdjson["val"].GetString());
+                    rapidjson::Value& val = (rapidjson::Value&)tdjson["val"];
                     createTDTree(val, tdnode);
                     //auto end_5 = std::chrono::system_clock::now();
                     //std::chrono::duration<double> elapsed_5 = end_5 - start_5;
                     //std::cout << "Creating TD Tree " << elapsed_5.count() << std::endl;
+                }
+                else if (tdjson["val"].IsBool())
+                {
+                    PString pStr = 0;
+                    MemoryManager::Inst.CreateObject(&pStr);
+                    bool val = tdjson["val"].GetBool();
+                    std::string val_bool = val? "true": "false";
+                    pStr->SetValue(val? "true": "false");
+                    tdnode->SetEntityObj((PENTITY)pStr);
+                    tdnode->SetLValue((char *)val_bool.c_str());
+                }
+                else if (tdjson["val"].IsInt())
+                {
+                    PString pStr = 0;
+                    MemoryManager::Inst.CreateObject(&pStr);
+                    int val = tdjson["val"].GetInt();
+                    pStr->SetValue(std::to_string(val));
+                    tdnode->SetEntityObj((PENTITY)pStr);
+                    tdnode->SetLValue((char *)std::to_string(val).c_str());
+                }
+                else if (tdjson["val"].IsFloat())
+                {
+                    PString pStr = 0;
+                    MemoryManager::Inst.CreateObject(&pStr);
+                    float val = tdjson["val"].GetFloat();
+                    pStr->SetValue(std::to_string(val));
+                    tdnode->SetEntityObj((PENTITY)pStr);
+                    tdnode->SetLValue((char *)std::to_string(val).c_str());
                 }
                 else
                 {
