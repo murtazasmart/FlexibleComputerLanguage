@@ -35,7 +35,7 @@
 #include <pthread.h>
 
 //Testing purposes
-#include  <chrono>
+#include <chrono>
 
 #define JSON_PARSE_ERROR 1
 #define JSON_TO_NODE_TREE_ERROR 2
@@ -72,7 +72,7 @@ std::string run(Node *root, MSTRING querycode)
     // list->push_back(new String("dabc"));
     DefFileReader dfr;
     // CAUTION: This file path is hardcoded and can cause crashes. You have been warned!
-    MetaData* pMD = dfr.Read("Defs.txt");
+    MetaData *pMD = dfr.Read("Defs.txt");
     ScriptReader sr;
     ScriptReaderOutput op;
     //    bool bSucc = sr.ProcessScript(pMD->s_RuleFileName, pMD, op);
@@ -237,7 +237,7 @@ void *processSlave(void *)
             pthread_mutex_lock(&mutex_write);
 
             response = intermediateResponse;
-            //LOG(INFO) << "intermediateResponse " << intermediateResponse;
+            // LOG(INFO) << "intermediateResponse " << intermediateResponse;
             intermediateResponse.clear();
             writeFlag = 1;
 
@@ -258,10 +258,10 @@ void *writeSlave(void *fifosout)
             //LOG(INFO) << "New start...2";
             int fdOut = open((char *)fifosout, O_WRONLY);
             FILE *writeStream = NamedPipeOperations::openPipeToWrite(fdOut);
-            
+
             NamedPipeOperations::writeToPipe((FILE *)writeStream, response);
 
-            //LOG(INFO) << "response " << response;
+            LOG(INFO) << "response " << response;
             response.clear();
             writeFlag = 0;
             pthread_mutex_unlock(&mutex_write);
