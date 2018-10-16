@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include "ResultGenerator.h"
+#include "easylogging++.h"
 
 std::string ResultGenerator::TypeFormatting(std::string result, int type)
 {
@@ -133,6 +134,7 @@ std::string ResultGenerator::ValueFormatting(Node *result)
     }
     else if (typeString.compare("normal") == 0)
     {
+        LOG(ERROR) << result->GetAggregatedValue();
         stringResult = TypeFormatting((result->GetValue() != 0) ? result->GetValue() : "", atoi(result->GetRVal()));
     }
     return stringResult;

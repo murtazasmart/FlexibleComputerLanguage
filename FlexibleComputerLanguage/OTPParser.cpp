@@ -148,7 +148,7 @@ Node *OTPParser::OTPJSONToNodeTree(std::string otpsString)
                     PString pStr = 0;
                     MemoryManager::Inst.CreateObject(&pStr);
                     bool val = tdjson["val"].GetBool();
-                    std::string val_bool = val ? "true" : "false";
+                    std::string val_bool = (val ? "true" : "false");
                     pStr->SetValue(val ? "true" : "false");
                     tdnode->SetEntityObj((PENTITY)pStr);
                     tdnode->SetLValue((char *)val_bool.c_str());
