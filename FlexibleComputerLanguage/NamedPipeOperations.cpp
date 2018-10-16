@@ -12,7 +12,7 @@
 #include <sys/types.h>
 #include <stdio.h>
 
-#define BUF_SIZE 100000
+#define BUF_SIZE 1000000
 
 std::string NamedPipeOperations::readFromPipe(FILE *stream)
 {
