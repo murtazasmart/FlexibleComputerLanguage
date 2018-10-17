@@ -33,6 +33,9 @@
 #include <iostream>
 #include <memory>
 #include <pthread.h>
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
 
 //Testing purposes
 #include <chrono>
@@ -42,6 +45,8 @@
 #define QUERY_LANGUAGE_ERROR 3
 
 #define THREADS 3
+
+//using namespace rapidjson;
 
 INITIALIZE_EASYLOGGINGPP
 
@@ -95,31 +100,42 @@ std::string run(Node *root, MSTRING querycode)
     return ResultGenerator::CreateResult(pRESULT);
 }
 
-std::string processQuery(std::string requestString, nlohmann::json request)
+std::string processQuery(std::string requestString, rapidjson::Document& request)
 {
     // START
     std::string reqId = "0";
     try
     {
-        reqId = request["reqId"].get<std::string>();
-        std::string otps = request["otp"].dump();
+        //LOG(ERROR) << "AA";
+        reqId = request["reqId"].GetString();
+        rapidjson::StringBuffer buffer;
+        rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+        request["otp"].Accept(writer);
+        std::string otps = buffer.GetString();
+
         Node *r;
 
         try
         {
+            //LOG(ERROR) << "AAA";
             r = OTPParser::OTPJSONToNodeTree(otps);
         }
         catch (int ex)
         {
-            LOG(ERROR) << "Request:" << request;
+            //request.Accept(writer);
+            //LOG(ERROR) << "Request:" << buffer.GetString();
             throw JSON_TO_NODE_TREE_ERROR;
         }
 
         std::string queryResults = "";
-        for (auto &data : nlohmann::json::iterator_wrapper(request["queries"]))
+
+        //LOG(ERROR) << "AAAAA";
+        rapidjson::Value& queries = request["queries"];
+        //for (auto &data : nlohmann::json::iterator_wrapper(request["queries"]))
+        for (rapidjson::Value::ConstValueIterator data = queries.Begin(); data != queries.End(); ++data)
         {
-            nlohmann::json query = data.value();
-            std::string queryString = query.get<std::string>();
+            rapidjson::Value& query = (rapidjson::Value&)(*data);
+            std::string queryString = query.GetString();
             //             HAVE TO WRITE FUNCTION TO RETURN RESULT JSON
             std::string result;
 
@@ -129,8 +145,8 @@ std::string processQuery(std::string requestString, nlohmann::json request)
             }
             catch (int ex)
             {
-                LOG(ERROR) << "OTPS:" << otps;
-                LOG(ERROR) << "QueryString:" << queryString;
+                //LOG(ERROR) << "OTPS:" << otps;
+                //LOG(ERROR) << "QueryString:" << queryString;
                 throw QUERY_LANGUAGE_ERROR;
             }
 
@@ -143,8 +159,9 @@ std::string processQuery(std::string requestString, nlohmann::json request)
                 queryResults = queryResults + result;
             }
         }
+        std::string resReqId = request["reqId"].GetString();
         std::string response =
-            "{\"reqId\": \"" + request["reqId"].get<std::string>() + "\", \"queries\": [" + queryResults + "]}";
+            "{\"reqId\": \"" + resReqId + "\", \"queries\": [" + queryResults + "]}";
         // PROCESS END
         return response;
     }
@@ -175,8 +192,8 @@ void *readSlave(void *fifosin)
 
             if (requestString.length() != 0)
             {
-                LOG(INFO) << "requestString " << requestString;
-                LOG(INFO) << "Something was read";
+                // LOG(INFO) << "Something was read";
+                //LOG(INFO) << "requestString " << requestString;
                 readFlag = 1;
             }
             pthread_mutex_unlock(&mutex_read);
@@ -208,19 +225,24 @@ void *processSlave(void *)
 
         if (intermediateRequest.length() != 0)
         {
-            nlohmann::json request;
+            //nlohmann::json request;
+            rapidjson::Document request;
             try
             {
                 //LOG(INFO) << "intermediateRequest " << intermediateRequest;
-                request = nlohmann::json::parse(intermediateRequest);
+                request.Parse(intermediateRequest.c_str());
+                //rapidjson::StringBuffer buffer;
+                //rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+                //request.Accept(writer);
+                //LOG(INFO)  << "Request:" << buffer.GetString();
             }
             catch (int ex)
             {
-                LOG(ERROR) << "Request:" << request;
+                LOG(ERROR) << "Request:" << (std::string)request.GetString();
                 throw JSON_PARSE_ERROR;
             }
-            std::string type = request["type"].get<std::string>();
-
+            //LOG(ERROR) << "A";
+            std::string type = request["type"].GetString();
             if (type == "query")
             {
                 intermediateResponse = processQuery(intermediateRequest, request);
