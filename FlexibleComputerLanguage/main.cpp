@@ -133,7 +133,7 @@ std::string processQuery(std::string requestString, rapidjson::Document& request
         //for (auto &data : nlohmann::json::iterator_wrapper(request["queries"]))
         for (rapidjson::Value::ConstValueIterator data = queries.Begin(); data != queries.End(); ++data)
         {
-            const rapidjson::Value& query = (*data);
+            rapidjson::Value& query = (rapidjson::Value&)(*data);
             std::string queryString = query.GetString();
             //             HAVE TO WRITE FUNCTION TO RETURN RESULT JSON
             std::string result;
