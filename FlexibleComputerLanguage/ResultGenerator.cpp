@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include "ResultGenerator.h"
+#include "easylogging++.h"
 
 std::string ResultGenerator::TypeFormatting(std::string result, int type)
 {
