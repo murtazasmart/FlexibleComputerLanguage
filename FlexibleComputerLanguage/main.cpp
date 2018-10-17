@@ -239,7 +239,6 @@ void *processSlave(void *)
                 LOG(ERROR) << "Request:" << (std::string)request.GetString();
                 throw JSON_PARSE_ERROR;
             }
-            //LOG(ERROR) << "A";
             std::string type = request["type"].GetString();
             if (type == "query")
             {
