@@ -134,7 +134,6 @@ std::string ResultGenerator::ValueFormatting(Node *result)
     }
     else if (typeString.compare("normal") == 0)
     {
-        LOG(ERROR) << result->GetAggregatedValue();
         stringResult = TypeFormatting((result->GetValue() != 0) ? result->GetValue() : "", atoi(result->GetRVal()));
     }
     return stringResult;
