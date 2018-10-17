@@ -46,9 +46,14 @@ void OTPParser::createTDTree(rapidjson::Value &j, Node *parent)
             {
                 PString pStr = 0;
                 MemoryManager::Inst.CreateObject(&pStr);
-                pStr->SetValue(jsonvalue.GetString());
+                
+                rapidjson::StringBuffer buffer;
+                rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+                jsonvalue.Accept(writer);
+                pStr->SetValue(buffer.GetString());
+                
                 Node *datanode = MemoryManager::Inst.CreateNode(++id);
-                std::string val = jsonvalue.GetString();
+                std::string val = buffer.GetString();
                 //            std::replace(val.begin(), val.end(), '"', '\0');
                 val.erase(std::remove(val.begin(), val.end(), '"'), val.end());
                 datanode->SetEntityObj((PENTITY)pStr);
