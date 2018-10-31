@@ -1375,71 +1375,63 @@ PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, Execution
             pEntityList->Seek(1, false);
             currNode = (PNODE)pEntityList->GetCurrElem();
         }
-        
+
+        for (auto const& x : uniqueMap)
+        {
+            PNODE item = MemoryManager::Inst.CreateNode(999);
+            item->SetValue((char *)x.first.c_str());
+            item->SetLValue((char *)std::to_string(x.second).c_str());
+            pListRes->push_back(item);
+        }
+    }
+    else if(COMMAND_TYPE_SORT_NODE_LIST == ulCommand)
+    {
+        // ONLY FOR NODE LIST
+        MemoryManager::Inst.CreateObject(&pListRes);
+//		PInt pIntArg = (PInt)p_Arg;
+//		std::cout << pIntArg->GetValue();
+        pEntityList->SeekToBegin();
+        PNODE currNode = (PNODE)pEntityList->GetCurrElem();
+        std::map<std::string, int> uniqueMap;
+        while(currNode != 0)
+        {
+            std::string str;
+            str.assign(currNode->GetValue());
+            uniqueMap[str] =  std::stoi(currNode->GetLVal());
+            pEntityList->Seek(1, false);
+            currNode = (PNODE)pEntityList->GetCurrElem();
+        }
+
 //        for (auto const& x : uniqueMap)
 //        {
 //            std::cout << x.first  // string (key)
-//            << ':'
-//            << x.second // string's value
-//            << std::endl ;
+//                      << ':'
+//                      << x.second // string's value
+//                      << std::endl ;
 //        }
-        
-//        std::cout << *uniqueMap. << '\n';
-//        for (auto it = std::begin(uniqueMap); it!=std::end(bar); ++it)
-//            std::cout << ' ' << *it;
-        
-//        std::map<std::string, int> mymap;
-//        mymap["\"abc\""] = 1;
-//        mymap["\"qwe\""] = 4;
-//        mymap["\"uiop\""] = 2;
-//        mymap["\"xyz\""] = 5;
-        
+
         // Declaring the type of Predicate that accepts 2 pairs and return a bool
         typedef std::function<bool(std::pair<std::string, int>, std::pair<std::string, int>)> Comparator;
-        
+
         // Defining a lambda function to compare two pairs. It will compare two pairs using second field
         Comparator compFunctor =
-        [](std::pair<std::string, int> elem1 ,std::pair<std::string, int> elem2)
-        {
-            return elem1.second > elem2.second;
-        };
-        
+                [](std::pair<std::string, int> elem1 ,std::pair<std::string, int> elem2)
+                {
+                    return elem1.second >= elem2.second;
+                };
+
         // Declaring a set that will store the pairs using above comparision logic
-        std::set<std::pair<std::string, int>, Comparator> setOfSorted(                                                                      uniqueMap.begin(), uniqueMap.end(), compFunctor);
-        
-        std::cout << setOfSorted.size();
-        
+        std::set<std::pair<std::string, int>, Comparator> setOfSorted(uniqueMap.begin(), uniqueMap.end(), compFunctor);
+//        std::set<std::pair<std::string, int>, Comparator> setOfSorted(mymap.begin(), mymap.end(), compFunctor);
+
         // Iterate over a set using range base for loop
         // It will display the items in sorted order of values
         // Iterate through all elements in std::map
-         for (std::pair<std::string, int> element : setOfSorted){
-             std::cout << element.first << " :: " << element.second << std::endl;
-         }
-        
-//        // Declaring the type of Predicate that accepts 2 pairs and return a bool
-//        typedef std::function<bool(std::pair<std::string, int>, std::pair<std::string, int>)> Comparator;
-//
-//        // Defining a lambda function to compare two pairs. It will compare two pairs using second field
-//        Comparator compFunctor =
-//        [](std::pair<std::string, int> elem1 ,std::pair<std::string, int> elem2)
-//        {
-//            return elem1.second > elem2.second;
-//        };
-//
-//        // Declaring a set that will store the pairs using above comparision logic
-//        std::set<std::pair<std::string, int>, Comparator> setOfWords(
-//                                                                     uniqueMap.begin(), uniqueMap.end(), compFunctor);
-//
-//
-//
-//        for (std::pair<std::string, int> element : setOfWords)
-//            std::cout << element.first << " :: " << element.second << '\n';
-//        auto a = std::max_element(uniqueMap.begin(), uniqueMap.end(),
-//                                  [](const std::pair<int, int>& p1, const std::pair<int, int>& p2) {
-//                                      return p1.second < p2.second; });
-//        std::cout << a->first << a->second ;
-//        PNODE maxItem = 0;
-        for (auto const& x : uniqueMap)
+//        for (std::pair<std::string, int> element : setOfSorted){
+//            std::cout << element.first << " :: " << element.second << std::endl;
+//        }
+
+        for (auto const& x : setOfSorted)
         {
             PNODE item = MemoryManager::Inst.CreateNode(999);
             item->SetValue((char *)x.first.c_str());
