@@ -1439,6 +1439,21 @@ PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, Execution
             pListRes->push_back(item);
         }
     }
+    else if(COMMAND_TYPE_EXTRACT_NODE_LIST_TOP == ulCommand)
+    {
+        // ONLY FOR NODE LIST
+        MemoryManager::Inst.CreateObject(&pListRes);
+		String* pStrArg = (String*)pArg;
+		int pInt = atoi(pStrArg->GetValue().c_str());
+        pEntityList->SeekToBegin();
+        PNODE currNode = (PNODE)pEntityList->GetCurrElem();
+        for(int i = 0; i < pInt; i++)
+        {
+            pListRes->push_back(currNode->GetCopy());
+            pEntityList->Seek(1, false);
+            currNode = (PNODE)pEntityList->GetCurrElem();
+        }
+    }
     else if(COMMAND_TYPE_LIST_GROUP_SEQUENCE_BY == ulCommand)
     {
         bool firstKeyDetected = false;

@@ -150,3 +150,4 @@ DEF	TO_FALSE					ToFalse
 DEF	TO_TRUE						ToTrue
 DEF	NEXT_SIBLING					NextSibling
 DEF	SORT_NODE_LIST					SortNodeList
+DEF	EXTRACT_NODE_LIST_TOP				ExtractNodeListTop

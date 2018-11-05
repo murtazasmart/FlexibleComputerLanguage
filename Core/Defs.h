@@ -750,6 +750,7 @@
 #define     COMMAND_TYPE_GET_NEXT_ELEM                                  5009
 #define     COMMAND_TYPE_GET_UNIQUE_NODE_LIST_WITH_COUNT                5010
 #define     COMMAND_TYPE_SORT_NODE_LIST                                 5011
+#define     COMMAND_TYPE_EXTRACT_NODE_LIST_TOP                          5012
 
 // Special Commands
 #define		COMMAND_TYPE_ADDITIONAL_FUNCTION							10000
