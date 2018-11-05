@@ -158,7 +158,11 @@ PENTITY Command::Execute(PENTITY pEntity, ExecutionContext* pContext)
 	else
 	{
         if (ENTITY_TYPE_LIST == pEntity->ul_Type) {
-            return ExecuteListCommand(ul_CommandType, pEntity, pContext);
+			if(0 != p_Arg)
+			{
+				p_EntityArg = p_Arg->Execute(pContext);
+			}
+            return ExecuteListCommand(ul_CommandType, pEntity, pContext, p_EntityArg);
         } else if (ENTITY_TYPE_NODE == pEntity->ul_Type) {
             return ExecuteNodeCommand(ul_CommandType, pEntity, pContext);
         } else {
@@ -1270,7 +1274,7 @@ PENTITY Command::ExecuteNodeCommand(MULONG ulCommand, PENTITY pEntity, Execution
 	return 0;
 }
 
-PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, ExecutionContext* pContext)
+PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, ExecutionContext* pContext, PENTITY pArg)
 {
 	PENTITYLIST pEntityList = (PENTITYLIST)pEntity;
 	if(0 == pEntityList)
