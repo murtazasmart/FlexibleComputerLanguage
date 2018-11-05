@@ -1419,14 +1419,14 @@ PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, Execution
         // Defining a lambda function to compare two pairs. It will compare two pairs using second field
         Comparator compFunctor;
 		if (pStrArg != 0)
-                {
+		{
 			int pInt = atoi(pStrArg->GetValue().c_str());
 			if (pInt >= 0)
 			{
 				compFunctor = [](std::pair<std::string, int> elem1 ,std::pair<std::string, int> elem2)
 				{
-                    return elem1.second >= elem2.second;
-                };
+					return elem1.second >= elem2.second;
+				};
 			}
 			else if (pInt <= 0)
 			{
@@ -1557,6 +1557,28 @@ PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, Execution
             MemoryManager::Inst.CreateObject(&pNullRes);
         }
     }
+	// first handle the commands that would need to access the execution context
+	else if (COMMAND_TYPE_FILTER_SUBTREE == ulCommand) {
+        MemoryManager::Inst.CreateObject(&pListRes);
+        pEntityList->SeekToBegin();
+        PNODE currNode = (PNODE)pEntityList->GetCurrElem();
+        while(currNode != 0)
+        {
+            PENTITYLIST pNodeList = 0;
+            MemoryManager::Inst.CreateObject(&pNodeList);
+            FilterSubTree(currNode, p_Arg, pContext, pNodeList);
+            pListRes->SeekToBegin();
+            PNODE internalNode = (PNODE)pNodeList->GetCurrElem();
+            while(internalNode != 0)
+            {
+                pListRes->push_back(internalNode->GetCopy());
+                pNodeList->Seek(1, false);
+                internalNode = (PNODE)pNodeList->GetCurrElem();
+            }
+            pEntityList->Seek(1, false);
+            currNode = (PNODE)pEntityList->GetCurrElem();
+        }
+	}
 	else
 	{
         if(0 != p_Arg)
