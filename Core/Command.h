@@ -31,7 +31,7 @@ private:
 	PENTITY ExecuteStringCommand(MULONG ulCommand, PENTITY pEntity, PENTITY pArg);
 	PENTITY ExecuteIntCommand(MULONG ulCommand, PENTITY pEntity, PENTITY pArg);
 	PENTITY ExecuteBoolCommand(MULONG ulCommand, PENTITY pEntity, PENTITY pArg);
-	PENTITY ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, ExecutionContext* pContext);
+	PENTITY ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, ExecutionContext* pContext, PENTITY pArg);
 	PENTITY ExecuteEntityCommand(MULONG ulCommand, PENTITY pEntity, PENTITY pArg);
     PENTITY ExecuteDateTimeCommand(MULONG ulCommand, PENTITY pEntity, PENTITY pArg);
 	void	AddSubtreeToNodeList(PENTITYLIST pList, PNODE pRoot);
