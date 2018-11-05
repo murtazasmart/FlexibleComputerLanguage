@@ -1392,8 +1392,7 @@ PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, Execution
     {
         // ONLY FOR NODE LIST
         MemoryManager::Inst.CreateObject(&pListRes);
-//		PInt pIntArg = (PInt)p_Arg;
-//		std::cout << pIntArg->GetValue();
+		String* pStrArg = (String*)pArg;
         pEntityList->SeekToBegin();
         PNODE currNode = (PNODE)pEntityList->GetCurrElem();
         std::map<std::string, int> uniqueMap;
@@ -1418,23 +1417,32 @@ PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, Execution
         typedef std::function<bool(std::pair<std::string, int>, std::pair<std::string, int>)> Comparator;
 
         // Defining a lambda function to compare two pairs. It will compare two pairs using second field
-        Comparator compFunctor =
-                [](std::pair<std::string, int> elem1 ,std::pair<std::string, int> elem2)
+        Comparator compFunctor;
+		if (pStrArg != 0)
                 {
+			int pInt = atoi(pStrArg->GetValue().c_str());
+			if (pInt >= 0)
+			{
+				compFunctor = [](std::pair<std::string, int> elem1 ,std::pair<std::string, int> elem2)
+				{
                     return elem1.second >= elem2.second;
                 };
-
+			}
+			else if (pInt <= 0)
+			{
+				compFunctor = [](std::pair<std::string, int> elem1 ,std::pair<std::string, int> elem2)
+				{
+					return elem1.second <= elem2.second;
+				};
+			}
+		} else {
+			compFunctor = [](std::pair<std::string, int> elem1 ,std::pair<std::string, int> elem2)
+					{
+						return elem1.second >= elem2.second;
+					};
+		}
         // Declaring a set that will store the pairs using above comparision logic
         std::set<std::pair<std::string, int>, Comparator> setOfSorted(uniqueMap.begin(), uniqueMap.end(), compFunctor);
-//        std::set<std::pair<std::string, int>, Comparator> setOfSorted(mymap.begin(), mymap.end(), compFunctor);
-
-        // Iterate over a set using range base for loop
-        // It will display the items in sorted order of values
-        // Iterate through all elements in std::map
-//        for (std::pair<std::string, int> element : setOfSorted){
-//            std::cout << element.first << " :: " << element.second << std::endl;
-//        }
-
         for (auto const& x : setOfSorted)
         {
             PNODE item = MemoryManager::Inst.CreateNode(999);
