@@ -1,5 +1,5 @@
 ---
-  - hosts: staging
+  - hosts: production
     environment:
       PYTHONPATH: /home/{{ ansible_user }}/.local/lib/python2.7/site-packages
     tasks:
@@ -51,7 +51,7 @@
         become: true
         docker_container:
           name: grammar
-          image: 453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/grammar-staging
+          image: 453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/grammar
           restart: yes
           restart_policy: on-failure
           state: started

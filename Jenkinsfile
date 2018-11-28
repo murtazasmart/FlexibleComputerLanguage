@@ -33,9 +33,9 @@ node {
     stage('Deploy to Staging') {
       if (env.BRANCH_NAME == 'staging') {
         echo 'Building and pushing image'
-        docker.withRegistry('https://453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/grammar', 'ecr:ap-south-1:aws-ecr-credentials') {
+        docker.withRegistry('https://453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/grammar-staging', 'ecr:ap-south-1:aws-ecr-credentials') {
           echo 'Building image'
-          def releaseImage = docker.build("tracified/grammar:${env.BUILD_ID}")
+          def releaseImage = docker.build("tracified/grammar-staging:${env.BUILD_ID}")
           releaseImage.push()
           releaseImage.push('latest')
         }
@@ -51,26 +51,26 @@ node {
       }
     }
 
-    // stage('Deploy to Production') {
-    //   if (env.BRANCH_NAME == 'release') {
-    //     echo 'Building and pushing image'
-    //     docker.withRegistry('https://453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/grammar', 'ecr:ap-south-1:aws-ecr-credentials') {
-    //       echo 'Building image'
-    //       def releaseImage = docker.build("tracified/grammar:${env.BUILD_ID}")
-    //       releaseImage.push()
-    //       releaseImage.push('latest')
-    //     }
-    //     echo 'Deploying image in server'
-    //     withCredentials([[
-    //       $class: 'AmazonWebServicesCredentialsBinding', 
-    //       accessKeyVariable: 'AWS_ACCESS_KEY_ID', 
-    //       credentialsId: 'aws-ecr-credentials', 
-    //       secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-    //     ]]) {
-    //       ansiblePlaybook inventory: 'deploy/hosts', playbook: 'deploy/production.yml', extras: '-u ubuntu'
-    //     }
-    //   }
-    // }
+    stage('Deploy to Production') {
+      if (env.BRANCH_NAME == 'release') {
+        echo 'Building and pushing image'
+        docker.withRegistry('https://453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/grammar', 'ecr:ap-south-1:aws-ecr-credentials') {
+          echo 'Building image'
+          def releaseImage = docker.build("tracified/grammar:${env.BUILD_ID}")
+          releaseImage.push()
+          releaseImage.push('latest')
+        }
+        echo 'Deploying image in server'
+        withCredentials([[
+          $class: 'AmazonWebServicesCredentialsBinding', 
+          accessKeyVariable: 'AWS_ACCESS_KEY_ID', 
+          credentialsId: 'aws-ecr-credentials', 
+          secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+        ]]) {
+          ansiblePlaybook inventory: 'deploy/hosts', playbook: 'deploy/production.yml', extras: '-u ubuntu'
+        }
+      }
+    }
   }
   catch (exc) {
     currentBuild.result = "FAILURE"
