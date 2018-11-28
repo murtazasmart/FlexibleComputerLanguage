@@ -35,7 +35,7 @@ node {
         echo 'Building and pushing image'
         docker.withRegistry('https://453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/grammar-staging', 'ecr:ap-south-1:aws-ecr-credentials') {
           echo 'Building image'
-          def releaseImage = docker.build("tracified/grammar:${env.BUILD_ID}")
+          def releaseImage = docker.build("tracified/grammar-staging:${env.BUILD_ID}")
           releaseImage.push()
           releaseImage.push('latest')
         }

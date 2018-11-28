@@ -1,5 +1,5 @@
 ---
-  - hosts: staging
+  - hosts: production
     environment:
       PYTHONPATH: /home/{{ ansible_user }}/.local/lib/python2.7/site-packages
     tasks:
