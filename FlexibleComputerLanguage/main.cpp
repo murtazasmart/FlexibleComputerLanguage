@@ -36,6 +36,7 @@
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
+#include "dotenv.h"
 
 //Testing purposes
 #include <chrono>
@@ -296,6 +297,8 @@ void *writeSlave(void *fifosout)
 
 int main(int argc, const char *argv[])
 {
+    auto& dotenv = dotenv::env;  // Reference re-naming
+
     int i;
     pthread_t tid[THREADS];
     pthread_mutex_init(&mutex_read, NULL);
@@ -310,8 +313,8 @@ int main(int argc, const char *argv[])
     LOG(INFO) << "Starting..";
 
     // FIFO file path
-    std::string sin = "/tmp/queryfifoin";
-    std::string sout = "/tmp/queryfifoout";
+    std::string sin = "/tmp" + dotenv["QL_PIPE_FIFO_IN"];
+    std::string sout = "/tmp/" + dotenv["QL_PIPE_FIFO_OUT"];
     char *fifosin = (char *)sin.c_str();
     char *fifosout = (char *)sout.c_str();
 
