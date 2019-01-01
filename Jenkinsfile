@@ -11,6 +11,9 @@ node {
       
       
       stage('Setup') {
+        configFileProvider([configFile(fileId: 'test-env-file', targetLocation: './')]) {
+          load './test.properties'
+        }
         sh 'apt-get update && apt-get install -y build-essential'
         sh 'apt-get install -y cmake'
       }

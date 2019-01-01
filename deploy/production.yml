@@ -56,6 +56,9 @@
           restart_policy: on-failure
           state: started
           pull: yes
+          env:
+            QL_PIPE_FIFO_IN: "{{ lookup('env','QL_PIPE_FIFO_IN') }}"
+            QL_PIPE_FIFO_OUT: "{{ lookup('env','QL_PIPE_FIFO_OUT') }}"
           volumes:
             - ipc_named_pipes:/tmp
             - grammar_logs:/myapp/logs
