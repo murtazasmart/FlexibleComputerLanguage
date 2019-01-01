@@ -313,7 +313,7 @@ int main(int argc, const char *argv[])
     LOG(INFO) << "Starting..";
 
     // FIFO file path
-    std::string sin = "/tmp" + dotenv["QL_PIPE_FIFO_IN"];
+    std::string sin = "/tmp/" + dotenv["QL_PIPE_FIFO_IN"];
     std::string sout = "/tmp/" + dotenv["QL_PIPE_FIFO_OUT"];
     char *fifosin = (char *)sin.c_str();
     char *fifosout = (char *)sout.c_str();
