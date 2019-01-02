@@ -56,6 +56,24 @@
           restart_policy: on-failure
           state: started
           pull: yes
+          env:
+            QL_PIPE_FIFO_IN: "{{ lookup('env','QL_PIPE_FIFO_IN') }}"
+            QL_PIPE_FIFO_OUT: "{{ lookup('env','QL_PIPE_FIFO_OUT') }}"
+          volumes:
+            - ipc_named_pipes:/tmp
+            - grammar_logs:/myapp/logs
+      - name: Run docker
+        become: true
+        docker_container:
+          name: grammar-v1
+          image: 453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/grammar-staging
+          restart: yes
+          restart_policy: on-failure
+          state: started
+          pull: yes
+          env:
+            QL_PIPE_FIFO_IN: "{{ lookup('env','QL_PIPE_FIFO_IN_V1') }}"
+            QL_PIPE_FIFO_OUT: "{{ lookup('env','QL_PIPE_FIFO_OUT_V1') }}"
           volumes:
             - ipc_named_pipes:/tmp
             - grammar_logs:/myapp/logs
