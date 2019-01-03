@@ -66,7 +66,7 @@
         become: true
         docker_container:
           name: grammar-v1
-          image: 453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/grammar-staging
+          image: 453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/grammar
           restart: yes
           restart_policy: on-failure
           state: started
