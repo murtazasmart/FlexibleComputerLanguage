@@ -107,12 +107,12 @@ std::string ResultGenerator::CreateObject(Node *result, int type)
         if (resultString == "")
         {
             resultString = child->GetLVal();
-            resultString = resultString + ":";
+            resultString = "\"" + resultString + "\":";
             resultString = resultString + value;
         }
         else
         {
-            resultString = resultString + "," + child->GetLVal() + ":" + value;
+            resultString = resultString + ",\"" + child->GetLVal() + "\":" + value;
         }
         child = child->GetRightSibling();
     }
