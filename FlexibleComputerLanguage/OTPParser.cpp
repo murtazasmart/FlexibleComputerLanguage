@@ -108,7 +108,11 @@ Node *OTPParser::OTPJSONToNodeTree(std::string otpsString)
     {
         rapidjson::Value &tpjson = otps[0][tp->name.GetString()];
         Node *tpnode = MemoryManager::Inst.CreateNode(++id);
+        Node *itemnode = MemoryManager::Inst.CreateNode(++id);
         tpnode->SetValue((char *)tpjson["stageID"].GetString());
+        itemnode->SetRValue((char *)tpjson["item"]["itemID"].GetString());
+        itemnode->SetLValue((char *)tpjson["item"]["itemName"].GetString());
+        tpnode->SetCustomObj(itemnode);
         root->AppendNode(tpnode);
         for (rapidjson::Value::ConstValueIterator tdp = tpjson["traceabilityDataPackets"].Begin(); tdp != tpjson["traceabilityDataPackets"].End(); ++tdp)
         {

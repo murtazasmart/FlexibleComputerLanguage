@@ -1,4 +1,4 @@
-    #include "Command.h"
+#include "Command.h"
 #include "Entity.h"
 #include "ExecutionContext.h"
 #include "ExecutionTemplate.h"
@@ -685,6 +685,16 @@ PENTITY Command::ExecuteStringCommand(MULONG ulCommand, PENTITY pEntity, PENTITY
             pBoolRes->SetValue(sArg == "true");
             break;
         }
+		case COMMAND_TYPE_CONVERT_TO_SENTENCE_CASE:
+		{
+			MemoryManager::Inst.CreateObject(&pStrRes);
+			PString pStrArg = (PString)pEntity;
+			std::string str = pStrArg->GetValue();
+			str[0] = std::toupper(str[0]);
+			String s = str;
+			pStrRes = &s;
+			break;
+		}
             break;
 	}
     
@@ -1238,6 +1248,11 @@ PENTITY Command::ExecuteNodeCommand(MULONG ulCommand, PENTITY pEntity, Execution
 				}
                 break;
             }
+            case COMMAND_TYPE_GET_CUSTOM_OBJ:
+            {
+                pNodeRes = (PNODE)pNode->GetCustomObj();
+                break;
+            }
         }
     }
     
@@ -1459,7 +1474,8 @@ PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, Execution
 		int pInt = atoi(pStrArg->GetValue().c_str());
         pEntityList->SeekToBegin();
         PNODE currNode = (PNODE)pEntityList->GetCurrElem();
-        for(int i = 0; i < pInt; i++)
+        int entitySize = pEntityList->size();
+        for(int i = 0; i < (entitySize < pInt ? entitySize : pInt); i++)
         {
             pListRes->push_back(currNode->GetCopy());
             pEntityList->Seek(1, false);

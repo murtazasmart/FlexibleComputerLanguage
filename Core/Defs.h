@@ -688,6 +688,7 @@
 #define     COMMAND_TYPE_GET_STRING                                     62
 #define     COMMAND_TYPE_GET_INTEGER                                    63
 #define     COMMAND_TYPE_GET_BOOLEAN                                    64
+#define     COMMAND_TYPE_GET_CUSTOM_OBJ                                 65
 
 // String commands
 #define		COMMAND_TYPE_IS_STRING_EQUAL_TO								1000
@@ -711,8 +712,9 @@
 #define     COMMAND_TYPE_STRING_TO_UNIX_TIME                            8007
 #define     COMMAND_TYPE_STRINGTOBOOLEAN                                8008
 #define     COMMAND_TYPE_STRINGTOBOOL                                   1202
-#define     COMMAND_TYPE_GET_COMMA                                    8009
+#define     COMMAND_TYPE_GET_COMMA                                      8009
 #define     COMMAND_TYPE_NEXT_SIBLING                                   8010
+#define     COMMAND_TYPE_CONVERT_TO_SENTENCE_CASE                       8011
 
 // Int Commands
 #define		COMMAND_TYPE_IS_INT_EQUAL_TO								2000
