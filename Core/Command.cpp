@@ -1380,12 +1380,11 @@ PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, Execution
         PNODE currNode = (PNODE)pEntityList->GetCurrElem();
         std::map<std::string, int> uniqueMap;
         String* pStrArg = (String*)pArg;
-        while(currNode != 0)
-        {
+        while(currNode != 0) {
             std::string str;
-            if (std::strcmp((char *)pStrArg, "LValue")) {
+            if (pStrArg != 0 && std::strcmp((char *)pStrArg, "LValue")) {
                 str.assign(currNode->GetLVal());
-            } else if (std::strcmp((char *)pStrArg, "RValue")) {
+            } else if (pStrArg != 0 && std::strcmp((char *)pStrArg, "RValue")) {
                 str.assign(currNode->GetRVal());
             } else {
                 str.assign(currNode->GetValue());
