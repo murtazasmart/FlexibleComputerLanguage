@@ -715,6 +715,11 @@
 #define     COMMAND_TYPE_GET_COMMA                                      8009
 #define     COMMAND_TYPE_NEXT_SIBLING                                   8010
 #define     COMMAND_TYPE_CONVERT_TO_SENTENCE_CASE                       8011
+#define     COMMAND_TYPE_GET_DAY_OF_THE_WEEK_SHORT_STRING               8012
+#define     COMMAND_TYPE_GET_DAY_STRING                                 8013
+#define     COMMAND_TYPE_GET_MONTH_SHORT_STRING                         8014
+#define     COMMAND_TYPE_GET_TIME_24_HOUR_FORMAT                        8015
+#define     COMMAND_TYPE_GET_YEAR                                       8016
 
 // Int Commands
 #define		COMMAND_TYPE_IS_INT_EQUAL_TO								2000

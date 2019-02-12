@@ -614,6 +614,51 @@ PENTITY Command::ExecuteStringCommand(MULONG ulCommand, PENTITY pEntity, PENTITY
             }
             break;
         }
+		case COMMAND_TYPE_GET_DAY_OF_THE_WEEK_SHORT_STRING:
+		{
+			MemoryManager::Inst.CreateObject(&pStrRes);
+			if (pString->GetValue() != "")
+			{
+				pStrRes->SetValue(DateTimeOperations::GetDayOfTheWeekShortString(pString->ToString()));
+			}
+			break;
+		}
+		case COMMAND_TYPE_GET_DAY_STRING:
+		{
+			MemoryManager::Inst.CreateObject(&pStrRes);
+			if (pString->GetValue() != "")
+			{
+				pStrRes->SetValue(DateTimeOperations::GetDayString(pString->ToString()));
+			}
+			break;
+		}
+		case COMMAND_TYPE_GET_MONTH_SHORT_STRING:
+		{
+			MemoryManager::Inst.CreateObject(&pStrRes);
+			if (pString->GetValue() != "")
+			{
+				pStrRes->SetValue(DateTimeOperations::GetMonthShortString(pString->ToString()));
+			}
+			break;
+		}
+		case COMMAND_TYPE_GET_TIME_24_HOUR_FORMAT:
+		{
+			MemoryManager::Inst.CreateObject(&pStrRes);
+			if (pString->GetValue() != "")
+			{
+				pStrRes->SetValue(DateTimeOperations::GetTime24HourFormat(pString->ToString()));
+			}
+			break;
+		}
+		case COMMAND_TYPE_GET_YEAR:
+		{
+			MemoryManager::Inst.CreateObject(&pStrRes);
+			if (pString->GetValue() != "")
+			{
+				pStrRes->SetValue(DateTimeOperations::GetYear(pString->ToString()));
+			}
+			break;
+		}
         case COMMAND_TYPE_DATE_NOW:
         {
             MemoryManager::Inst.CreateObject(&pStrRes);
