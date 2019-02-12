@@ -23,6 +23,11 @@ public:
     static long GetDifferenceByString(std::string date1, std::string date2);
     static std::string StringToReadable(std::string date);
     static long GetDateNow();
+    static std::string GetDayString(std::string date);
+    static std::string GetDayOfTheWeekShortString(std::string date);
+    static std::string GetMonthShortString(std::string date);
+    static std::string GetYear(std::string date);
+    static std::string GetTime24HourFormat(std::string date);
     
 };
 
