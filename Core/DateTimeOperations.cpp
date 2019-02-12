@@ -83,3 +83,63 @@ long DateTimeOperations::GetDateNow() {
     time_t date = time(0);
     return date;
 }
+
+std::string DateTimeOperations::GetDayOfTheWeekShortString(std::string date) {
+    time_t tdate = DateTimeOperations::StringToUnix(date);
+    char* dt;
+
+    // convert to tm struct for UTC
+    tm *gmtm = gmtime(&tdate);
+    dt = asctime(gmtm);
+    dt[strlen(dt) - 1] = 0;
+    std::string datestring = dt;
+    return datestring.substr(0,3);
+}
+
+std::string DateTimeOperations::GetDayString(std::string date) {
+    time_t tdate = DateTimeOperations::StringToUnix(date);
+    char* dt;
+
+    // convert to tm struct for UTC
+    tm *gmtm = gmtime(&tdate);
+    dt = asctime(gmtm);
+    dt[strlen(dt) - 1] = 0;
+    std::string datestring = dt;
+    return datestring.substr(8,2);
+}
+
+std::string DateTimeOperations::GetMonthShortString(std::string date) {
+    time_t tdate = DateTimeOperations::StringToUnix(date);
+    char* dt;
+
+    // convert to tm struct for UTC
+    tm *gmtm = gmtime(&tdate);
+    dt = asctime(gmtm);
+    dt[strlen(dt) - 1] = 0;
+    std::string datestring = dt;
+    return datestring.substr(4,3);
+}
+
+std::string DateTimeOperations::GetYear(std::string date) {
+    time_t tdate = DateTimeOperations::StringToUnix(date);
+    char* dt;
+
+    // convert to tm struct for UTC
+    tm *gmtm = gmtime(&tdate);
+    dt = asctime(gmtm);
+    dt[strlen(dt) - 1] = 0;
+    std::string datestring = dt;
+    return datestring.substr(20,5);
+}
+
+std::string DateTimeOperations::GetTime24HourFormat(std::string date) {
+    time_t tdate = DateTimeOperations::StringToUnix(date);
+    char* dt;
+
+    // convert to tm struct for UTC
+    tm *gmtm = gmtime(&tdate);
+    dt = asctime(gmtm);
+    dt[strlen(dt) - 1] = 0;
+    std::string datestring = dt;
+    return datestring.substr(11,5);
+}
