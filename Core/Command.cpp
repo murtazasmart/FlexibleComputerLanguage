@@ -691,8 +691,7 @@ PENTITY Command::ExecuteStringCommand(MULONG ulCommand, PENTITY pEntity, PENTITY
 			PString pStrArg = (PString)pEntity;
 			std::string str = pStrArg->GetValue();
 			str[0] = std::toupper(str[0]);
-			String s = str;
-			pStrRes = &s;
+			pStrRes->SetValue(str);
 			break;
 		}
             break;
