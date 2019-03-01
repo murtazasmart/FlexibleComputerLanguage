@@ -175,7 +175,15 @@ Node *OTPParser::OTPJSONToNodeTree(std::string otpsString)
                     //                    tdnode->SetValue((char *)tdjson["val"].dump().c_str());
                 }
                 //                std::cout << (char *)std::to_string(tdjson["type"].get<int>()).c_str();
-                tdnode->SetRValue((char *)std::to_string(tdjson["type"].GetInt()).c_str());
+//                std::cout << tdjson.HasMember("type");
+                if (tdjson.HasMember("type"))
+                {
+                    tdnode->SetRValue((char *)std::to_string(tdjson["type"].GetInt()).c_str());
+                }
+                else
+                {
+                    tdnode->SetRValue("8");
+                }
             }
         }
     }
