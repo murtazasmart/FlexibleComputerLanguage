@@ -182,7 +182,7 @@ Node *OTPParser::OTPJSONToNodeTree(std::string otpsString)
                 }
                 else
                 {
-                    tdnode->SetRValue("8");
+                    tdnode->SetRValue("90");
                 }
             }
         }
