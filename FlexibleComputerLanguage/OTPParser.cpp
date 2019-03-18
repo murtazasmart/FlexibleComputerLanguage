@@ -123,6 +123,7 @@ Node *OTPParser::OTPJSONToNodeTree(std::string otpsString)
             itemnode->SetRValue((char *)tpjson["item"]["itemID"].GetString());
             itemnode->SetLValue((char *)tpjson["item"]["itemName"].GetString());
             tpnode->SetCustomObj(itemnode);
+            otpNode->SetCustomObj(itemnode);
             otpNode->AppendNode(tpnode);
             for (rapidjson::Value::ConstValueIterator tdp = tpjson["traceabilityDataPackets"].Begin(); tdp != tpjson["traceabilityDataPackets"].End(); ++tdp)
             {
