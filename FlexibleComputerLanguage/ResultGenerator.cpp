@@ -56,6 +56,7 @@ std::string ResultGenerator::CreateArray(Node *result, int type)
     Node *child = result->GetFirstChild();
     while (child != 0)
     {
+        type = child->GetRVal() != 0 ? atoi(child->GetRVal()) : type;
         std::string customString = child->GetCustomString();
         std::string value = "";
         if (customString.compare("array") == 0)
@@ -90,6 +91,7 @@ std::string ResultGenerator::CreateObject(Node *result, int type)
     Node *child = result->GetFirstChild();
     while (child != 0)
     {
+        type = child->GetRVal() != 0 ? atoi(child->GetRVal()) : type;
         std::string customString = child->GetCustomString();
         std::string value = "";
         if (customString.compare("array") == 0)
