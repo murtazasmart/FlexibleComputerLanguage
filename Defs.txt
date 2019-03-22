@@ -158,3 +158,5 @@ DEF	GET_DAY_STRING					GetDayString
 DEF	GET_MONTH_SHORT_STRING				GetMonthShortString
 DEF	GET_TIME_24_HOUR_FORMAT				GetTime24HourFormat
 DEF	GET_YEAR					GetYear
+DEF	GET_OLDEST_DATE					GetOldestDate
+DEF	GET_LATEST_DATE					GetLatestDate
