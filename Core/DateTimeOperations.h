@@ -28,6 +28,8 @@ public:
     static std::string GetMonthShortString(std::string date);
     static std::string GetYear(std::string date);
     static std::string GetTime24HourFormat(std::string date);
+    static std::string GetOldestDate(std::vector<std::string> date);
+    static std::string GetLatestDate(std::vector<std::string> date);
     
 };
 
