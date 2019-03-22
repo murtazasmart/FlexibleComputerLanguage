@@ -1427,9 +1427,9 @@ PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, Execution
         String* pStrArg = (String*)pArg;
         while(currNode != 0) {
             std::string str;
-            if (pStrArg != 0 && std::strcmp((char *)pStrArg, "LValue")) {
+            if (pStrArg != 0 && std::strcmp((char *)pStrArg, "LValue") && currNode->GetLVal() != 0) {
                 str.assign(currNode->GetLVal());
-            } else if (pStrArg != 0 && std::strcmp((char *)pStrArg, "RValue")) {
+            } else if (pStrArg != 0 && std::strcmp((char *)pStrArg, "RValue") && currNode->GetRVal() != 0) {
                 str.assign(currNode->GetRVal());
             } else {
                 str.assign(currNode->GetValue());
