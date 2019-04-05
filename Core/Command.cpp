@@ -739,6 +739,14 @@ PENTITY Command::ExecuteStringCommand(MULONG ulCommand, PENTITY pEntity, PENTITY
 			pStrRes->SetValue(str);
 			break;
 		}
+        case COMMAND_TYPE_ADD_PERIOD:
+        {
+            MemoryManager::Inst.CreateObject(&pNullRes);
+            PString pStrArg = (PString)pArg;
+            MSTRING sVal = pString->GetValue();
+            sVal += ".";
+            pString->SetValue(sVal);
+        }
             break;
 	}
     
@@ -967,6 +975,7 @@ PENTITY Command::ExecuteNodeCommand(MULONG ulCommand, PENTITY pEntity, Execution
             case COMMAND_TYPE_SET_VALUE:
             {
                 MemoryManager::Inst.CreateObject(&pNullRes);
+                if(ENTITY_TYPE_STRING == pArg->ul_Type)
                 if(ENTITY_TYPE_STRING == pArg->ul_Type)
                 {
                     String* pStrArg = (String*)pArg;

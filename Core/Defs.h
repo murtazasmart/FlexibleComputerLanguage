@@ -720,6 +720,7 @@
 #define     COMMAND_TYPE_GET_MONTH_SHORT_STRING                         8014
 #define     COMMAND_TYPE_GET_TIME_24_HOUR_FORMAT                        8015
 #define     COMMAND_TYPE_GET_YEAR                                       8016
+#define     COMMAND_TYPE_ADD_PERIOD                                     8017
 
 // Int Commands
 #define		COMMAND_TYPE_IS_INT_EQUAL_TO								2000
