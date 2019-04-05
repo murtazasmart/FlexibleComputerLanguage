@@ -160,3 +160,4 @@ DEF	GET_TIME_24_HOUR_FORMAT				GetTime24HourFormat
 DEF	GET_YEAR					GetYear
 DEF	GET_OLDEST_DATE					GetOldestDate
 DEF	GET_LATEST_DATE					GetLatestDate
+DEF	ADD_PERIOD					AddPeriod
