@@ -1463,6 +1463,43 @@ PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, Execution
             pListRes->push_back(item);
         }
     }
+        else if(COMMAND_TYPE_GET_UNIQUE_NODE_LIST_WITH_NODE_REF == ulCommand)
+    {
+        // ONLY FOR NODE LIST
+        MemoryManager::Inst.CreateObject(&pListRes);
+        pEntityList->SeekToBegin();
+        PNODE currNode = (PNODE)pEntityList->GetCurrElem();
+        std::map<std::string, PNODE> uniqueMap;
+        String* pStrArg = (String*)pArg;
+        while(currNode != 0) {
+            std::string str;
+            if (pStrArg != 0 && std::strcmp((char *)pStrArg, "LValue") && currNode->GetLVal() != 0) {
+                str.assign(currNode->GetLVal());
+            } else if (pStrArg != 0 && std::strcmp((char *)pStrArg, "RValue") && currNode->GetRVal() != 0) {
+                str.assign(currNode->GetRVal());
+            } else {
+                str.assign(currNode->GetValue());
+            }
+            if (uniqueMap[str] == 0)
+            {
+                uniqueMap[str] = currNode;
+            }
+//            else
+//            {
+//                uniqueMap[str] = uniqueMap[str] + 1;
+//            }
+            pEntityList->Seek(1, false);
+            currNode = (PNODE)pEntityList->GetCurrElem();
+        }
+
+        for (auto const& x : uniqueMap)
+        {
+            PNODE item = MemoryManager::Inst.CreateNode(999);
+            item->SetValue((char *)x.first.c_str());
+            item->SetCustomObj((x.second));
+            pListRes->push_back(item);
+        }
+    }
     else if(COMMAND_TYPE_SORT_NODE_LIST == ulCommand)
     {
         // ONLY FOR NODE LIST
