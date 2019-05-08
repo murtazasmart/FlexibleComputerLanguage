@@ -162,3 +162,4 @@ DEF	GET_OLDEST_DATE					GetOldestDate
 DEF	GET_LATEST_DATE					GetLatestDate
 DEF	ADD_PERIOD					AddPeriod
 DEF	GET_UNIQUE_NODE_LIST_WITH_NODE_REF			GetUniqueNodeListWithNodeRef
+DEF SET_INTEGER                 SetInteger
