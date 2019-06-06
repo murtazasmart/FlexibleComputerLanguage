@@ -326,6 +326,17 @@ PENTITY Command::ExecuteIntCommand(MULONG ulCommand, PENTITY pEntity, PENTITY pA
 			}
 			break;
 		}
+        case COMMAND_TYPE_SET_INTEGER:
+        {
+            if(ENTITY_TYPE_INT == pArg->ul_Type)
+            {
+                MemoryManager::Inst.CreateObject(&pNullRes);
+                PInt pIntArg = (PInt)pArg;
+                MULONG ulVal = pIntArg->GetValue();
+                pInt->SetValue(ulVal);
+            }
+            break;
+        }
         case COMMAND_TYPE_TOSTRING:
 		{
 			MSTRINGSTREAM ss;
@@ -610,7 +621,7 @@ PENTITY Command::ExecuteStringCommand(MULONG ulCommand, PENTITY pEntity, PENTITY
             MemoryManager::Inst.CreateObject(&pStrRes);
             if (pString->GetValue() != "")
             {
-                pStrRes->SetValue(DateTimeOperations::StringToReadable(pString->ToString()));
+                pStrRes->SetValue(DateTimeOperations::StringToReadable(pString->GetValue()));
             }
             break;
         }
@@ -619,7 +630,7 @@ PENTITY Command::ExecuteStringCommand(MULONG ulCommand, PENTITY pEntity, PENTITY
 			MemoryManager::Inst.CreateObject(&pStrRes);
 			if (pString->GetValue() != "")
 			{
-				pStrRes->SetValue(DateTimeOperations::GetDayOfTheWeekShortString(pString->ToString()));
+				pStrRes->SetValue(DateTimeOperations::GetDayOfTheWeekShortString(pString->GetValue()));
 			}
 			break;
 		}
@@ -628,7 +639,7 @@ PENTITY Command::ExecuteStringCommand(MULONG ulCommand, PENTITY pEntity, PENTITY
 			MemoryManager::Inst.CreateObject(&pStrRes);
 			if (pString->GetValue() != "")
 			{
-				pStrRes->SetValue(DateTimeOperations::GetDayString(pString->ToString()));
+				pStrRes->SetValue(DateTimeOperations::GetDayString(pString->GetValue()));
 			}
 			break;
 		}
@@ -637,7 +648,7 @@ PENTITY Command::ExecuteStringCommand(MULONG ulCommand, PENTITY pEntity, PENTITY
 			MemoryManager::Inst.CreateObject(&pStrRes);
 			if (pString->GetValue() != "")
 			{
-				pStrRes->SetValue(DateTimeOperations::GetMonthShortString(pString->ToString()));
+				pStrRes->SetValue(DateTimeOperations::GetMonthShortString(pString->GetValue()));
 			}
 			break;
 		}
@@ -646,7 +657,7 @@ PENTITY Command::ExecuteStringCommand(MULONG ulCommand, PENTITY pEntity, PENTITY
 			MemoryManager::Inst.CreateObject(&pStrRes);
 			if (pString->GetValue() != "")
 			{
-				pStrRes->SetValue(DateTimeOperations::GetTime24HourFormat(pString->ToString()));
+				pStrRes->SetValue(DateTimeOperations::GetTime24HourFormat(pString->GetValue()));
 			}
 			break;
 		}
@@ -655,7 +666,7 @@ PENTITY Command::ExecuteStringCommand(MULONG ulCommand, PENTITY pEntity, PENTITY
 			MemoryManager::Inst.CreateObject(&pStrRes);
 			if (pString->GetValue() != "")
 			{
-				pStrRes->SetValue(DateTimeOperations::GetYear(pString->ToString()));
+				pStrRes->SetValue(DateTimeOperations::GetYear(pString->GetValue()));
 			}
 			break;
 		}
@@ -739,6 +750,14 @@ PENTITY Command::ExecuteStringCommand(MULONG ulCommand, PENTITY pEntity, PENTITY
 			pStrRes->SetValue(str);
 			break;
 		}
+        case COMMAND_TYPE_ADD_PERIOD:
+        {
+            MemoryManager::Inst.CreateObject(&pNullRes);
+            PString pStrArg = (PString)pArg;
+            MSTRING sVal = pString->GetValue();
+            sVal += ".";
+            pString->SetValue(sVal);
+        }
             break;
 	}
     
@@ -967,6 +986,7 @@ PENTITY Command::ExecuteNodeCommand(MULONG ulCommand, PENTITY pEntity, Execution
             case COMMAND_TYPE_SET_VALUE:
             {
                 MemoryManager::Inst.CreateObject(&pNullRes);
+                if(ENTITY_TYPE_STRING == pArg->ul_Type)
                 if(ENTITY_TYPE_STRING == pArg->ul_Type)
                 {
                     String* pStrArg = (String*)pArg;
@@ -1346,6 +1366,7 @@ PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, Execution
 	PNull pNullRes = 0;
 	PENTITY pEntityRes = 0;
 	PNODE pNodeRes = 0;
+	PString pStrRes = 0;
     
 	if(COMMAND_TYPE_GET_ITEM_COUNT == ulCommand)
 	{
@@ -1426,9 +1447,9 @@ PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, Execution
         String* pStrArg = (String*)pArg;
         while(currNode != 0) {
             std::string str;
-            if (pStrArg != 0 && std::strcmp((char *)pStrArg, "LValue")) {
+            if (pStrArg != 0 && std::strcmp((char *)pStrArg, "LValue") && currNode->GetLVal() != 0) {
                 str.assign(currNode->GetLVal());
-            } else if (pStrArg != 0 && std::strcmp((char *)pStrArg, "RValue")) {
+            } else if (pStrArg != 0 && std::strcmp((char *)pStrArg, "RValue") && currNode->GetRVal() != 0) {
                 str.assign(currNode->GetRVal());
             } else {
                 str.assign(currNode->GetValue());
@@ -1450,6 +1471,43 @@ PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, Execution
             PNODE item = MemoryManager::Inst.CreateNode(999);
             item->SetValue((char *)x.first.c_str());
             item->SetLValue((char *)std::to_string(x.second).c_str());
+            pListRes->push_back(item);
+        }
+    }
+        else if(COMMAND_TYPE_GET_UNIQUE_NODE_LIST_WITH_NODE_REF == ulCommand)
+    {
+        // ONLY FOR NODE LIST
+        MemoryManager::Inst.CreateObject(&pListRes);
+        pEntityList->SeekToBegin();
+        PNODE currNode = (PNODE)pEntityList->GetCurrElem();
+        std::map<std::string, PNODE> uniqueMap;
+        String* pStrArg = (String*)pArg;
+        while(currNode != 0) {
+            std::string str;
+            if (pStrArg != 0 && std::strcmp((char *)pStrArg, "LValue") && currNode->GetLVal() != 0) {
+                str.assign(currNode->GetLVal());
+            } else if (pStrArg != 0 && std::strcmp((char *)pStrArg, "RValue") && currNode->GetRVal() != 0) {
+                str.assign(currNode->GetRVal());
+            } else {
+                str.assign(currNode->GetValue());
+            }
+            if (uniqueMap[str] == 0)
+            {
+                uniqueMap[str] = currNode;
+            }
+//            else
+//            {
+//                uniqueMap[str] = uniqueMap[str] + 1;
+//            }
+            pEntityList->Seek(1, false);
+            currNode = (PNODE)pEntityList->GetCurrElem();
+        }
+
+        for (auto const& x : uniqueMap)
+        {
+            PNODE item = MemoryManager::Inst.CreateNode(999);
+            item->SetValue((char *)x.first.c_str());
+            item->SetCustomObj((x.second));
             pListRes->push_back(item);
         }
     }
@@ -1623,6 +1681,42 @@ PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, Execution
             MemoryManager::Inst.CreateObject(&pNullRes);
         }
     }
+	else if (COMMAND_TYPE_GET_OLDEST_DATE == ulCommand)
+	{
+		MemoryManager::Inst.CreateObject(&pStrRes);
+		pEntityList->SeekToBegin();
+		PNODE currNode = (PNODE)pEntityList->GetCurrElem();
+		String* pStrArg = (String*)pArg;
+		std::vector<std::string> dateList;
+		while(currNode != 0) {
+			if (currNode->GetLVal() != 0)
+			{
+				dateList.push_back(std::string(currNode->GetLVal()));
+			}
+			pEntityList->Seek(1, false);
+			currNode = (PNODE)pEntityList->GetCurrElem();
+		}
+		std::string oldestDate = (DateTimeOperations::GetOldestDate(dateList));
+		pStrRes->SetValue(DateTimeOperations::GetOldestDate(dateList));
+	}
+	else if (COMMAND_TYPE_GET_LATEST_DATE == ulCommand)
+	{
+		MemoryManager::Inst.CreateObject(&pStrRes);
+		pEntityList->SeekToBegin();
+		PNODE currNode = (PNODE)pEntityList->GetCurrElem();
+		String* pStrArg = (String*)pArg;
+		std::vector<std::string> dateList;
+		while(currNode != 0) {
+			if (currNode->GetLVal() != 0)
+			{
+				dateList.push_back(currNode->GetLVal());
+			}
+			pEntityList->Seek(1, false);
+			currNode = (PNODE)pEntityList->GetCurrElem();
+		}
+		std::string latestDate = (DateTimeOperations::GetLatestDate(dateList));
+		pStrRes->SetValue(DateTimeOperations::GetLatestDate(dateList));
+	}
 	// first handle the commands that would need to access the execution context
 	else if (COMMAND_TYPE_FILTER_SUBTREE == ulCommand) {
         MemoryManager::Inst.CreateObject(&pListRes);
@@ -1717,6 +1811,10 @@ PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, Execution
 	{
 		return pNodeRes;
 	}
+    if(0 != pStrRes)
+    {
+        return pStrRes;
+    }
 	return 0;
 }
 

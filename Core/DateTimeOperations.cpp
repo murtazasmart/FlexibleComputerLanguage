@@ -6,6 +6,7 @@
 //  Copyright © 2018 Dileepa Jayathilaka. All rights reserved.
 //
 
+#include <climits>
 #include "DateTimeOperations.h"
 
 long DateTimeOperations::StringToUnix(std::string str)
@@ -142,4 +143,32 @@ std::string DateTimeOperations::GetTime24HourFormat(std::string date) {
     dt[strlen(dt) - 1] = 0;
     std::string datestring = dt;
     return datestring.substr(11,5);
+}
+
+std::string DateTimeOperations::GetOldestDate(std::vector<std::string> date) {
+    time_t oldesttdate = LLONG_MAX;
+    std::string oldesttdateStr = "";
+    for (int i = 0; i < date.size(); ++i) {
+        time_t tdate = DateTimeOperations::StringToUnix(date.at(i));
+        if (tdate <= oldesttdate)
+        {
+            oldesttdate = tdate;
+            oldesttdateStr = date.at(i);
+        }
+    }
+    return oldesttdateStr;
+}
+
+std::string DateTimeOperations::GetLatestDate(std::vector<std::string> date) {
+    time_t latesttdate = 0;
+    std::string latesttdateStr = "";
+    for (int i = 0; i < date.size(); ++i) {
+        time_t tdate = DateTimeOperations::StringToUnix(date.at(i));
+        if (tdate >= latesttdate)
+        {
+            latesttdate = tdate;
+            latesttdateStr = date.at(i);
+        }
+    }
+    return latesttdateStr;
 }

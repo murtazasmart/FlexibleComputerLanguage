@@ -720,6 +720,7 @@
 #define     COMMAND_TYPE_GET_MONTH_SHORT_STRING                         8014
 #define     COMMAND_TYPE_GET_TIME_24_HOUR_FORMAT                        8015
 #define     COMMAND_TYPE_GET_YEAR                                       8016
+#define     COMMAND_TYPE_ADD_PERIOD                                     8017
 
 // Int Commands
 #define		COMMAND_TYPE_IS_INT_EQUAL_TO								2000
@@ -731,6 +732,7 @@
 #define		COMMAND_TYPE_ADD											2100
 #define		COMMAND_TYPE_SUBTRACT										2101
 #define		COMMAND_TYPE_TOSTRING										2200
+#define     COMMAND_TYPE_SET_INTEGER                                    2201
 
 // Bool Commands
 #define		COMMAND_TYPE_BOOL_AND										4000
@@ -758,6 +760,9 @@
 #define     COMMAND_TYPE_GET_UNIQUE_NODE_LIST_WITH_COUNT                5010
 #define     COMMAND_TYPE_SORT_NODE_LIST                                 5011
 #define     COMMAND_TYPE_EXTRACT_NODE_LIST_TOP                          5012
+#define     COMMAND_TYPE_GET_OLDEST_DATE                                5013
+#define     COMMAND_TYPE_GET_LATEST_DATE                                5014
+#define     COMMAND_TYPE_GET_UNIQUE_NODE_LIST_WITH_NODE_REF                5015
 
 // Special Commands
 #define		COMMAND_TYPE_ADDITIONAL_FUNCTION							10000
