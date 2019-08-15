@@ -140,13 +140,16 @@ Node *OTPParser::OTPJSONToNodeTree(std::string otpsString)
                 {
                     rapidjson::Value &tdpjson = (rapidjson::Value&)(*tdp);
                     Node *tdpnode = MemoryManager::Inst.CreateNode(++id);
+                    Node *tdpidnode = MemoryManager::Inst.CreateNode(++id);
                     tdpnode->SetValue((char *)tdpjson["userID"].GetString());
+                    tdpidnode->SetValue((char *)tdpjson["id"].GetString());
                     tpnode->AppendNode(tdpnode);
+                    tdpnode->AppendNode(tdpidnode);
                     for (rapidjson::Value::ConstValueIterator td = tdpjson["traceabilityData"].Begin(); td != tdpjson["traceabilityData"].End(); ++td)
                     {
                         rapidjson::Value &tdjson = (rapidjson::Value&)(*td);
                         Node *tdnode = MemoryManager::Inst.CreateNode(++id);
-                        tdpnode->AppendNode(tdnode);
+                        tdpidnode->AppendNode(tdnode);
                         tdnode->SetValue((char *)tdjson["key"].GetString());
                         //                tdnode->SetValue((char *)"something is better");
                         if (tdjson["val"].IsObject() || tdjson["val"].IsArray())
