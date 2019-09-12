@@ -143,7 +143,22 @@ Node *OTPParser::OTPJSONToNodeTree(std::string otpsString)
                     Node *tdpidnode = MemoryManager::Inst.CreateNode(++id);
                     tdpnode->SetValue((char *)tdpjson["userID"].GetString());
                     tdpidnode->SetValue((char *)tdpjson["id"].GetString());
-                    tpnode->AppendNode(tdpnode);
+                    if (tdpjson.HasMember("signedBy"))
+                    {
+                        Node *signaturenode = MemoryManager::Inst.CreateNode(++id);
+                        for (rapidjson::Value::ConstValueIterator signature = tdpjson["signedBy"].Begin(); signature != tdpjson["signedBy"].End(); ++signature)
+                        {
+                            rapidjson::Value &signaturejson = (rapidjson::Value&)(*signature);
+                            Node *sign = MemoryManager::Inst.CreateNode(++id);
+                            signaturenode->AppendNode(sign);
+                            sign->SetValue((char *)signaturejson["role"].GetString());
+                            sign->SetLValue((char *)signaturejson["publicKey"].GetString());
+                        }
+                        tpnode->AppendNode(signaturenode);
+                        signaturenode->AppendNode(tdpnode);
+                    } else {
+                        tpnode->AppendNode(tdpnode);
+                    }
                     tdpnode->AppendNode(tdpidnode);
                     for (rapidjson::Value::ConstValueIterator td = tdpjson["traceabilityData"].Begin(); td != tdpjson["traceabilityData"].End(); ++td)
                     {
