@@ -199,6 +199,10 @@ void *readSlave(void *fifosin)
             }
             pthread_mutex_unlock(&mutex_read);
         }
+        else
+        {
+            std::this_thread::sleep_for (std::chrono::milliseconds(10));
+        }
     }
 
     NamedPipeOperations::closeReadPipe(readStream, fdIn);
@@ -265,6 +269,10 @@ void *processSlave(void *)
 
             pthread_mutex_unlock(&mutex_write);
         }
+        else
+        {
+            std::this_thread::sleep_for (std::chrono::milliseconds(10));
+        }
     }
 }
 
@@ -291,6 +299,10 @@ void *writeSlave(void *fifosout)
             NamedPipeOperations::closeWritePipe(writeStream, fdOut);
             close(fdOut);
             LOG(INFO) << "request wrapped up";
+        }
+        else
+        {
+            std::this_thread::sleep_for (std::chrono::milliseconds(10));
         }
     }
 }
