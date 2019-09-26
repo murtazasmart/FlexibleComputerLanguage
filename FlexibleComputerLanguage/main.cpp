@@ -197,11 +197,15 @@ void *readSlave(void *fifosin)
                 //LOG(INFO) << "requestString " << requestString;
                 readFlag = 1;
             }
+            else
+            {
+                std::this_thread::sleep_for (std::chrono::milliseconds(10));
+            }
             pthread_mutex_unlock(&mutex_read);
         }
         else
         {
-            std::this_thread::sleep_for (std::chrono::milliseconds(100));
+            std::this_thread::sleep_for (std::chrono::milliseconds(10));
         }
     }
 
@@ -271,7 +275,7 @@ void *processSlave(void *)
         }
         else
         {
-            std::this_thread::sleep_for (std::chrono::milliseconds(100));
+            std::this_thread::sleep_for (std::chrono::milliseconds(10));
         }
     }
 }
@@ -302,7 +306,7 @@ void *writeSlave(void *fifosout)
         }
         else
         {
-            std::this_thread::sleep_for (std::chrono::milliseconds(100));
+            std::this_thread::sleep_for (std::chrono::milliseconds(10));
         }
     }
 }
