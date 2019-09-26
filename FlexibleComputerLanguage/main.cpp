@@ -201,7 +201,7 @@ void *readSlave(void *fifosin)
         }
         else
         {
-            std::this_thread::sleep_for (std::chrono::milliseconds(10));
+            std::this_thread::sleep_for (std::chrono::milliseconds(100));
         }
     }
 
@@ -271,7 +271,7 @@ void *processSlave(void *)
         }
         else
         {
-            std::this_thread::sleep_for (std::chrono::milliseconds(10));
+            std::this_thread::sleep_for (std::chrono::milliseconds(100));
         }
     }
 }
@@ -302,7 +302,7 @@ void *writeSlave(void *fifosout)
         }
         else
         {
-            std::this_thread::sleep_for (std::chrono::milliseconds(10));
+            std::this_thread::sleep_for (std::chrono::milliseconds(100));
         }
     }
 }
