@@ -7,6 +7,10 @@
 //
 // VERSION 2
 
+#include <bsoncxx/builder/stream/document.hpp>
+#include <bsoncxx/json.hpp>
+#include <mongocxx/client.hpp>
+#include <mongocxx/instance.hpp>
 #include <iostream>
 #include <unistd.h>
 #include <fcntl.h>
@@ -323,6 +327,20 @@ int main(int argc, const char *argv[])
     Logger::ConfigureLogger();
 
     LOG(INFO) << "Starting..";
+
+    //testing Mongo DB connection
+    mongocxx::instance inst{}; //DONT REMOVE THIS
+    std::string db_uri = getenv("BE_MONGOLAB_URI") == 0 ? dotenv["BE_MONGOLAB_URI"] : getenv("BE_MONGOLAB_URI");
+    mongocxx::client conn{mongocxx::uri(db_uri)};
+    auto collection = conn["backend-db"]["otpdumps"];
+    try{
+        auto cursor =collection.count_documents({});
+        if(cursor>0){
+            LOG(INFO) <<"Database Connection Established Successfully";
+        }
+    }catch(const std::exception & e) {
+        LOG(INFO) <<"Could not Establish Connection to Database";
+    }
 
     // FIFO file path
     std::string pathin = getenv("QL_PIPE_FIFO_IN") == 0 ? dotenv["QL_PIPE_FIFO_IN"] : getenv("QL_PIPE_FIFO_IN");
