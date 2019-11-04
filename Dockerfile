@@ -9,6 +9,8 @@ RUN apt-get install -y cmake gcc git libsasl2-dev libsasl2-2 libssl-dev libsnapp
 
 RUN apt-get upgrade -y
 
+# Installing monogocxx,mongoc is first installed and then followed by mongocxx installation
+# DCMAKE_INSTALL_PREFIX sets the installation path. Should be reflected in CMakeLists file accordingly
 RUN cd ~ \
     && wget https://github.com/mongodb/mongo-c-driver/releases/download/1.14.0/mongo-c-driver-1.14.0.tar.gz \
     && tar -xzvf mongo-c-driver-1.14.0.tar.gz \
@@ -41,8 +43,6 @@ WORKDIR ./FlexibleComputerLanguage
 
 RUN rm -rf CMakeCache.txt CMakeFiles cmake_install.cmake
 
-RUN tail -n 10 CMakeLists.txt
-
 RUN cmake -version
 
 RUN cmake .
@@ -67,6 +67,7 @@ WORKDIR ./myapp
 #     libstdc++
     # g++
 
+# Install runtime dependencies,these are needed in addition to the build dependencies 
 RUN apt-get update && apt-get install -y libsasl2-dev libssl-dev libssl1.0.0 libsnappy-dev && ls -l && export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig"
 
 CMD [ "./FlexibleComputerLanguage1" ]
