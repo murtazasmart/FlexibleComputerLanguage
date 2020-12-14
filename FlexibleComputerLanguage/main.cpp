@@ -97,11 +97,16 @@ std::string run(Node *root, MSTRING querycode)
     ec.map_Var["X"] = root;
     ec.map_Var["Y"] = pY;
     ec.map_Var["RESULT"] = pRESULT;
+    // TODO call function to attach params
     op.p_ETL->Execute(&ec);
     return ResultGenerator::CreateResult(pRESULT);
 }
 
-std::string processQuery(std::string requestString, rapidjson::Document& request)
+// TODO add func. to add params to context dynamically
+
+// TODO add function for processTDPQuery
+
+std::string processOTPQuery(std::string requestString, rapidjson::Document& request)
 {
     // START
     std::string reqId = "0";
@@ -111,7 +116,7 @@ std::string processQuery(std::string requestString, rapidjson::Document& request
         reqId = request["reqId"].GetString();
         rapidjson::StringBuffer buffer;
         rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-        request["otp"].Accept(writer);
+        request["obj"].Accept(writer);
         std::string otps = buffer.GetString();
 
         Node *r;
@@ -251,9 +256,13 @@ void *processSlave(void *)
                 throw JSON_PARSE_ERROR;
             }
             std::string type = request["type"].GetString();
-            if (type == "query")
+            if (type == "otpquery")
             {
-                intermediateResponse = processQuery(intermediateRequest, request);
+                intermediateResponse = processOTPQuery(intermediateRequest, request);
+            }
+            else if (type == "tdpquery")
+            {
+                intermediateResponse = processTDPQuery(intermediateRequest, request);
             }
             else if (type == "test")
             {
