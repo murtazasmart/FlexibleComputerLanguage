@@ -177,6 +177,77 @@ std::string processOTPQuery(std::string requestString, rapidjson::Document& requ
     }
 }
 
+std::string processTDPQuery(std::string requestString, rapidjson::Document& request)
+{
+    // START
+    std::string reqId = "0";
+    try
+    {
+        //LOG(ERROR) << "AA";
+        reqId = request["reqId"].GetString();
+        rapidjson::StringBuffer buffer;
+        rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+        request["obj"].Accept(writer);
+        std::string objString = buffer.GetString();
+
+        Node *r;
+
+        try
+        {
+            //LOG(ERROR) << "AAA";
+            r = OTPParser::TDPJSONToNodeTree(objString);
+        }
+        catch (int ex)
+        {
+            //request.Accept(writer);
+            //LOG(ERROR) << "Request:" << buffer.GetString();
+            throw JSON_TO_NODE_TREE_ERROR;
+        }
+
+        std::string queryResults = "";
+
+        //LOG(ERROR) << "AAAAA";
+        rapidjson::Value& queries = request["queries"];
+        //for (auto &data : nlohmann::json::iterator_wrapper(request["queries"]))
+        for (rapidjson::Value::ConstValueIterator data = queries.Begin(); data != queries.End(); ++data)
+        {
+            rapidjson::Value& query = (rapidjson::Value&)(*data);
+            std::string queryString = query.GetString();
+            //             HAVE TO WRITE FUNCTION TO RETURN RESULT JSON
+            std::string result;
+
+            try
+            {
+                result = run(r, queryString);
+            }
+            catch (int ex)
+            {
+                //LOG(ERROR) << "OTPS:" << otps;
+                //LOG(ERROR) << "QueryString:" << queryString;
+                throw QUERY_LANGUAGE_ERROR;
+            }
+
+            if (queryResults.compare("") != 0)
+            {
+                queryResults = queryResults + "," + result;
+            }
+            else
+            {
+                queryResults = queryResults + result;
+            }
+        }
+        std::string resReqId = request["reqId"].GetString();
+        std::string response =
+                "{\"reqId\": \"" + resReqId + "\", \"queries\": [" + queryResults + "]}";
+        // PROCESS END
+        return response;
+    }
+    catch (int ex)
+    {
+        return "{\"reqId\":" + reqId + "\", \"error\": {\"id\":\"" + std::to_string(ex) + "\", \"message\":\"Query language has failed.\"}}";
+    }
+}
+
 std::string processTest(std::string requestString)
 {
     return requestString + " processed";
