@@ -212,6 +212,7 @@ Node *OTPParser::TDPJSONToNodeTree(std::string tdpsString) {
         tenant->SetRValue((char *) tdpjson["tenantID"]["tenantId"].GetString());
         tenant->SetLValue((char *) tdpjson["tenantID"]["name"].GetString());
         tenant->SetValue((char *) tdpjson["tenantID"]["itemName"].GetString());
+        tenant->SetCustomString((char *) tdpjson["tenantID"]["identifier"].GetString());
         tdpNode->SetCustomObj(tenant);
         root->AppendNode(tdpNode);
         for (rapidjson::Value::ConstValueIterator td = tdpjson["traceabilityData"].Begin();
