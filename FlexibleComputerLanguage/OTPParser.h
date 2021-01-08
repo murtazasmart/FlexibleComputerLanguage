@@ -19,4 +19,5 @@ class OTPParser
   public:
     static void createTDTree(rapidjson::Value& j, Node *parent);
     static Node *OTPJSONToNodeTree(std::string otpsString);
+    static Node *TDPJSONToNodeTree(std::string tdpsString);
 };
