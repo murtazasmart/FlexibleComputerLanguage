@@ -332,14 +332,22 @@ int main(int argc, const char *argv[])
     mongocxx::instance inst{}; //DONT REMOVE THIS
     std::string db_uri = getenv("BE_MONGOLAB_URI") == 0 ? dotenv["BE_MONGOLAB_URI"] : getenv("BE_MONGOLAB_URI");
     mongocxx::client conn{mongocxx::uri(db_uri)};
-    auto collection = conn["backend-db"]["otpdumps"];
+    auto collection = conn["tracified-backend-test-db"]["reviews"];
     try{
         auto cursor =collection.count_documents({});
         if(cursor>0){
             LOG(INFO) <<"Database Connection Established Successfully";
         }
+        mongocxx::cursor c = collection.find({});
+        bsoncxx::oid obj = bsoncxx::oid("5ff4054564b978657d292652");
+        std::time_t result = obj.get_time_t();
+        std::cout << std::asctime(std::localtime(&result));
+        // for(auto doc: c) {
+        //     std::cout << bsoncxx::to_json(doc) << "\n";
+        // }
     }catch(const std::exception & e) {
         LOG(INFO) <<"Could not Establish Connection to Database";
+        LOG(INFO) << e.what();
     }
 
     // FIFO file path
