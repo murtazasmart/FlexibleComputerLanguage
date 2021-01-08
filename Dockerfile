@@ -1,20 +1,20 @@
 # FROM gcc:4.9 AS base
 # FROM frolvlad/alpine-gxx
 # FROM alpine:3.7
-FROM ubuntu:16.04 AS build
+FROM ubuntu:18.04 AS build
 
 RUN apt-get update && apt-get install -y build-essential
 
-RUN apt-get install -y cmake gcc git libsasl2-dev libsasl2-2 libssl-dev libsnappy-dev make pkg-config tar wget libmongoc-dev libbson-dev
+RUN apt-get install -y cmake gcc g++ git libsasl2-dev libssl-dev libsnappy-dev make pkg-config tar wget python3
 
 RUN apt-get upgrade -y
 
 # Installing monogocxx,mongoc is first installed and then followed by mongocxx installation
 # DCMAKE_INSTALL_PREFIX sets the installation path. Should be reflected in CMakeLists file accordingly
 RUN cd ~ \
-    && wget https://github.com/mongodb/mongo-c-driver/releases/download/1.14.0/mongo-c-driver-1.14.0.tar.gz \
-    && tar -xzvf mongo-c-driver-1.14.0.tar.gz \
-    && cd mongo-c-driver-1.14.0 \
+    && wget https://github.com/mongodb/mongo-c-driver/releases/download/1.17.2/mongo-c-driver-1.17.2.tar.gz \
+    && tar -xzvf mongo-c-driver-1.17.2.tar.gz \
+    && cd mongo-c-driver-1.17.2 \
     && mkdir cmake-build \
     && cd cmake-build \
     && cmake -DENABLE_AUTOMATIC_INIT_AND_CLEANUP=OFF .. \
@@ -23,11 +23,11 @@ RUN cd ~ \
     && cd ../build \
     && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local .. \
     && cd ~ \
-    && rm mongo-c-driver-1.14.0.tar.gz \
-    && rm -rf mongo-c-driver-1.14.0 \
+    && rm mongo-c-driver-1.17.2.tar.gz \
+    && rm -rf mongo-c-driver-1.17.2 \
     && git clone https://github.com/mongodb/mongo-cxx-driver.git \
     && cd mongo-cxx-driver \
-    && git checkout r3.4.0 \
+    && git checkout r3.6.2 \
     && cd build \
     && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local .. \
     && make EP_mnmlstc_core \
