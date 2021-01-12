@@ -327,7 +327,7 @@ void *processSlave(void *)
                 throw JSON_PARSE_ERROR;
             }
             std::string type = request["type"].GetString();
-            if (type == "otpquery")
+            if (type == "otpquery" || type == "otptemplatequery")
             {
                 intermediateResponse = processOTPQuery(intermediateRequest, request);
             }
@@ -391,14 +391,32 @@ void *writeSlave(void *fifosout)
     }
 }
 
-int main(int argc, const char *argv[])
+void loadParams(std::string paramsString)
 {
-    auto& dotenv = dotenv::env;  // Reference re-naming
+//    int id = 0;
+//    rapidjson::Document params;
+//    params.Parse<0>(paramsString.c_str());
+//    Node *root = MemoryManager::Inst.CreateNode(++id);
+//    for (rapidjson::Value::MemberIterator M=params.MemberonBegin(); M!=params.MemberonEnd(); M++)
+//    for (rapidjson::Value::ConstValueIterator paramItr = params.Begin(); paramItr != params.End(); ++paramItr) {
+//        rapidjson::Value &paramjson = (rapidjson::Value &) (*paramItr);
+//        Node *paramNode = MemoryManager::Inst.CreateNode(++id);
+//        paramNode->SetLValue((char *) paramjson["userID"].GetString());
+//        paramNode->SetRValue((char *) paramjson["id"].GetString());
+////        paramNode->SetValue((char *) tdpjson["stageID"].GetString());
+//
+//    }
+//    tdpNode->SetLValue((char *) tdpjson["userID"].GetString());
+//    tdpNode->SetRValue((char *) tdpjson["id"].GetString());
+//    tdpNode->SetValue((char *) tdpjson["stageID"].GetString());
+//    Node *tenant = MemoryManager::Inst.CreateNode(++id);
+//    tenant->SetRValue((char *) tdpjson["tenantID"]["tenantId"].GetString());
+//    tenant->SetLValue((char *) tdpjson["tenantID"]["name"].GetString());
+//    tenant->SetValue((char *) tdpjson["tenantID"]["itemName"].GetString());
+//    tdpNode->SetCustomObj(tenant);
+//    root->AppendNode(tdpNode);
 
-    int i;
-    pthread_t tid[THREADS];
-    pthread_mutex_init(&mutex_read, NULL);
-    pthread_mutex_init(&mutex_write, NULL);
+}
 
     //    Tests t = Tests();
     //    t.RunTest1();
