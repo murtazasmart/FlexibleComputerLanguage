@@ -422,6 +422,14 @@ void loadParams(std::string paramsString)
 
 }
 
+int main(int argc, const char *argv[]) {
+   auto &dotenv = dotenv::env;  // Reference re-naming
+
+   int i;
+   pthread_t tid[THREADS];
+   pthread_mutex_init(&mutex_read, NULL);
+   pthread_mutex_init(&mutex_write, NULL);
+
     //    Tests t = Tests();
     //    t.RunTest1();
     //    t.RunTest3();
@@ -431,26 +439,26 @@ void loadParams(std::string paramsString)
     LOG(INFO) << "Starting..";
 
     //testing Mongo DB connection
-    mongocxx::instance inst{}; //DONT REMOVE THIS
-    std::string db_uri = getenv("BE_MONGOLAB_URI") == 0 ? dotenv["BE_MONGOLAB_URI"] : getenv("BE_MONGOLAB_URI");
-    mongocxx::client conn{mongocxx::uri(db_uri)};
-    auto collection = conn["tracified-backend-test-db"]["reviews"];
-    try{
-        auto cursor =collection.count_documents({});
-        if(cursor>0){
-            LOG(INFO) <<"Database Connection Established Successfully";
-        }
-        mongocxx::cursor c = collection.find({});
-        bsoncxx::oid obj = bsoncxx::oid("5ff4054564b978657d292652");
-        std::time_t result = obj.get_time_t();
-        std::cout << std::asctime(std::localtime(&result));
-        // for(auto doc: c) {
-        //     std::cout << bsoncxx::to_json(doc) << "\n";
+    // mongocxx::instance inst{}; //DONT REMOVE THIS
+    // std::string db_uri = getenv("BE_MONGOLAB_URI") == 0 ? dotenv["BE_MONGOLAB_URI"] : getenv("BE_MONGOLAB_URI");
+    // mongocxx::client conn{mongocxx::uri(db_uri)};
+    // auto collection = conn["tracified-backend-test-db"]["reviews"];
+    // try{
+    //     auto cursor =collection.count_documents({});
+    //     if(cursor>0){
+    //         LOG(INFO) <<"Database Connection Established Successfully";
+    //     }
+    //     mongocxx::cursor c = collection.find({});
+    //     bsoncxx::oid obj = bsoncxx::oid("5ff4054564b978657d292652");
+    //     std::time_t result = obj.get_time_t();
+    //     std::cout << std::asctime(std::localtime(&result));
+    //     // for(auto doc: c) {
+    //     //     std::cout << bsoncxx::to_json(doc) << "\n";
+    //     // }
+    // }catch(const std::exception & e) {
+    //     LOG(INFO) <<"Could not Establish Connection to Database";
+    //     LOG(INFO) << e.what();
         // }
-    }catch(const std::exception & e) {
-        LOG(INFO) <<"Could not Establish Connection to Database";
-        LOG(INFO) << e.what();
-    }
 
     // FIFO file path
     std::string pathin = getenv("QL_PIPE_FIFO_IN") == 0 ? dotenv["QL_PIPE_FIFO_IN"] : getenv("QL_PIPE_FIFO_IN");
