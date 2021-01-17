@@ -1727,7 +1727,6 @@ PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, Execution
             PENTITYLIST pNodeList = 0;
             MemoryManager::Inst.CreateObject(&pNodeList);
             FilterSubTree(currNode, p_Arg, pContext, pNodeList);
-//            pEntityList = pNodeList;
             pListRes->SeekToBegin();
             PNODE internalNode = (PNODE)pNodeList->GetCurrElem();
             while(internalNode != 0)
