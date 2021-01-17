@@ -7,6 +7,10 @@
 //
 // VERSION 2
 
+#include <bsoncxx/builder/stream/document.hpp>
+#include <bsoncxx/json.hpp>
+#include <mongocxx/client.hpp>
+#include <mongocxx/instance.hpp>
 #include <iostream>
 #include <unistd.h>
 #include <fcntl.h>
@@ -97,11 +101,16 @@ std::string run(Node *root, MSTRING querycode)
     ec.map_Var["X"] = root;
     ec.map_Var["Y"] = pY;
     ec.map_Var["RESULT"] = pRESULT;
+    // TODO call function to attach params
     op.p_ETL->Execute(&ec);
     return ResultGenerator::CreateResult(pRESULT);
 }
 
-std::string processQuery(std::string requestString, rapidjson::Document& request)
+// TODO add func. to add params to context dynamically
+
+// TODO add function for processTDPQuery
+
+std::string processOTPQuery(std::string requestString, rapidjson::Document& request)
 {
     // START
     std::string reqId = "0";
@@ -111,7 +120,7 @@ std::string processQuery(std::string requestString, rapidjson::Document& request
         reqId = request["reqId"].GetString();
         rapidjson::StringBuffer buffer;
         rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-        request["otp"].Accept(writer);
+        request["obj"].Accept(writer);
         std::string otps = buffer.GetString();
 
         Node *r;
@@ -163,6 +172,77 @@ std::string processQuery(std::string requestString, rapidjson::Document& request
         std::string resReqId = request["reqId"].GetString();
         std::string response =
             "{\"reqId\": \"" + resReqId + "\", \"queries\": [" + queryResults + "]}";
+        // PROCESS END
+        return response;
+    }
+    catch (int ex)
+    {
+        return "{\"reqId\":" + reqId + "\", \"error\": {\"id\":\"" + std::to_string(ex) + "\", \"message\":\"Query language has failed.\"}}";
+    }
+}
+
+std::string processTDPQuery(std::string requestString, rapidjson::Document& request)
+{
+    // START
+    std::string reqId = "0";
+    try
+    {
+        //LOG(ERROR) << "AA";
+        reqId = request["reqId"].GetString();
+        rapidjson::StringBuffer buffer;
+        rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+        request["obj"].Accept(writer);
+        std::string objString = buffer.GetString();
+
+        Node *r;
+
+        try
+        {
+            //LOG(ERROR) << "AAA";
+            r = OTPParser::TDPJSONToNodeTree(objString);
+        }
+        catch (int ex)
+        {
+            //request.Accept(writer);
+            //LOG(ERROR) << "Request:" << buffer.GetString();
+            throw JSON_TO_NODE_TREE_ERROR;
+        }
+
+        std::string queryResults = "";
+
+        //LOG(ERROR) << "AAAAA";
+        rapidjson::Value& queries = request["queries"];
+        //for (auto &data : nlohmann::json::iterator_wrapper(request["queries"]))
+        for (rapidjson::Value::ConstValueIterator data = queries.Begin(); data != queries.End(); ++data)
+        {
+            rapidjson::Value& query = (rapidjson::Value&)(*data);
+            std::string queryString = query.GetString();
+            //             HAVE TO WRITE FUNCTION TO RETURN RESULT JSON
+            std::string result;
+
+            try
+            {
+                result = run(r, queryString);
+            }
+            catch (int ex)
+            {
+                //LOG(ERROR) << "OTPS:" << otps;
+                //LOG(ERROR) << "QueryString:" << queryString;
+                throw QUERY_LANGUAGE_ERROR;
+            }
+
+            if (queryResults.compare("") != 0)
+            {
+                queryResults = queryResults + "," + result;
+            }
+            else
+            {
+                queryResults = queryResults + result;
+            }
+        }
+        std::string resReqId = request["reqId"].GetString();
+        std::string response =
+                "{\"reqId\": \"" + resReqId + "\", \"queries\": [" + queryResults + "]}";
         // PROCESS END
         return response;
     }
@@ -251,9 +331,13 @@ void *processSlave(void *)
                 throw JSON_PARSE_ERROR;
             }
             std::string type = request["type"].GetString();
-            if (type == "query")
+            if (type == "otpquery" || type == "otptemplatequery")
             {
-                intermediateResponse = processQuery(intermediateRequest, request);
+                intermediateResponse = processOTPQuery(intermediateRequest, request);
+            }
+            else if (type == "tdpquery")
+            {
+                intermediateResponse = processTDPQuery(intermediateRequest, request);
             }
             else if (type == "test")
             {
@@ -311,14 +395,40 @@ void *writeSlave(void *fifosout)
     }
 }
 
-int main(int argc, const char *argv[])
+void loadParams(std::string paramsString)
 {
-    auto& dotenv = dotenv::env;  // Reference re-naming
+//    int id = 0;
+//    rapidjson::Document params;
+//    params.Parse<0>(paramsString.c_str());
+//    Node *root = MemoryManager::Inst.CreateNode(++id);
+//    for (rapidjson::Value::MemberIterator M=params.MemberonBegin(); M!=params.MemberonEnd(); M++)
+//    for (rapidjson::Value::ConstValueIterator paramItr = params.Begin(); paramItr != params.End(); ++paramItr) {
+//        rapidjson::Value &paramjson = (rapidjson::Value &) (*paramItr);
+//        Node *paramNode = MemoryManager::Inst.CreateNode(++id);
+//        paramNode->SetLValue((char *) paramjson["userID"].GetString());
+//        paramNode->SetRValue((char *) paramjson["id"].GetString());
+////        paramNode->SetValue((char *) tdpjson["stageID"].GetString());
+//
+//    }
+//    tdpNode->SetLValue((char *) tdpjson["userID"].GetString());
+//    tdpNode->SetRValue((char *) tdpjson["id"].GetString());
+//    tdpNode->SetValue((char *) tdpjson["stageID"].GetString());
+//    Node *tenant = MemoryManager::Inst.CreateNode(++id);
+//    tenant->SetRValue((char *) tdpjson["tenantID"]["tenantId"].GetString());
+//    tenant->SetLValue((char *) tdpjson["tenantID"]["name"].GetString());
+//    tenant->SetValue((char *) tdpjson["tenantID"]["itemName"].GetString());
+//    tdpNode->SetCustomObj(tenant);
+//    root->AppendNode(tdpNode);
 
-    int i;
-    pthread_t tid[THREADS];
-    pthread_mutex_init(&mutex_read, NULL);
-    pthread_mutex_init(&mutex_write, NULL);
+}
+
+int main(int argc, const char *argv[]) {
+   auto &dotenv = dotenv::env;  // Reference re-naming
+
+   int i;
+   pthread_t tid[THREADS];
+   pthread_mutex_init(&mutex_read, NULL);
+   pthread_mutex_init(&mutex_write, NULL);
 
     //    Tests t = Tests();
     //    t.RunTest1();
@@ -327,6 +437,28 @@ int main(int argc, const char *argv[])
     Logger::ConfigureLogger();
 
     LOG(INFO) << "Starting..";
+
+    //testing Mongo DB connection
+    // mongocxx::instance inst{}; //DONT REMOVE THIS
+    // std::string db_uri = getenv("BE_MONGOLAB_URI") == 0 ? dotenv["BE_MONGOLAB_URI"] : getenv("BE_MONGOLAB_URI");
+    // mongocxx::client conn{mongocxx::uri(db_uri)};
+    // auto collection = conn["tracified-backend-test-db"]["reviews"];
+    // try{
+    //     auto cursor =collection.count_documents({});
+    //     if(cursor>0){
+    //         LOG(INFO) <<"Database Connection Established Successfully";
+    //     }
+    //     mongocxx::cursor c = collection.find({});
+    //     bsoncxx::oid obj = bsoncxx::oid("5ff4054564b978657d292652");
+    //     std::time_t result = obj.get_time_t();
+    //     std::cout << std::asctime(std::localtime(&result));
+    //     // for(auto doc: c) {
+    //     //     std::cout << bsoncxx::to_json(doc) << "\n";
+    //     // }
+    // }catch(const std::exception & e) {
+    //     LOG(INFO) <<"Could not Establish Connection to Database";
+    //     LOG(INFO) << e.what();
+        // }
 
     // FIFO file path
     std::string pathin = getenv("QL_PIPE_FIFO_IN") == 0 ? dotenv["QL_PIPE_FIFO_IN"] : getenv("QL_PIPE_FIFO_IN");
