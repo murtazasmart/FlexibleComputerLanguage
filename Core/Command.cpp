@@ -1731,7 +1731,7 @@ PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, Execution
             PNODE internalNode = (PNODE)pNodeList->GetCurrElem();
             while(internalNode != 0)
             {
-                pListRes->push_back(internalNode->GetCopy());
+                pListRes->push_back(internalNode);
                 pNodeList->Seek(1, false);
                 internalNode = (PNODE)pNodeList->GetCurrElem();
             }
