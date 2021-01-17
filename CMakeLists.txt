@@ -8,6 +8,15 @@ include_directories(Core)
 include_directories(Core/TestCases)
 include_directories(FlexibleComputerLanguage)
 
+find_package(libmongocxx REQUIRED)
+find_package(libbsoncxx REQUIRED)
+include_directories(${LIBMONGOCXX_INCLUDE_DIR})
+include_directories(${LIBBSONCXX_INCLUDE_DIR})
+include_directories("/usr/local/include/mongocxx/v_noabi")
+include_directories("/usr/local/include/bsoncxx/v_noabi")
+include_directories("/usr/share/doc/libsasl2-dev")
+include_directories("/usr/share/doc/libssl-dev")
+
 add_executable(FlexibleComputerLanguage1
         Core/TestCases/TestCaseBase.cpp
         Core/TestCases/TestCaseBase.h
@@ -94,5 +103,7 @@ add_executable(FlexibleComputerLanguage1
         FlexibleComputerLanguage/easylogging++.cc
         FlexibleComputerLanguage/Logger.h)
 
+target_link_libraries(FlexibleComputerLanguage1 ${LIBMONGOCXX_LIBRARIES})
+target_link_libraries(FlexibleComputerLanguage1 ${LIBBSONCXX_LIBRARIES})
 
 
