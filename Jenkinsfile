@@ -19,8 +19,8 @@ node {
       }
       
       stage('Build') {
-        sh 'cmake .'
-        sh 'make'
+        // sh 'cmake .'
+        // sh 'make'
       }
       
       stage('Test') {
