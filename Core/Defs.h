@@ -689,6 +689,8 @@
 #define     COMMAND_TYPE_GET_INTEGER                                    63
 #define     COMMAND_TYPE_GET_BOOLEAN                                    64
 #define     COMMAND_TYPE_GET_CUSTOM_OBJ                                 65
+#define     COMMAND_TYPE_GET_NODE_OBJ                                   66
+#define     COMMAND_TYPE_QUERY_PROFILE_AND_TDPS                         67
 
 // String commands
 #define		COMMAND_TYPE_IS_STRING_EQUAL_TO								1000

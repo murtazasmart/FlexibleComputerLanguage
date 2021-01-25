@@ -163,3 +163,5 @@ DEF	GET_LATEST_DATE					GetLatestDate
 DEF	ADD_PERIOD					AddPeriod
 DEF	GET_UNIQUE_NODE_LIST_WITH_NODE_REF			GetUniqueNodeListWithNodeRef
 DEF SET_INTEGER                 SetInteger
+DEF	QUERY_PROFILE_AND_TDPS                 QueryProfileAndTDPs
+DEF	GET_NODE_OBJ                 GetNodeObj

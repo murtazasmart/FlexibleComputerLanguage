@@ -14,6 +14,8 @@
 #include "Bool.h"
 #include "MetaData.h"
 #include "DateTimeOperations.h"
+#include "MongoDB.h"
+#include "MongoTP.h"
 #include <set>
 #include <algorithm>
 #include <functional>
@@ -1317,6 +1319,20 @@ PENTITY Command::ExecuteNodeCommand(MULONG ulCommand, PENTITY pEntity, Execution
                 pNodeRes = (PNODE)pNode->GetCustomObj();
                 break;
             }
+            case COMMAND_TYPE_GET_NODE_OBJ:
+            {
+//                MemoryManager::Inst.CreateObject(&pNodeRes);
+                pNodeRes = MemoryManager::Inst.CreateNode(7777);
+                break;
+        }
+            case COMMAND_TYPE_QUERY_PROFILE_AND_TDPS:
+            {
+                pNode = (PNODE)pArg;
+                MongoDB* m = MongoDB::getInstance();
+                MongoTP *tp = new MongoTP(80005);
+                pNodeRes = tp->queryProfilesAndTDPs(pNode->GetLVal(), pNode->GetValue(), pNode->GetRVal(), pNode->GetCustomString());
+                break;
+    }
         }
     }
     
@@ -1699,6 +1715,7 @@ PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, Execution
 		std::string oldestDate = (DateTimeOperations::GetOldestDate(dateList));
 		pStrRes->SetValue(DateTimeOperations::GetOldestDate(dateList));
 	}
+	// This function takes each node in the list and by default selects LValue in the node
 	else if (COMMAND_TYPE_GET_LATEST_DATE == ulCommand)
 	{
 		MemoryManager::Inst.CreateObject(&pStrRes);

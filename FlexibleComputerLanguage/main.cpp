@@ -44,6 +44,8 @@
 
 //Testing purposes
 #include <chrono>
+#include <MongoDB.h>
+#include <MongoTP.h>
 
 #define JSON_PARSE_ERROR 1
 #define JSON_TO_NODE_TREE_ERROR 2
