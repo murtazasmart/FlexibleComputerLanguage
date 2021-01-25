@@ -25,7 +25,7 @@ public:
         return MongoDB::instance;
     };
 
-    mongocxx::cursor query(std::string schema, mongocxx::pipeline* p);
+    std::string query(std::string schema, mongocxx::pipeline* p);
     void getAll(std::string schema);
     bsoncxx::builder::basic::array createArray(std::string commaSeperatedArray);
     void commaSeperatedStringToVector(std::string commaSeperatedArray);

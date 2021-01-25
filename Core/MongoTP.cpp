@@ -92,21 +92,21 @@ Node* MongoTP::queryProfilesAndTDPs(std::string stageIds, std::string tenantIds,
 //                    kvp("$push", "$$ROOT")
 //            ))
 //    ));
-    mongocxx::cursor c = db->query("traceabilityprofiles", &p);
+    std::string j = db->query("traceabilityprofiles", &p);
 
     Node* r = new Node(80000);
     r->SetCustomString("profileroot");
     r->SetValue("profileroot");
     r->SetLValue("profileroot");
     r->SetRValue("profileroot");
-    std::string j = "[";
-    for (auto doc: c) {
-            std::cout << bsoncxx::to_json(doc) << "\n";
-        if (j.length() > 1)
-            j += ",";
-        j += bsoncxx::to_json(doc);
-    }
-    j += "]";
+//    std::string j = "[";
+//    for (auto doc: c) {
+//            std::cout << bsoncxx::to_json(doc) << "\n";
+//        if (j.length() > 1)
+//            j += ",";
+//        j += bsoncxx::to_json(doc);
+//    }
+//    j += "]";
     rapidjson::Document otps;
     OTPParser::createTDTree(otps.Parse(j.c_str()), r);
     return r;

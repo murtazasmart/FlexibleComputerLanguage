@@ -41,7 +41,7 @@ void MongoDB::getAll(std::string schema) {
     }
 }
 
-mongocxx::cursor MongoDB::query(std::string schema, mongocxx::pipeline* p) {
+std::string MongoDB::query(std::string schema, mongocxx::pipeline* p) {
     using namespace bsoncxx::builder::basic;
     try {
         mongocxx::client conn{
@@ -49,11 +49,16 @@ mongocxx::cursor MongoDB::query(std::string schema, mongocxx::pipeline* p) {
         auto collection = conn[this->db_name][schema];
         mongocxx::cursor c = collection.aggregate(*p, mongocxx::options::aggregate{});
 //        std::cout << bsoncxx::to_json(c);
+        std::string j = "[";
         for (auto doc: c) {
             std::cout << bsoncxx::to_json(doc) << "\n";
+            if (j.length() > 1)
+                j += ",";
+            j += bsoncxx::to_json(doc);
         }
+        j += "]";
         LOG(INFO) << "Connection to Database Successful";
-        return c;
+        return j;
     } catch (const std::exception &e) {
         LOG(INFO) << "Could not Establish Connection to Database";
         std::string err = e.what();

@@ -9,7 +9,7 @@ class MongoReview: public Node {
 
 public:
     MongoReview(int ulId) : Node(ulId)  { }
-    Node* queryReviews(std::string identifier, std::string tenantIds, std::string itemIds, std::string fromdate);
+    Node* queryReviews(std::string profileIds);
 };
 
 #endif //FLEXIBLECOMPUTERLANGUAGE_MONGOREVIEW_H

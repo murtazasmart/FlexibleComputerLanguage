@@ -16,6 +16,7 @@
 #include "DateTimeOperations.h"
 #include "MongoDB.h"
 #include "MongoTP.h"
+#include "MongoReview.h"
 #include <set>
 #include <algorithm>
 #include <functional>
@@ -1352,12 +1353,18 @@ PENTITY Command::ExecuteNodeCommand(MULONG ulCommand, PENTITY pEntity, Execution
             case COMMAND_TYPE_QUERY_PROFILE_AND_TDPS:
             {
                 pNode = (PNODE)pArg;
-                MongoDB* m = MongoDB::getInstance();
                 MongoTP *tp = new MongoTP(80005);
                 pNodeRes = tp->queryProfilesAndTDPs(pNode->GetLVal(), pNode->GetValue(), pNode->GetRVal(), pNode->GetCustomString());
                 break;
     }
+            case COMMAND_TYPE_QUERY_REVIEWS_BY_PROFILE_IDS:
+            {
+                pNode = (PNODE)pArg;
+                MongoReview *mr = new MongoReview(80006);
+                pNodeRes = mr->queryReviews(pNode->GetValue());
+                break;
         }
+    }
     }
     
 	
