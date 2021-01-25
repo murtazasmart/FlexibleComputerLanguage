@@ -735,6 +735,8 @@
 #define		COMMAND_TYPE_SUBTRACT										2101
 #define		COMMAND_TYPE_TOSTRING										2200
 #define     COMMAND_TYPE_SET_INTEGER                                    2201
+#define		COMMAND_TYPE_MULTIPLY										2102
+#define		COMMAND_TYPE_DIVIDE										    2103
 
 // Bool Commands
 #define		COMMAND_TYPE_BOOL_AND										4000
