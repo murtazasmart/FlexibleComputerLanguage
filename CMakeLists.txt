@@ -91,6 +91,12 @@ add_executable(FlexibleComputerLanguage1
         Core/Utils.cpp
         Core/Utils.h
         Core/Value.h
+        Core/MongoDB.cpp
+        Core/MongoDB.h
+        Core/MongoTP.cpp
+        Core/MongoTP.h
+        Core/MongoReview.cpp
+        Core/MongoReview.h
         FlexibleComputerLanguage/json.hpp
         FlexibleComputerLanguage/main.cpp
         FlexibleComputerLanguage/ResultGenerator.h
