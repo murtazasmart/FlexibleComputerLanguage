@@ -44,6 +44,9 @@
 
 //Testing purposes
 #include <chrono>
+#include <MongoDB.h>
+#include <MongoTP.h>
+#include <MongoReview.h>
 
 #define JSON_PARSE_ERROR 1
 #define JSON_TO_NODE_TREE_ERROR 2
@@ -72,7 +75,39 @@ std::chrono::duration<double> elapsed_time;
 
 #include "EntityList.h"
 
-std::string run(Node *root, MSTRING querycode)
+Node* loadParams(std::string paramsString)
+{
+    int id = 0;
+    rapidjson::Document params;
+    params.Parse(paramsString.c_str());
+    Node *pParams = MemoryManager::Inst.CreateNode(++id);
+    pParams->SetValue("params");
+    pParams->SetLValue("params");
+    pParams->SetRValue("params");
+    pParams->SetCustomString("params");
+    for (rapidjson::Value::ConstMemberIterator data = params.MemberBegin(); data != params.MemberEnd(); ++data) {
+        rapidjson::Value &jsonvalue = params[data->name.GetString()];
+        PString pStr = 0;
+        MemoryManager::Inst.CreateObject(&pStr);
+
+        rapidjson::StringBuffer buffer;
+        rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+        jsonvalue.Accept(writer);
+        pStr->SetValue(buffer.GetString());
+
+        Node *datanode = MemoryManager::Inst.CreateNode(++id);
+        std::string val = buffer.GetString();
+        //            std::replace(val.begin(), val.end(), '"', '\0');
+        val.erase(std::remove(val.begin(), val.end(), '"'), val.end());
+        datanode->SetEntityObj((PENTITY) pStr);
+        datanode->SetValue((char *) data->name.GetString());
+        datanode->SetLValue((char *) val.c_str());
+        pParams->AppendNode(datanode);
+    }
+    return pParams;
+}
+
+std::string run(Node *root, MSTRING querycode, std::string paramString = "{ \"testParam\": \"Placeholder\"}")
 {
     // PENTITYLIST list = new EntityList();
     // list->push_back(new String("abc"));
@@ -101,7 +136,7 @@ std::string run(Node *root, MSTRING querycode)
     ec.map_Var["X"] = root;
     ec.map_Var["Y"] = pY;
     ec.map_Var["RESULT"] = pRESULT;
-    // TODO call function to attach params
+    ec.map_Var["PARAMS"] = loadParams(paramString);
     op.p_ETL->Execute(&ec);
     return ResultGenerator::CreateResult(pRESULT);
 }
@@ -151,7 +186,15 @@ std::string processOTPQuery(std::string requestString, rapidjson::Document& requ
 
             try
             {
+                if (request.HasMember("params"))
+                {
+                    rapidjson::StringBuffer buffer;
+                    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+                    request["params"].Accept(writer);
+                    result = run(r, queryString, buffer.GetString());
+                } else {
                 result = run(r, queryString);
+            }
             }
             catch (int ex)
             {
@@ -222,7 +265,15 @@ std::string processTDPQuery(std::string requestString, rapidjson::Document& requ
 
             try
             {
+                if (request.HasMember("params"))
+                {
+                    rapidjson::StringBuffer buffer;
+                    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+                    request["params"].Accept(writer);
+                    result = run(r, queryString, buffer.GetString());
+                } else {
                 result = run(r, queryString);
+            }
             }
             catch (int ex)
             {
@@ -395,32 +446,18 @@ void *writeSlave(void *fifosout)
     }
 }
 
-void loadParams(std::string paramsString)
+int main(int argc, const char *argv[])
 {
-//    int id = 0;
-//    rapidjson::Document params;
-//    params.Parse<0>(paramsString.c_str());
-//    Node *root = MemoryManager::Inst.CreateNode(++id);
-//    for (rapidjson::Value::MemberIterator M=params.MemberonBegin(); M!=params.MemberonEnd(); M++)
-//    for (rapidjson::Value::ConstValueIterator paramItr = params.Begin(); paramItr != params.End(); ++paramItr) {
-//        rapidjson::Value &paramjson = (rapidjson::Value &) (*paramItr);
-//        Node *paramNode = MemoryManager::Inst.CreateNode(++id);
-//        paramNode->SetLValue((char *) paramjson["userID"].GetString());
-//        paramNode->SetRValue((char *) paramjson["id"].GetString());
-////        paramNode->SetValue((char *) tdpjson["stageID"].GetString());
-//
-//    }
-//    tdpNode->SetLValue((char *) tdpjson["userID"].GetString());
-//    tdpNode->SetRValue((char *) tdpjson["id"].GetString());
-//    tdpNode->SetValue((char *) tdpjson["stageID"].GetString());
-//    Node *tenant = MemoryManager::Inst.CreateNode(++id);
-//    tenant->SetRValue((char *) tdpjson["tenantID"]["tenantId"].GetString());
-//    tenant->SetLValue((char *) tdpjson["tenantID"]["name"].GetString());
-//    tenant->SetValue((char *) tdpjson["tenantID"]["itemName"].GetString());
-//    tdpNode->SetCustomObj(tenant);
-//    root->AppendNode(tdpNode);
-
-}
+  auto& dotenv = dotenv::env;  // Reference re-naming
+//   MongoDB* m = MongoDB::getInstance();
+//   MongoTP* tp = new MongoTP(80005);
+//   tp->queryProfilesAndTDPs("104", "360d88f0-047a-11eb-af2a-f9e4ff9a11e7", "5fd9f23fb4f953a6f26e3bc1,5fd9f220b4f953c5d36e3bc0","");
+//    MongoReview* mr = new MongoReview(80006);
+//    mr->queryReviews("5d41258804613f0001be6bc2|5d08bf42302ab000013ad0d8");
+   int i;
+   pthread_t tid[THREADS];
+   pthread_mutex_init(&mutex_read, NULL);
+   pthread_mutex_init(&mutex_write, NULL);
 
     //    Tests t = Tests();
     //    t.RunTest1();
@@ -429,28 +466,6 @@ void loadParams(std::string paramsString)
     Logger::ConfigureLogger();
 
     LOG(INFO) << "Starting..";
-
-    //testing Mongo DB connection
-    mongocxx::instance inst{}; //DONT REMOVE THIS
-    std::string db_uri = getenv("BE_MONGOLAB_URI") == 0 ? dotenv["BE_MONGOLAB_URI"] : getenv("BE_MONGOLAB_URI");
-    mongocxx::client conn{mongocxx::uri(db_uri)};
-    auto collection = conn["tracified-backend-test-db"]["reviews"];
-    try{
-        auto cursor =collection.count_documents({});
-        if(cursor>0){
-            LOG(INFO) <<"Database Connection Established Successfully";
-        }
-        mongocxx::cursor c = collection.find({});
-        bsoncxx::oid obj = bsoncxx::oid("5ff4054564b978657d292652");
-        std::time_t result = obj.get_time_t();
-        std::cout << std::asctime(std::localtime(&result));
-        // for(auto doc: c) {
-        //     std::cout << bsoncxx::to_json(doc) << "\n";
-        // }
-    }catch(const std::exception & e) {
-        LOG(INFO) <<"Could not Establish Connection to Database";
-        LOG(INFO) << e.what();
-    }
 
     // FIFO file path
     std::string pathin = getenv("QL_PIPE_FIFO_IN") == 0 ? dotenv["QL_PIPE_FIFO_IN"] : getenv("QL_PIPE_FIFO_IN");

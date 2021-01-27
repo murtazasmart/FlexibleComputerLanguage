@@ -689,6 +689,9 @@
 #define     COMMAND_TYPE_GET_INTEGER                                    63
 #define     COMMAND_TYPE_GET_BOOLEAN                                    64
 #define     COMMAND_TYPE_GET_CUSTOM_OBJ                                 65
+#define     COMMAND_TYPE_GET_NODE_OBJ                                   66
+#define     COMMAND_TYPE_QUERY_PROFILE_AND_TDPS                         67
+#define     COMMAND_TYPE_QUERY_REVIEWS_BY_PROFILE_IDS                   68
 
 // String commands
 #define		COMMAND_TYPE_IS_STRING_EQUAL_TO								1000
@@ -733,6 +736,8 @@
 #define		COMMAND_TYPE_SUBTRACT										2101
 #define		COMMAND_TYPE_TOSTRING										2200
 #define     COMMAND_TYPE_SET_INTEGER                                    2201
+#define		COMMAND_TYPE_MULTIPLY										2102
+#define		COMMAND_TYPE_DIVIDE										    2103
 
 // Bool Commands
 #define		COMMAND_TYPE_BOOL_AND										4000
