@@ -212,6 +212,9 @@ Node *OTPParser::TDPJSONToNodeTree(std::string tdpsString) {
         tenant->SetRValue((char *) tdpjson["tenantID"]["tenantId"].GetString());
         tenant->SetLValue((char *) tdpjson["tenantID"]["name"].GetString());
         tenant->SetValue((char *) tdpjson["tenantID"]["itemName"].GetString());
+        Node *tenantCustomObj = MemoryManager::Inst.CreateNode(++id);
+        tenantCustomObj->SetValue((char *) tdpjson["tenantID"]["itemID"].GetString());
+        tenant->SetCustomObj(tenantCustomObj);
         tenant->SetCustomString((char *) tdpjson["tenantID"]["identifier"].GetString());
         tdpNode->SetCustomObj(tenant);
         root->AppendNode(tdpNode);
