@@ -715,6 +715,15 @@ PENTITY Command::ExecuteStringCommand(MULONG ulCommand, PENTITY pEntity, PENTITY
             }
             break;
         }
+        case COMMAND_TYPE_STRING_TO_UNIX_TIME_2:
+        {
+            MemoryManager::Inst.CreateObject(&pStrRes);
+            struct tm tm;
+            strptime(pString->GetValue().c_str(), "%Y-%m-%dT%H:%M:%S.%Z", &tm);
+            std::time_t tt = std::mktime(&tm);
+            pStrRes->SetValue(std::to_string(tt));
+            break;
+        }
         case COMMAND_TYPE_STRINGTOINTEGER:
 		{
 			MemoryManager::Inst.CreateObject(&pIntRes);

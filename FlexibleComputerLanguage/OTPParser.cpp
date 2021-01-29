@@ -115,6 +115,7 @@ Node *OTPParser::OTPJSONToNodeTree(std::string otpsString) {
                 rapidjson::Value &tpjson = (rapidjson::Value &) (*tp);
                 Node *tpnode = MemoryManager::Inst.CreateNode(++id);
                 Node *itemnode = MemoryManager::Inst.CreateNode(++id);
+                tpnode->SetLValue((char *) tpjson["id"].GetString());
                 tpnode->SetValue((char *) tpjson["stageID"].GetString());
                 itemnode->SetRValue((char *) tpjson["item"]["itemID"].GetString());
                 itemnode->SetLValue((char *) tpjson["item"]["itemName"].GetString());

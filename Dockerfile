@@ -1,7 +1,7 @@
 # FROM gcc:4.9 AS base
 # FROM frolvlad/alpine-gxx
 # FROM alpine:3.7
-FROM ubuntu:18.04 AS build
+FROM ubuntu:18.04 AS base
 
 RUN apt-get update && apt-get install -y build-essential
 
@@ -37,6 +37,8 @@ RUN cd ~ \
     && rm -rf mongo-cxx-driver \
     && cd /usr/local
 
+FROM base AS build
+
 COPY . ./FlexibleComputerLanguage
 
 WORKDIR ./FlexibleComputerLanguage
@@ -49,7 +51,7 @@ RUN cmake .
 
 RUN make
 
-FROM ubuntu:18.04
+FROM ubuntu:18.04 as production
 # FROM alpine:3.7
 
 COPY --from=build ./FlexibleComputerLanguage/FlexibleComputerLanguage1 ./myapp/FlexibleComputerLanguage1
@@ -66,6 +68,8 @@ WORKDIR ./myapp
 #     libc6-compat \
 #     libstdc++
     # g++
+
+FROM production AS prod-dependencies
 
 # Install runtime dependencies,these are needed in addition to the build dependencies 
 RUN apt-get update && apt-get install -y libsasl2-dev libssl-dev libssl1.0.0 libsnappy-dev && ls -l && export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig"
