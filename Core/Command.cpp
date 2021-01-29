@@ -1357,6 +1357,9 @@ PENTITY Command::ExecuteNodeCommand(MULONG ulCommand, PENTITY pEntity, Execution
             {
 //                MemoryManager::Inst.CreateObject(&pNodeRes);
                 pNodeRes = MemoryManager::Inst.CreateNode(7777);
+                pNodeRes->SetValue("");
+                pNodeRes->SetLValue("");
+                pNodeRes->SetRValue("");
                 break;
         }
             case COMMAND_TYPE_QUERY_PROFILE_AND_TDPS:
