@@ -1373,6 +1373,13 @@ PENTITY Command::ExecuteNodeCommand(MULONG ulCommand, PENTITY pEntity, Execution
                 pNodeRes = mr->queryReviews(pNode->GetValue());
                 break;
         }
+            case COMMAND_TYPE_QUERY_REVIEWS_BY_IDENTIFIERS:
+            {
+                pNode = (PNODE)pArg;
+                MongoReview *mr = new MongoReview(80006);
+                pNodeRes = mr->queryIdentifiers(pNode->GetValue());
+                break;
+            }
     }
     }
     

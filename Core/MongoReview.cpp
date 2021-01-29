@@ -44,3 +44,36 @@ Node* MongoReview::queryReviews(std::string profileIds) {
     return r;
 }
 
+Node* MongoReview::queryIdentifiers(std::string identifiers) {
+    using namespace bsoncxx::builder::basic;
+    MongoDB* db = MongoDB::getInstance();
+    mongocxx::pipeline p{};
+    p.match(make_document(
+            kvp("$and", make_array(
+                    make_document(
+                            kvp("identifier.identifier", make_document(
+                                    kvp("$in", db->createArray(identifiers))
+                            ))
+                    ))
+            )
+    ));
+    std::string j = db->query("reviews", &p);
+
+    Node* r = new Node(70000);
+    r->SetCustomString("reviewsroot");
+    r->SetValue("reviewsroot");
+    r->SetLValue("reviewsroot");
+    r->SetRValue("reviewsroot");
+//    std::string j = "[";
+//    for (auto doc: c) {
+//        std::cout << bsoncxx::to_json(doc) << "\n";
+//        if (j.length() > 1)
+//            j += ",";
+//        j += bsoncxx::to_json(doc);
+//    }
+//    j += "]";
+    rapidjson::Document otps;
+    OTPParser::createTDTree(otps.Parse(j.c_str()), r);
+    return r;
+}
+

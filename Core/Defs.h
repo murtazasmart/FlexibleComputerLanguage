@@ -692,6 +692,7 @@
 #define     COMMAND_TYPE_GET_NODE_OBJ                                   66
 #define     COMMAND_TYPE_QUERY_PROFILE_AND_TDPS                         67
 #define     COMMAND_TYPE_QUERY_REVIEWS_BY_PROFILE_IDS                   68
+#define     COMMAND_TYPE_QUERY_REVIEWS_BY_IDENTIFIERS                   69
 
 // String commands
 #define		COMMAND_TYPE_IS_STRING_EQUAL_TO								1000
