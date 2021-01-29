@@ -51,7 +51,7 @@ RUN cmake .
 
 RUN make
 
-FROM ubuntu:18.04 as production
+FROM ubuntu:18.04
 # FROM alpine:3.7
 
 COPY --from=build ./FlexibleComputerLanguage/FlexibleComputerLanguage1 ./myapp/FlexibleComputerLanguage1
@@ -68,8 +68,6 @@ WORKDIR ./myapp
 #     libc6-compat \
 #     libstdc++
     # g++
-
-FROM production AS prod-dependencies
 
 # Install runtime dependencies,these are needed in addition to the build dependencies 
 RUN apt-get update && apt-get install -y libsasl2-dev libssl-dev libssl1.0.0 libsnappy-dev && ls -l && export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig"
