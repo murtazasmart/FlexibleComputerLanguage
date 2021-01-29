@@ -29,6 +29,12 @@ public:
     void getAll(std::string schema);
     bsoncxx::builder::basic::array createArray(std::string commaSeperatedArray);
     void commaSeperatedStringToVector(std::string commaSeperatedArray);
+    void set_db_uri(std::string uri) {
+        this->db_uri = uri;
+    }
+    void set_db_name(std::string name) {
+        this->db_uri = name;
+    }
 
 };
 
