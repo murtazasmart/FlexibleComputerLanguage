@@ -115,7 +115,35 @@ Node *OTPParser::OTPJSONToNodeTree(std::string otpsString) {
                 rapidjson::Value &tpjson = (rapidjson::Value &) (*tp);
                 Node *tpnode = MemoryManager::Inst.CreateNode(++id);
                 Node *itemnode = MemoryManager::Inst.CreateNode(++id);
+                tpnode->SetLValue((char *) tpjson["id"].GetString());
                 tpnode->SetValue((char *) tpjson["stageID"].GetString());
+                tpnode->SetRValue((char *) tpjson["tenantID"].GetString());
+                if (tpjson.HasMember("identifier")) {
+                    if (!tpjson["identifier"].IsNull()) {
+                        if (tpjson["identifier"].IsObject()) {
+                            if (tpjson["identifier"].HasMember("identifier")) {
+                                tpnode->SetCustomString((char *) tpjson["identifier"]["identifier"].GetString());
+                            } else {
+                                tpnode->SetCustomString("placeholder");
+                            }
+                        } else {
+                            tpnode->SetCustomString("placeholder");
+                        }
+                    } else {
+                        tpnode->SetCustomString("placeholder");
+                    }
+                } else {
+                    tpnode->SetCustomString("placeholder");
+                }
+//                try {
+//                    bool check = tpjson["identifier"].IsNull();
+//                    bool val = tpjson["identifier"].HasMember("identifier");
+//                    if (val) {
+//                        bool val2 = tpjson["identifier"].IsNull();
+//                        std::string s = "";
+//                    }
+//                } catch(int e) {
+//                }
                 itemnode->SetRValue((char *) tpjson["item"]["itemID"].GetString());
                 itemnode->SetLValue((char *) tpjson["item"]["itemName"].GetString());
                 tpnode->SetCustomObj(itemnode);

@@ -715,6 +715,15 @@ PENTITY Command::ExecuteStringCommand(MULONG ulCommand, PENTITY pEntity, PENTITY
             }
             break;
         }
+        case COMMAND_TYPE_STRING_TO_UNIX_TIME_2:
+        {
+            MemoryManager::Inst.CreateObject(&pStrRes);
+            struct tm tm;
+            strptime(pString->GetValue().c_str(), "%Y-%m-%dT%H:%M:%S.%Z", &tm);
+            std::time_t tt = std::mktime(&tm);
+            pStrRes->SetValue(std::to_string(tt));
+            break;
+        }
         case COMMAND_TYPE_STRINGTOINTEGER:
 		{
 			MemoryManager::Inst.CreateObject(&pIntRes);
@@ -1348,6 +1357,9 @@ PENTITY Command::ExecuteNodeCommand(MULONG ulCommand, PENTITY pEntity, Execution
             {
 //                MemoryManager::Inst.CreateObject(&pNodeRes);
                 pNodeRes = MemoryManager::Inst.CreateNode(7777);
+                pNodeRes->SetValue("");
+                pNodeRes->SetLValue("");
+                pNodeRes->SetRValue("");
                 break;
         }
             case COMMAND_TYPE_QUERY_PROFILE_AND_TDPS:
@@ -1364,6 +1376,13 @@ PENTITY Command::ExecuteNodeCommand(MULONG ulCommand, PENTITY pEntity, Execution
                 pNodeRes = mr->queryReviews(pNode->GetValue());
                 break;
         }
+            case COMMAND_TYPE_QUERY_REVIEWS_BY_IDENTIFIERS:
+            {
+                pNode = (PNODE)pArg;
+                MongoReview *mr = new MongoReview(80006);
+                pNodeRes = mr->queryIdentifiers(pNode->GetValue());
+                break;
+            }
     }
     }
     

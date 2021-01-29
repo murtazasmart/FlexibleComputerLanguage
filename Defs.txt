@@ -168,3 +168,5 @@ DEF	GET_NODE_OBJ                 			GetNodeObj
 DEF	MULTIPLY                 			Multiply
 DEF	DIVIDE                 			Divide
 DEF	QUERY_REVIEWS_BY_PROFILE_IDS                 	QueryReviewsByProfileIds
+DEF	STRING_TO_UNIX_TIME_2				StringToUnixTime2
+DEF	QUERY_REVIEWS_BY_IDENTIFIERS                 	QueryReviewsByIdentifiers
