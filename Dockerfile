@@ -1,7 +1,7 @@
 # FROM gcc:4.9 AS base
 # FROM frolvlad/alpine-gxx
 # FROM alpine:3.7
-FROM ubuntu:18.04 AS build
+FROM ubuntu:18.04 AS base
 
 RUN apt-get update && apt-get install -y build-essential
 
@@ -36,6 +36,8 @@ RUN cd ~ \
     && cd ~ \
     && rm -rf mongo-cxx-driver \
     && cd /usr/local
+
+FROM base AS build
 
 COPY . ./FlexibleComputerLanguage
 

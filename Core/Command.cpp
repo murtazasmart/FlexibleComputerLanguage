@@ -14,6 +14,9 @@
 #include "Bool.h"
 #include "MetaData.h"
 #include "DateTimeOperations.h"
+#include "MongoDB.h"
+#include "MongoTP.h"
+#include "MongoReview.h"
 #include <set>
 #include <algorithm>
 #include <functional>
@@ -326,6 +329,30 @@ PENTITY Command::ExecuteIntCommand(MULONG ulCommand, PENTITY pEntity, PENTITY pA
 			}
 			break;
 		}
+        case COMMAND_TYPE_MULTIPLY:
+        {
+            if(ENTITY_TYPE_INT == pArg->ul_Type)
+            {
+                MemoryManager::Inst.CreateObject(&pNullRes);
+                PInt pIntArg = (PInt)pArg;
+                MULONG ulVal = pInt->GetValue();
+                ulVal = ulVal * pIntArg->GetValue();
+                pInt->SetValue(ulVal);
+            }
+            break;
+        }
+        case COMMAND_TYPE_DIVIDE:
+        {
+            if(ENTITY_TYPE_INT == pArg->ul_Type)
+            {
+                MemoryManager::Inst.CreateObject(&pNullRes);
+                PInt pIntArg = (PInt)pArg;
+                MULONG ulVal = pInt->GetValue();
+                ulVal = ulVal / pIntArg->GetValue();
+                pInt->SetValue(ulVal);
+            }
+            break;
+        }
         case COMMAND_TYPE_SET_INTEGER:
         {
             if(ENTITY_TYPE_INT == pArg->ul_Type)
@@ -686,6 +713,15 @@ PENTITY Command::ExecuteStringCommand(MULONG ulCommand, PENTITY pEntity, PENTITY
             {
                 pStrRes->SetValue(std::to_string(DateTimeOperations::StringToUnix(pString->ToString())));
             }
+            break;
+        }
+        case COMMAND_TYPE_STRING_TO_UNIX_TIME_2:
+        {
+            MemoryManager::Inst.CreateObject(&pStrRes);
+            struct tm tm;
+            strptime(pString->GetValue().c_str(), "%Y-%m-%dT%H:%M:%S.%Z", &tm);
+            std::time_t tt = std::mktime(&tm);
+            pStrRes->SetValue(std::to_string(tt));
             break;
         }
         case COMMAND_TYPE_STRINGTOINTEGER:
@@ -1317,7 +1353,37 @@ PENTITY Command::ExecuteNodeCommand(MULONG ulCommand, PENTITY pEntity, Execution
                 pNodeRes = (PNODE)pNode->GetCustomObj();
                 break;
             }
+            case COMMAND_TYPE_GET_NODE_OBJ:
+            {
+//                MemoryManager::Inst.CreateObject(&pNodeRes);
+                pNodeRes = MemoryManager::Inst.CreateNode(7777);
+                pNodeRes->SetValue("");
+                pNodeRes->SetLValue("");
+                pNodeRes->SetRValue("");
+                break;
         }
+            case COMMAND_TYPE_QUERY_PROFILE_AND_TDPS:
+            {
+                pNode = (PNODE)pArg;
+                MongoTP *tp = new MongoTP(80005);
+                pNodeRes = tp->queryProfilesAndTDPs(pNode->GetLVal(), pNode->GetValue(), pNode->GetRVal(), pNode->GetCustomString());
+                break;
+    }
+            case COMMAND_TYPE_QUERY_REVIEWS_BY_PROFILE_IDS:
+            {
+                pNode = (PNODE)pArg;
+                MongoReview *mr = new MongoReview(80006);
+                pNodeRes = mr->queryReviews(pNode->GetValue());
+                break;
+        }
+            case COMMAND_TYPE_QUERY_REVIEWS_BY_IDENTIFIERS:
+            {
+                pNode = (PNODE)pArg;
+                MongoReview *mr = new MongoReview(80006);
+                pNodeRes = mr->queryIdentifiers(pNode->GetValue());
+                break;
+            }
+    }
     }
     
 	
@@ -1699,6 +1765,7 @@ PENTITY Command::ExecuteListCommand(MULONG ulCommand, PENTITY pEntity, Execution
 		std::string oldestDate = (DateTimeOperations::GetOldestDate(dateList));
 		pStrRes->SetValue(DateTimeOperations::GetOldestDate(dateList));
 	}
+	// This function takes each node in the list and by default selects LValue in the node
 	else if (COMMAND_TYPE_GET_LATEST_DATE == ulCommand)
 	{
 		MemoryManager::Inst.CreateObject(&pStrRes);
