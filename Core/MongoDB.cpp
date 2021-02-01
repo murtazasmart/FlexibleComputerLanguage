@@ -17,7 +17,8 @@ MongoDB::MongoDB(MULONG ulId) : Node(ulId) {
     try {
         //testing Mongo DB connection
         mongocxx::instance inst{}; //DONT REMOVE THIS
-        this->db_uri = "mongodb+srv://testuser:test@ap-cluster-0.maddq.mongodb.net/tracified-backend-test-db?sslAllowInvalidCertificates=true";
+        this->db_uri = "mongodb://backend-user:TB%40pass123@db.tracified.com:27017/backend-db?sslAllowInvalidCertificates=true";
+        // this->db_uri = "mongodb+srv://testuser:test@ap-cluster-0.maddq.mongodb.net/tracified-backend-test-db?sslAllowInvalidCertificates=true";
         this->db_name = "tracified-backend-test-db";
     } catch (const std::exception &e) {
         LOG(INFO) << "Could not Establish Connection to Database";
