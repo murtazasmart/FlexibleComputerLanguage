@@ -170,3 +170,5 @@ DEF	DIVIDE                 			Divide
 DEF	QUERY_REVIEWS_BY_PROFILE_IDS                 	QueryReviewsByProfileIds
 DEF	STRING_TO_UNIX_TIME_2				StringToUnixTime2
 DEF	QUERY_REVIEWS_BY_IDENTIFIERS                 	QueryReviewsByIdentifiers
+DEF	PERCENTAGE                 	Percentage
+DEF	AVERAGE                 	Average
