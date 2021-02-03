@@ -20,6 +20,7 @@
 #include <set>
 #include <algorithm>
 #include <functional>
+#include <math.h>
 
 
 Command::Command()
@@ -350,6 +351,32 @@ PENTITY Command::ExecuteIntCommand(MULONG ulCommand, PENTITY pEntity, PENTITY pA
                 MULONG ulVal = pInt->GetValue();
                 ulVal = ulVal / pIntArg->GetValue();
                 pInt->SetValue(ulVal);
+            }
+            break;
+        }
+        case COMMAND_TYPE_PERCENTAGE:
+        {
+            if(ENTITY_TYPE_INT == pArg->ul_Type)
+            {
+                MemoryManager::Inst.CreateObject(&pStrRes);
+                PInt pIntArg = (PInt)pArg;
+                float ulVal = pInt->GetValue();
+                ulVal = ulVal / pIntArg->GetValue();
+                std::string floatString = std::to_string(roundf(ulVal * 10000 ) / 100);
+                pStrRes->SetValue(floatString.substr(0, floatString.find(".") + 3) + "%");
+            }
+            break;
+        }
+        case COMMAND_TYPE_AVERAGE:
+        {
+            if(ENTITY_TYPE_INT == pArg->ul_Type)
+            {
+                MemoryManager::Inst.CreateObject(&pStrRes);
+                PInt pIntArg = (PInt)pArg;
+                float ulVal = pInt->GetValue();
+                ulVal = ulVal / pIntArg->GetValue();
+                std::string floatString = std::to_string(roundf(ulVal * 100 ) / 100);
+                pStrRes->SetValue(floatString.substr(0, floatString.find(".") + 3));
             }
             break;
         }
