@@ -54,6 +54,27 @@ node {
       }
     }
 
+    stage('Deploy to QA') {
+      if (env.BRANCH_NAME == 'qa') {
+        echo 'Building and pushing image'
+        docker.withRegistry('https://453230908534.dkr.ecr.ap-south-1.amazonaws.com/tracified/grammar-qa', 'ecr:ap-south-1:aws-ecr-credentials') {
+          echo 'Building image'
+          def releaseImage = docker.build("tracified/grammar-qa:${env.BUILD_ID}")
+          releaseImage.push()
+          releaseImage.push('latest')
+        }
+        echo 'Deploying image in server'
+        withCredentials([[
+          $class: 'AmazonWebServicesCredentialsBinding', 
+          accessKeyVariable: 'AWS_ACCESS_KEY_ID', 
+          credentialsId: 'aws-ecr-credentials', 
+          secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+        ]]) {
+          ansiblePlaybook inventory: 'deploy/hosts', playbook: 'deploy/qa.yml', extras: '-u ubuntu'
+        }
+      }
+    }
+
     stage('Deploy to Production') {
       if (env.BRANCH_NAME == 'release') {
         echo 'Building and pushing image'
