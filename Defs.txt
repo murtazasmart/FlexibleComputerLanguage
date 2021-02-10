@@ -166,6 +166,7 @@ DEF 	SET_INTEGER                 			SetInteger
 DEF	QUERY_PROFILE_AND_TDPS                 	QueryProfileAndTDPs
 DEF	GET_NODE_OBJ                 			GetNodeObj
 DEF	MULTIPLY                 			Multiply
+DEF	ABSOLUTE_VALUE                 			AbsoluteValue
 DEF	DIVIDE                 			Divide
 DEF	QUERY_REVIEWS_BY_PROFILE_IDS                 	QueryReviewsByProfileIds
 DEF	STRING_TO_UNIX_TIME_2				StringToUnixTime2

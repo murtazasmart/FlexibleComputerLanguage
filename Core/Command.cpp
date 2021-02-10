@@ -751,6 +751,18 @@ PENTITY Command::ExecuteStringCommand(MULONG ulCommand, PENTITY pEntity, PENTITY
             pStrRes->SetValue(std::to_string(tt));
             break;
         }
+        case COMMAND_TYPE_ABSOLUTE_VALUE:
+        {
+            if(pString->GetValue() != "")
+            {
+                MemoryManager::Inst.CreateObject(&pStrRes);
+                PInt pIntArg = (PInt)pArg;
+                std::string str = pString->GetValue();
+                str.erase(std::remove(str.begin(), str.end(), '-'), str.end());
+                pStrRes->SetValue(str);
+            }
+            break;
+        }
         case COMMAND_TYPE_STRINGTOINTEGER:
 		{
 			MemoryManager::Inst.CreateObject(&pIntRes);

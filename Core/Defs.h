@@ -726,6 +726,7 @@
 #define     COMMAND_TYPE_GET_YEAR                                       8016
 #define     COMMAND_TYPE_ADD_PERIOD                                     8017
 #define     COMMAND_TYPE_STRING_TO_UNIX_TIME_2                          8018
+#define     COMMAND_TYPE_ABSOLUTE_VALUE                                 8019
 
 // Int Commands
 #define		COMMAND_TYPE_IS_INT_EQUAL_TO								2000
