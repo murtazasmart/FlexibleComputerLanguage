@@ -726,6 +726,7 @@
 #define     COMMAND_TYPE_GET_YEAR                                       8016
 #define     COMMAND_TYPE_ADD_PERIOD                                     8017
 #define     COMMAND_TYPE_STRING_TO_UNIX_TIME_2                          8018
+#define     COMMAND_TYPE_ABSOLUTE_VALUE                                 8019
 
 // Int Commands
 #define		COMMAND_TYPE_IS_INT_EQUAL_TO								2000
@@ -740,6 +741,8 @@
 #define     COMMAND_TYPE_SET_INTEGER                                    2201
 #define		COMMAND_TYPE_MULTIPLY										2102
 #define		COMMAND_TYPE_DIVIDE										    2103
+#define		COMMAND_TYPE_PERCENTAGE									    2104
+#define		COMMAND_TYPE_AVERAGE									    2105
 
 // Bool Commands
 #define		COMMAND_TYPE_BOOL_AND										4000
